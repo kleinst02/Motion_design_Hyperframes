@@ -2,6 +2,7 @@ node_modules/
 .env
 */renders/
 */snapshots/
+*/styleframes/png/
 examples/*/renders/
 examples/*/snapshots/
 examples/*/*/renders/

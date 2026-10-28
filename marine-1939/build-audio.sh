@@ -13,9 +13,11 @@ cd "$(dirname "$0")"
 
 # ---- settings (all paths relative to this project folder) ----------------------------------------------------------
 RAW="${RAW:-assets/audio/voix.mp3}"                # raw voice exported from ElevenLabs
-CUTS="${CUTS:-}"                                   # "cut:silence" pairs in raw seconds, e.g. "14.00:0.8 34.75:0.4" (empty = no cut)
+CUTS="${CUTS:-12.43:1.84 24.21:0.70 39.62:0.40}"   # "cut:silence" pairs in raw seconds: the page that turns after
+                                                   # « Toulon. » (2.5 s in all), the pivot after « leur histoire. »
+                                                   # (1.5 s in all), a breath before the end card (+0.4 s)
 TAIL="${TAIL:-4.0}"                                # silence added after the voice (end card hold)
-TOTAL="${TOTAL:-45.0}"                             # final duration in seconds = STORYBOARD duration = TOTAL in assemble.sh
+TOTAL="${TOTAL:-50.1}"                             # final duration in seconds = STORYBOARD duration = TOTAL in assemble.sh
 MUSIC="${MUSIC-assets/audio/music.mp3}"            # CC0 track (set MUSIC="" for no music)
 MUSIC_START="${MUSIC_START:-0}"                    # where to start in the track (skip a quiet intro, see pitfalls.md)
 MUSIC_VOLUME="${MUSIC_VOLUME:-0.12}"               # 0.10 to 0.15 under a voice

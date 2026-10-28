@@ -1,0 +1,874 @@
+{
+ "audio": "marine-1939/assets/audio/voix-montage.wav",
+ "duration": 50.1,
+ "threshold_db": -40.0,
+ "min_silence": 0.12,
+ "stats": {
+  "p10_db": -120.0,
+  "p50_db": -32.5,
+  "p95_db": -14.5
+ },
+ "phrases": [
+  {
+   "start": 0.04,
+   "end": 1.65,
+   "silence_after": 0.17,
+   "cut_point": 1.73,
+   "text": "septembre 1939",
+   "words": [
+    0,
+    1
+   ]
+  },
+  {
+   "start": 1.82,
+   "end": 1.88,
+   "silence_after": 0.44,
+   "cut_point": 2.1,
+   "text": "la",
+   "words": [
+    2
+   ]
+  },
+  {
+   "start": 2.32,
+   "end": 5.48,
+   "silence_after": 0.67,
+   "cut_point": 5.82,
+   "text": "france entre en guerre avec la quatrième flotte du monde",
+   "words": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  },
+  {
+   "start": 6.15,
+   "end": 7.64,
+   "silence_after": 0.43,
+   "cut_point": 7.86,
+   "text": "juillet 1940",
+   "words": [
+    13,
+    14
+   ]
+  },
+  {
+   "start": 8.07,
+   "end": 9.06,
+   "silence_after": 0.53,
+   "cut_point": 9.32,
+   "text": "mercel kébir",
+   "words": [
+    15,
+    16
+   ]
+  },
+  {
+   "start": 9.59,
+   "end": 11.3,
+   "silence_after": 0.46,
+   "cut_point": 11.53,
+   "text": "novembre 1942",
+   "words": [
+    17,
+    18
+   ]
+  },
+  {
+   "start": 11.76,
+   "end": 12.1,
+   "silence_after": 2.5,
+   "cut_point": 13.35,
+   "text": "tout long",
+   "words": [
+    19,
+    20
+   ]
+  },
+  {
+   "start": 14.6,
+   "end": 15.43,
+   "silence_after": 0.23,
+   "cut_point": 15.54,
+   "text": "dans les manuels",
+   "words": [
+    21,
+    22,
+    23
+   ]
+  },
+  {
+   "start": 15.66,
+   "end": 17.57,
+   "silence_after": 0.55,
+   "cut_point": 17.84,
+   "text": "toute son histoire tient en trois lignes",
+   "words": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ]
+  },
+  {
+   "start": 18.12,
+   "end": 18.69,
+   "silence_after": 0.15,
+   "cut_point": 18.77,
+   "text": "le reste",
+   "words": [
+    31,
+    32
+   ]
+  },
+  {
+   "start": 18.84,
+   "end": 19.44,
+   "silence_after": 0.57,
+   "cut_point": 19.73,
+   "text": "a sombré",
+   "words": [
+    33,
+    34
+   ]
+  },
+  {
+   "start": 20.01,
+   "end": 20.74,
+   "silence_after": 0.4,
+   "cut_point": 20.94,
+   "text": "ses navires",
+   "words": [
+    35,
+    36
+   ]
+  },
+  {
+   "start": 21.14,
+   "end": 22.03,
+   "silence_after": 0.45,
+   "cut_point": 22.26,
+   "text": "ses matériels",
+   "words": [
+    37,
+    38
+   ]
+  },
+  {
+   "start": 22.48,
+   "end": 23.06,
+   "silence_after": 0.61,
+   "cut_point": 23.37,
+   "text": "ses hommes",
+   "words": [
+    39,
+    40
+   ]
+  },
+  {
+   "start": 23.67,
+   "end": 25.64,
+   "silence_after": 1.52,
+   "cut_point": 26.4,
+   "text": "il est temps de renflouer leur histoire",
+   "words": [
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+   ]
+  },
+  {
+   "start": 27.16,
+   "end": 30.11,
+   "silence_after": 0.59,
+   "cut_point": 30.41,
+   "text": "marine 1939 fait revivre cette flotte",
+   "words": [
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+   ]
+  },
+  {
+   "start": 30.7,
+   "end": 31.46,
+   "silence_after": 0.25,
+   "cut_point": 31.59,
+   "text": "ses navires",
+   "words": [
+    54,
+    55
+   ]
+  },
+  {
+   "start": 31.71,
+   "end": 32.28,
+   "silence_after": 0.43,
+   "cut_point": 32.5,
+   "text": "un par un",
+   "words": [
+    56,
+    57,
+    58
+   ]
+  },
+  {
+   "start": 32.71,
+   "end": 33.59,
+   "silence_after": 0.28,
+   "cut_point": 33.73,
+   "text": "ses matériels",
+   "words": [
+    59,
+    60
+   ]
+  },
+  {
+   "start": 33.87,
+   "end": 34.85,
+   "silence_after": 0.44,
+   "cut_point": 35.07,
+   "text": "pièce par pièce",
+   "words": [
+    61,
+    62,
+    63
+   ]
+  },
+  {
+   "start": 35.29,
+   "end": 35.94,
+   "silence_after": 0.28,
+   "cut_point": 36.08,
+   "text": "ses hommes",
+   "words": [
+    64,
+    65
+   ]
+  },
+  {
+   "start": 36.22,
+   "end": 37.7,
+   "silence_after": 0.39,
+   "cut_point": 37.9,
+   "text": "de l'amiral au matelot",
+   "words": [
+    66,
+    67,
+    68,
+    69
+   ]
+  },
+  {
+   "start": 38.09,
+   "end": 39.24,
+   "silence_after": 0.27,
+   "cut_point": 39.38,
+   "text": "de new york à tout long",
+   "words": [
+    70,
+    71,
+    72,
+    73,
+    74,
+    75
+   ]
+  },
+  {
+   "start": 39.51,
+   "end": 40.69,
+   "silence_after": 0.46,
+   "cut_point": 40.92,
+   "text": "ses heures de gloire",
+   "words": [
+    76,
+    77,
+    78,
+    79
+   ]
+  },
+  {
+   "start": 41.15,
+   "end": 41.89,
+   "silence_after": 0.93,
+   "cut_point": 42.36,
+   "text": "et ses drames",
+   "words": [
+    80,
+    81,
+    82
+   ]
+  },
+  {
+   "start": 42.82,
+   "end": 44.58,
+   "silence_after": 0.42,
+   "cut_point": 44.79,
+   "text": "marine 1939 monter",
+   "words": [
+    83,
+    84,
+    85
+   ]
+  },
+  {
+   "start": 45.0,
+   "end": 45.87,
+   "silence_after": 4.23,
+   "cut_point": null,
+   "text": "à bord",
+   "words": [
+    86,
+    87
+   ]
+  }
+ ],
+ "words": [
+  {
+   "w": "septembre",
+   "s": 0.04,
+   "e": 0.78,
+   "whisper_s": 0.0
+  },
+  {
+   "w": "1939",
+   "s": 0.78,
+   "e": 1.82,
+   "whisper_s": 0.78
+  },
+  {
+   "w": "la",
+   "s": 1.82,
+   "e": 2.32,
+   "whisper_s": 1.96
+  },
+  {
+   "w": "france",
+   "s": 2.32,
+   "e": 2.88,
+   "whisper_s": 2.58
+  },
+  {
+   "w": "entre",
+   "s": 2.88,
+   "e": 3.28,
+   "whisper_s": 2.88
+  },
+  {
+   "w": "en",
+   "s": 3.28,
+   "e": 3.48,
+   "whisper_s": 3.28
+  },
+  {
+   "w": "guerre",
+   "s": 3.48,
+   "e": 3.74,
+   "whisper_s": 3.48
+  },
+  {
+   "w": "avec",
+   "s": 3.74,
+   "e": 4.08,
+   "whisper_s": 3.74
+  },
+  {
+   "w": "la",
+   "s": 4.08,
+   "e": 4.34,
+   "whisper_s": 4.08
+  },
+  {
+   "w": "quatrième",
+   "s": 4.34,
+   "e": 4.8,
+   "whisper_s": 4.34
+  },
+  {
+   "w": "flotte",
+   "s": 4.8,
+   "e": 5.0,
+   "whisper_s": 4.8
+  },
+  {
+   "w": "du",
+   "s": 5.0,
+   "e": 5.24,
+   "whisper_s": 5.0
+  },
+  {
+   "w": "monde",
+   "s": 5.24,
+   "e": 6.02,
+   "whisper_s": 5.24
+  },
+  {
+   "w": "juillet",
+   "s": 6.15,
+   "e": 6.72,
+   "whisper_s": 6.02
+  },
+  {
+   "w": "1940",
+   "s": 6.72,
+   "e": 7.94,
+   "whisper_s": 6.72
+  },
+  {
+   "w": "mercel",
+   "s": 8.07,
+   "e": 8.62,
+   "whisper_s": 7.94
+  },
+  {
+   "w": "kébir",
+   "s": 8.62,
+   "e": 9.5,
+   "whisper_s": 8.62
+  },
+  {
+   "w": "novembre",
+   "s": 9.59,
+   "e": 10.28,
+   "whisper_s": 9.5
+  },
+  {
+   "w": "1942",
+   "s": 10.28,
+   "e": 11.6,
+   "whisper_s": 10.28
+  },
+  {
+   "w": "tout",
+   "s": 11.76,
+   "e": 12.0,
+   "whisper_s": 11.6
+  },
+  {
+   "w": "long",
+   "s": 12.0,
+   "e": 13.92,
+   "whisper_s": 12.0
+  },
+  {
+   "w": "dans",
+   "s": 14.6,
+   "e": 14.78,
+   "whisper_s": 14.35
+  },
+  {
+   "w": "les",
+   "s": 14.78,
+   "e": 15.02,
+   "whisper_s": 14.78
+  },
+  {
+   "w": "manuels",
+   "s": 15.02,
+   "e": 15.6,
+   "whisper_s": 15.02
+  },
+  {
+   "w": "toute",
+   "s": 15.66,
+   "e": 15.92,
+   "whisper_s": 15.6
+  },
+  {
+   "w": "son",
+   "s": 15.92,
+   "e": 16.12,
+   "whisper_s": 15.92
+  },
+  {
+   "w": "histoire",
+   "s": 16.12,
+   "e": 16.56,
+   "whisper_s": 16.12
+  },
+  {
+   "w": "tient",
+   "s": 16.56,
+   "e": 16.84,
+   "whisper_s": 16.56
+  },
+  {
+   "w": "en",
+   "s": 16.84,
+   "e": 17.1,
+   "whisper_s": 16.84
+  },
+  {
+   "w": "trois",
+   "s": 17.1,
+   "e": 17.26,
+   "whisper_s": 17.1
+  },
+  {
+   "w": "lignes",
+   "s": 17.26,
+   "e": 18.04,
+   "whisper_s": 17.26
+  },
+  {
+   "w": "le",
+   "s": 18.12,
+   "e": 18.34,
+   "whisper_s": 18.04
+  },
+  {
+   "w": "reste",
+   "s": 18.34,
+   "e": 18.78,
+   "whisper_s": 18.34
+  },
+  {
+   "w": "a",
+   "s": 18.84,
+   "e": 19.14,
+   "whisper_s": 18.78
+  },
+  {
+   "w": "sombré",
+   "s": 19.14,
+   "e": 20.0,
+   "whisper_s": 19.14
+  },
+  {
+   "w": "ses",
+   "s": 20.01,
+   "e": 20.22,
+   "whisper_s": 20.0
+  },
+  {
+   "w": "navires",
+   "s": 20.22,
+   "e": 21.0,
+   "whisper_s": 20.22
+  },
+  {
+   "w": "ses",
+   "s": 21.14,
+   "e": 21.38,
+   "whisper_s": 21.0
+  },
+  {
+   "w": "matériels",
+   "s": 21.38,
+   "e": 22.4,
+   "whisper_s": 21.38
+  },
+  {
+   "w": "ses",
+   "s": 22.48,
+   "e": 22.82,
+   "whisper_s": 22.4
+  },
+  {
+   "w": "hommes",
+   "s": 22.82,
+   "e": 23.34,
+   "whisper_s": 22.82
+  },
+  {
+   "w": "il",
+   "s": 23.67,
+   "e": 23.86,
+   "whisper_s": 23.34
+  },
+  {
+   "w": "est",
+   "s": 23.86,
+   "e": 24.12,
+   "whisper_s": 23.86
+  },
+  {
+   "w": "temps",
+   "s": 24.12,
+   "e": 24.24,
+   "whisper_s": 24.12
+  },
+  {
+   "w": "de",
+   "s": 24.24,
+   "e": 24.48,
+   "whisper_s": 24.24
+  },
+  {
+   "w": "renflouer",
+   "s": 24.48,
+   "e": 25.0,
+   "whisper_s": 24.48
+  },
+  {
+   "w": "leur",
+   "s": 25.0,
+   "e": 25.16,
+   "whisper_s": 25.0
+  },
+  {
+   "w": "histoire",
+   "s": 25.16,
+   "e": 26.92,
+   "whisper_s": 25.16
+  },
+  {
+   "w": "marine",
+   "s": 27.16,
+   "e": 27.6,
+   "whisper_s": 26.92
+  },
+  {
+   "w": "1939",
+   "s": 27.6,
+   "e": 28.72,
+   "whisper_s": 27.6
+  },
+  {
+   "w": "fait",
+   "s": 28.72,
+   "e": 29.14,
+   "whisper_s": 28.72
+  },
+  {
+   "w": "revivre",
+   "s": 29.14,
+   "e": 29.78,
+   "whisper_s": 29.14
+  },
+  {
+   "w": "cette",
+   "s": 29.78,
+   "e": 29.98,
+   "whisper_s": 29.78
+  },
+  {
+   "w": "flotte",
+   "s": 29.98,
+   "e": 30.56,
+   "whisper_s": 29.98
+  },
+  {
+   "w": "ses",
+   "s": 30.7,
+   "e": 30.94,
+   "whisper_s": 30.56
+  },
+  {
+   "w": "navires",
+   "s": 30.94,
+   "e": 31.68,
+   "whisper_s": 30.94
+  },
+  {
+   "w": "un",
+   "s": 31.71,
+   "e": 31.98,
+   "whisper_s": 31.68
+  },
+  {
+   "w": "par",
+   "s": 31.98,
+   "e": 32.2,
+   "whisper_s": 31.98
+  },
+  {
+   "w": "un",
+   "s": 32.2,
+   "e": 32.7,
+   "whisper_s": 32.2
+  },
+  {
+   "w": "ses",
+   "s": 32.71,
+   "e": 33.0,
+   "whisper_s": 32.7
+  },
+  {
+   "w": "matériels",
+   "s": 33.0,
+   "e": 33.38,
+   "whisper_s": 33.0
+  },
+  {
+   "w": "pièce",
+   "s": 33.87,
+   "e": 34.26,
+   "whisper_s": 33.86
+  },
+  {
+   "w": "par",
+   "s": 34.26,
+   "e": 34.5,
+   "whisper_s": 34.26
+  },
+  {
+   "w": "pièce",
+   "s": 34.5,
+   "e": 35.22,
+   "whisper_s": 34.5
+  },
+  {
+   "w": "ses",
+   "s": 35.29,
+   "e": 35.64,
+   "whisper_s": 35.22
+  },
+  {
+   "w": "hommes",
+   "s": 35.64,
+   "e": 36.06,
+   "whisper_s": 35.64
+  },
+  {
+   "w": "de",
+   "s": 36.22,
+   "e": 36.44,
+   "whisper_s": 36.06
+  },
+  {
+   "w": "l'amiral",
+   "s": 36.44,
+   "e": 37.06,
+   "whisper_s": 36.44
+  },
+  {
+   "w": "au",
+   "s": 37.06,
+   "e": 37.36,
+   "whisper_s": 37.06
+  },
+  {
+   "w": "matelot",
+   "s": 37.36,
+   "e": 38.04,
+   "whisper_s": 37.36
+  },
+  {
+   "w": "de",
+   "s": 38.09,
+   "e": 38.32,
+   "whisper_s": 38.04
+  },
+  {
+   "w": "new",
+   "s": 38.32,
+   "e": 38.54,
+   "whisper_s": 38.32
+  },
+  {
+   "w": "york",
+   "s": 38.54,
+   "e": 38.78,
+   "whisper_s": 38.54
+  },
+  {
+   "w": "à",
+   "s": 38.78,
+   "e": 38.92,
+   "whisper_s": 38.78
+  },
+  {
+   "w": "tout",
+   "s": 38.92,
+   "e": 39.06,
+   "whisper_s": 38.92
+  },
+  {
+   "w": "long",
+   "s": 39.06,
+   "e": 39.46,
+   "whisper_s": 39.06
+  },
+  {
+   "w": "ses",
+   "s": 39.51,
+   "e": 39.8,
+   "whisper_s": 39.46
+  },
+  {
+   "w": "heures",
+   "s": 39.8,
+   "e": 40.02,
+   "whisper_s": 39.8
+  },
+  {
+   "w": "de",
+   "s": 40.02,
+   "e": 40.28,
+   "whisper_s": 40.02
+  },
+  {
+   "w": "gloire",
+   "s": 40.28,
+   "e": 41.06,
+   "whisper_s": 40.28
+  },
+  {
+   "w": "et",
+   "s": 41.15,
+   "e": 41.4,
+   "whisper_s": 41.06
+  },
+  {
+   "w": "ses",
+   "s": 41.4,
+   "e": 41.56,
+   "whisper_s": 41.4
+  },
+  {
+   "w": "drames",
+   "s": 41.56,
+   "e": 42.78,
+   "whisper_s": 41.56
+  },
+  {
+   "w": "marine",
+   "s": 42.82,
+   "e": 43.36,
+   "whisper_s": 42.78
+  },
+  {
+   "w": "1939",
+   "s": 43.36,
+   "e": 44.54,
+   "whisper_s": 43.36
+  },
+  {
+   "w": "monter",
+   "s": 44.54,
+   "e": 45.4,
+   "whisper_s": 44.54
+  },
+  {
+   "w": "à",
+   "s": 45.4,
+   "e": 45.64,
+   "whisper_s": 45.4
+  },
+  {
+   "w": "bord",
+   "s": 45.64,
+   "e": 45.94,
+   "whisper_s": 45.64
+  }
+ ]
+}

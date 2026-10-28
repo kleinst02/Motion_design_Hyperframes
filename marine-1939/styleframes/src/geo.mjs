@@ -17,6 +17,10 @@ const PLACES = {
   bizerte: [9.87, 37.27], ajaccio: [8.74, 41.92], casablanca: [-7.62, 33.59],
   r1: [-62.0, 39.6], r2: [-45.0, 38.4], r3: [-28.0, 37.2], r4: [-12.0, 36.0], r5: [-2.0, 36.4],
   r6: [1.9, 39.0], r7: [4.6, 41.6], golfe: [3.9, 42.75], corse: [8.6, 42.6],
+  // Route of direction D: out of New York by the Narrows and Sandy Hook, south of Santa Maria (Azores), through the
+  // middle of the strait of Gibraltar, round the Balearics by the south and the east, into the roads from the south.
+  narrows: [-74.04, 40.6], sandyhook: [-73.86, 40.45], r3d: [-28.0, 36.6], strait: [-5.6, 35.96],
+  bals: [2.0, 38.35], bale: [5.2, 39.6], toulonapp: [5.98, 42.98],
 };
 
 function chart({ name, data, object, bbox, width, height, step }) {

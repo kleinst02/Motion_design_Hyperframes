@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Styleframes of the film marine-1939: 3 directions x 3 frozen images, one standalone 1920x1080 HTML page each.
+"""Styleframes of the film marine-1939, one standalone 1920x1080 HTML page each.
 
-Usage: python3 -I styleframes.py <project>/styleframes <geo.json>
-A « Le manuel et la mer », B « La table des opérations », C « Les actualités de 1939 ».
+Usage: python3 -I styleframes.py <project>/styleframes <geo.json> [D1 D2 ...]  (no name: every frame)
+A « Le manuel et la mer », B « La table des opérations », C « Les actualités de 1939 »,
+D « Le manuel et la carte », the retained direction (A's book, then B's chart; every ship model at sea).
 Fonts come from ../assets/fonts (project-relative), nothing from the network.
 """
 import html
@@ -30,6 +31,7 @@ FONT_FACES = [
     ("Big Shoulders", "BigShoulders-600.woff2", 600, "normal"),
     ("Big Shoulders", "BigShoulders-800.woff2", 800, "normal"),
     ("Poiret One", "PoiretOne-400.woff2", 400, "normal"),
+    ("Archivo Black", "ArchivoBlack-400.woff2", 400, "normal"),
 ]
 FONT_CSS = "\n".join(
     f'@font-face{{font-family:"{fam}";src:url(../assets/fonts/{f}) format("woff2");font-weight:{w};font-style:{s}}}'
@@ -175,7 +177,8 @@ def ship(kind, x0, y0, length, facing=1, fill="#000", stroke="none", sw=0, extra
 def funnel_tops(kind, x0, y0, length, facing=1):
     """Page coordinates of the top of each funnel of a profile drawn by ship()."""
     s = length / 1000
-    tops = {"bb": [(587, -146)], "ca": [(482, -119)], "ct": [(423, -82), (533, -80)], "av": [(505, -86)], "ch": [(543, -60)], "ss": []}
+    tops = {"bb": [(587, -146)], "ca": [(482, -119)], "ct": [(423, -82), (533, -80)], "av": [(505, -86)], "ch": [(543, -60)], "ss": [],
+            "ct3": [(612, -96), (735, -88), (785, -88)], "cl": [(495, -136), (622, -126)]}
     return [(x0 + facing * s * x, y0 + s * y) for x, y in tops[kind]]
 
 
@@ -872,6 +875,563 @@ def dial_html(w, h):
     return f'<svg width="{w}" height="{h}">' + dial(w / 2, h / 2 + 10, h * .38, 8, 'c') + "</svg>"
 
 
-for fn in (frame_a1, frame_a2, frame_a3, frame_b1, frame_b2, frame_b3, frame_c1, frame_c2, frame_c3):
-    fn()
-print("9 styleframes written to", OUT)
+# ---------------------------------------------------------------------------------------------------- D · le manuel et la carte
+# The chosen direction: the film opens in the history book, then tips over onto the operations chart.
+# Rule from the author: every ship model lies on the sea of the chart, never on land (checked by check_at_sea below).
+
+# Kind "ct3" (directions A to C keep the two-funnel "ct"): contre-torpilleur with three funnels, one behind the bridge and two aft (as L'Épervier in the author's collection).
+SHIPS["ct3"] = [
+    ("p", [(18, 0), (990, 0), (1000, -16), (560, -20), (550, -30), (0, -38)]),
+    ("p", [(132, -36), (132, -50), (144, -54), (172, -54), (172, -35)]), ("l", (132, -47, 76, -48, 3)),
+    ("p", [(225, -34), (225, -43), (272, -43), (272, -33)]),
+    ("p", [(220, -43), (220, -57), (232, -61), (264, -61), (264, -43)]), ("l", (220, -54, 162, -55, 3)),
+    ("p", [(290, -33), (290, -52), (300, -52), (300, -80), (372, -80), (372, -52), (560, -52), (560, -30)]),
+    ("p", [(296, -86), (378, -86), (378, -80), (296, -80)]),
+    ("l", (490, -52, 488, -170, 2.5)), ("l", (474, -146, 504, -146, 2)),
+    ("p", [(588, -20), (594, -96), (632, -96), (628, -20)]),
+    ("p", [(714, -19), (719, -88), (752, -88), (749, -19)]),
+    ("p", [(763, -19), (768, -88), (802, -88), (799, -19)]),
+    ("p", [(650, -20), (650, -28), (700, -28), (700, -19)]),
+    ("l", (853, -18, 851, -130, 2.5)),
+    ("p", [(840, -18), (840, -38), (930, -38), (930, -17)]),
+    ("p", [(940, -17), (940, -30), (968, -30), (982, -22), (982, -16)]), ("l", (982, -25, 1020, -25, 3)),
+]
+TOP_PLANS["ct3"] = {"beam": 46, "turrets": [(152, 0, 40, 30, 1, -1), (245, 0, 42, 32, 1, -1), (885, 0, 40, 30, 1, 1), (958, 0, 36, 28, 1, 1)],
+                   "blocks": [(290, -24, 270, 48), (650, -16, 50, 32), (840, -22, 90, 44)],
+                   "funnels": [(610, 0, 22, 17), (733, 0, 19, 15), (783, 0, 19, 15)]}
+# Light cruiser, La Galissonnière type (the 4e DC of 1939): three triple turrets, two forward and one aft, two funnels.
+SHIPS["cl"] = [
+    ("p", [(22, 0), (985, 0), (1000, -20), (1000, -28), (580, -30), (566, -38), (0, -48)]),
+    ("p", [(160, -44), (160, -62), (173, -68), (222, -68), (222, -45)]), ("l", (160, -57, 96, -59, 3.5)),
+    ("p", [(256, -46), (256, -60), (318, -60), (318, -45)]),
+    ("p", [(252, -60), (252, -78), (265, -84), (314, -84), (314, -60)]), ("l", (252, -73, 186, -75, 3.5)),
+    ("p", [(340, -45), (340, -112), (352, -112), (352, -146), (404, -146), (404, -112), (420, -112), (420, -62), (462, -62), (462, -44)]),
+    ("p", [(344, -156), (412, -156), (412, -146), (344, -146)]),
+    ("l", (432, -62, 430, -214, 3)), ("l", (414, -186, 448, -186, 2)),
+    ("p", [(470, -44), (476, -136), (514, -136), (512, -43)]),
+    ("p", [(598, -38), (604, -126), (640, -126), (638, -37)]),
+    ("p", [(566, -38), (566, -58), (820, -58), (820, -30)]),
+    ("l", (770, -58, 766, -176, 3)),
+    ("p", [(852, -29), (852, -47), (865, -53), (912, -53), (912, -29)]), ("l", (912, -42, 976, -44, 3.5)),
+]
+TOP_PLANS["cl"] = {"beam": 50, "turrets": [(192, 0, 66, 54, 3, -1), (285, 0, 70, 58, 3, -1), (882, 0, 66, 54, 3, 1)],
+                   "blocks": [(338, -24, 84, 48), (566, -22, 254, 44)], "funnels": [(492, 0, 22, 17), (620, 0, 20, 16)]}
+# Old battleship, Bretagne type (Bretagne and Provence at Mers el-Kébir): five twin turrets on the centre line, two funnels.
+TOP_PLANS["bb2"] = {"beam": 80, "turrets": [(138, 0, 70, 58, 2, -1), (238, 0, 72, 60, 2, -1), (590, 0, 70, 58, 2, 1), (790, 0, 72, 60, 2, 1), (888, 0, 70, 58, 2, 1)],
+                    "blocks": [(292, -32, 74, 64), (650, -28, 92, 56)], "funnels": [(420, 0, 28, 22), (505, 0, 28, 22)]}
+
+
+ACC_D = "#e6ec37"          # the yellow of the MARINE 1939 title on the blog
+ACC_D_INK = "#111111"      # text in the yellow box
+ROUTE = "#b3176a"          # chart magenta, for routes and positions only
+DRAMA = "#b3241a"          # red pencil, for losses only
+BLOG_BG = "#070707"
+IMG = "../assets/img/"
+
+
+# ---- the ship models must lie on the sea ------------------------------------------------------------------------------
+
+_RINGS = {}
+
+
+def land_rings(c):
+    key = c["name"]
+    if key not in _RINGS:
+        rings, cur = [], []
+        for tok in c["land"].replace("Z", " Z ").replace("M", " M ").replace("L", " L ").split():
+            if tok in ("M", "L"):
+                continue
+            if tok == "Z":
+                if cur:
+                    rings.append(cur)
+                cur = []
+                continue
+            x, y = tok.split(",")
+            cur.append((float(x), float(y)))
+        if cur:
+            rings.append(cur)
+        _RINGS[key] = rings
+    return _RINGS[key]
+
+
+def on_land(c, x, y):
+    inside = False
+    for ring in land_rings(c):
+        n = len(ring)
+        j = n - 1
+        for i in range(n):
+            xi, yi = ring[i]
+            xj, yj = ring[j]
+            if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi + 1e-12) + xi:
+                inside = not inside
+            j = i
+    return inside
+
+
+def footprint_on_land(c, model, margin=18):
+    """First point of a model's footprint (hull outline plus a margin, 9 stations x 3 lines) that falls on land, or None."""
+    kind, x, y, length, angle = model
+    a = math.radians(angle)
+    beam = TOP_PLANS[kind]["beam"] * length / 1000 + margin
+    half = length / 2 + margin
+    for t in [i / 8 - .5 for i in range(9)]:
+        for side in (-1, 0, 1):
+            px = x + 2 * half * t * math.cos(a) - side * beam * math.sin(a)
+            py = y + 2 * half * t * math.sin(a) + side * beam * math.cos(a)
+            if on_land(c, px, py):
+                return round(px), round(py)
+    return None
+
+
+def check_at_sea(c, models, margin=18, frame=""):
+    """Stop the generator if any point of a model's footprint (plus a margin) falls on land."""
+    bad = [(m[0], m[1], m[2], footprint_on_land(c, m, margin)) for m in models]
+    bad = [b for b in bad if b[3]]
+    if bad:
+        raise SystemExit(f"{frame}: model(s) on land: {bad}")
+    print(f"{frame}: {len(models)} model(s) checked at sea")
+
+
+def moor(c, kind, x, length, angle, start=3150, clearance=26):
+    """A model moored bows to the land: scan south from the open sea (start) to the coast, then back off to the north
+    until the whole footprint is clear of the land by the check margin plus a clearance."""
+    y = start
+    assert not on_land(c, x, y), f"moor: the scan for x={x} starts on land"
+    while not on_land(c, x, y):
+        y += 2
+    y -= length / 2
+    while footprint_on_land(c, (kind, x, y, length, angle), 18 + clearance):
+        y -= 2
+    return (kind, x, round(y), length, angle)
+
+
+def models_html(c, models, frame, opacity=None, blur=None):
+    check_at_sea(c, models, frame=frame)
+    out = ""
+    for i, (kind, x, y, length, angle) in enumerate(models):
+        out += place_model(kind, x, y, length, angle, opacity=(opacity or {}).get(i, 1), blur=(blur or {}).get(i, 0), uid=f"{frame}{i}")
+    return out
+
+
+# ---- the history book ------------------------------------------------------------------------------------------------
+# A page is 1920 x 2560 user units (3:4). D1 films the top 1920 x 1080 of the right-hand page at 1:1, so the camera pull
+# back of the bascule lands on the same page lying in the open book.
+
+PAGE_W, PAGE_H = 1920, 2560
+PAGE_BG = "#efe5cf"
+
+
+def page_ground():
+    return (f'<rect width="{PAGE_W}" height="{PAGE_H}" fill="{PAGE_BG}"/>'
+            f'<rect width="{PAGE_W}" height="{PAGE_H}" filter="url(#paper)" opacity=".38" style="mix-blend-mode:multiply"/>')
+
+
+def justified(paragraphs, x, y, width, size=50, lead=74, chars=64, color="#2a2620"):
+    """Book text set justified (each line stretched to the column width, the last line of a paragraph left ragged)."""
+    out = []
+    for para in paragraphs:
+        words, lines, cur = para.split(), [], ""
+        for w in words:
+            if cur and len(cur) + 1 + len(w) > chars:
+                lines.append(cur)
+                cur = w
+            else:
+                cur = f"{cur} {w}".strip()
+        lines.append(cur)
+        for i, ln in enumerate(lines):
+            fit = f' textLength="{width}" lengthAdjust="spacing"' if i < len(lines) - 1 else ""
+            out.append(f'<text x="{x}" y="{y}" font-family="EB Garamond" font-size="{size}" fill="{color}"{fit}>{html.escape(ln)}</text>')
+            y += lead
+        y += lead * .55
+    return "".join(out)
+
+
+def folio(n, side):
+    x, anchor = (1706, "end") if side == "right" else (214, "start")
+    return f'<text x="{x}" y="2440" text-anchor="{anchor}" font-family="EB Garamond" font-size="44" fill="#8a8172">{n}</text>'
+
+
+ENGRAVING_TEXT = [
+    "En septembre 1939, la Marine nationale est la quatrième flotte du monde, derrière la Royal Navy, l’US Navy et la "
+    "Marine impériale japonaise. Ses contre-torpilleurs comptent parmi les navires les plus rapides de leur temps.",
+    "L’armistice de juin 1940 la laisse presque intacte. Son sort devient alors l’un des enjeux de la guerre en Méditerranée.",
+]
+VERSO_TEXT = [
+    "Au sortir de la Grande Guerre, la Marine nationale entreprend de se reconstruire. Les programmes navals votés à partir "
+    "de 1922 lui donnent, en moins de vingt ans, une flotte presque entièrement neuve : croiseurs lourds et légers, "
+    "contre-torpilleurs, torpilleurs et sous-marins.",
+    "En 1939, deux cuirassés rapides, le Dunkerque et le Strasbourg, ont rejoint l’escadre ; le Richelieu et le Jean Bart "
+    "sont en achèvement. Les vieux cuirassés de la Grande Guerre, modernisés, restent en ligne.",
+    "Les équipages sont des engagés et des inscrits maritimes, venus pour beaucoup de Bretagne et de Provence. Les bases "
+    "de Brest, Toulon et Bizerte tiennent les deux mers.",
+]
+
+
+def engraving_page_svg(with_four=False):
+    """Right-hand page 215: the typed date, the fleet engraved in line ahead, then the text of the history book."""
+    sea_top = 650
+    line = [("bb", 228, 640), ("ca", 920, 470), ("ct3", 1452, 300)]
+    fleet, smokes, waves = "", "", ""
+    for n, (kind, x0, length) in enumerate(line):
+        fleet += ship(kind, x0, sea_top, length, fill="url(#hatch)", stroke=INK, sw=1.5, hull_fill="url(#hatchd)")
+        for fx, fy in funnel_tops(kind, x0, sea_top, length):
+            smokes += smoke(fx, fy, length * .55, length * .07, 10 + n)
+        waves += bow_wave(x0, sea_top, length)
+    sky = "".join(
+        f'<line x1="{x}" y1="{y}" x2="{x + w}" y2="{y}" stroke="#1d1b17" stroke-width=".9" opacity="{.12 + (y - 320) / 330 * .3:.2f}"/>'
+        for y in range(322, sea_top - 4, 8) for x, w in [(214 + (y * 37) % 90, 520 + (y * 53) % 300), (900 + (y * 29) % 140, 760 - (y * 17) % 200)])
+    typed = "".join(
+        f'<tspan dy="{random.Random(i).uniform(-1.2, 1.2):.1f}" opacity="{random.Random(i + 9).uniform(.82, 1):.2f}">{html.escape(ch)}</tspan>'
+        for i, ch in enumerate("SEPTEMBRE 1939"))
+    # the « 4e » of D1 has landed on the page: a yellow stamp across the corner of the engraving
+    four = (f'<g transform="rotate(-6 1540 640)"><text x="1540" y="860" text-anchor="middle" font-family="Archivo Black" font-size="560" '
+            f'fill="#1b1a17" transform="translate(20 20)">4<tspan font-size="230" dy="-300">e</tspan></text>'
+            f'<text x="1540" y="860" text-anchor="middle" font-family="Archivo Black" font-size="560" fill="{ACC_D}">4<tspan font-size="230" dy="-300">e</tspan></text></g>'
+            ) if with_four else ""
+    return f"""<defs>{PAPER_DEFS}
+<filter id="inkt" x="-5%" y="-30%" width="110%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="2" result="n"/>
+<feDisplacementMap in="SourceGraphic" in2="n" scale=".9" xChannelSelector="R" yChannelSelector="G"/></filter>
+<clipPath id="fig"><rect x="214" y="314" width="1492" height="512"/></clipPath></defs>{page_ground()}
+<text x="960" y="232" text-anchor="middle" font-family="Space Mono" font-weight="700" font-size="56" letter-spacing="17" fill="#1f1c18" filter="url(#inkt)">{typed}</text>
+<g filter="url(#ink)"><rect x="206" y="306" width="1508" height="528" fill="none" stroke="{INK}" stroke-width="2.4"/>
+<rect x="214" y="314" width="1492" height="512" fill="none" stroke="{INK}" stroke-width=".9"/>
+<g clip-path="url(#fig)">{sky}{engraved_sea(214, 1706, sea_top, 826, 11)}{smokes}{waves}{fleet}</g>
+{justified(ENGRAVING_TEXT, 214, 1240, 1492)}</g>{folio(215, "right")}{four}"""
+
+
+def verso_page_svg():
+    """Left-hand page 214: running text, nothing to look at."""
+    return (f'{page_ground()}<g filter="url(#ink)">{justified(VERSO_TEXT, 214, 330, 1492)}</g>{folio(214, "left")}')
+
+
+THREE_LINES = ["Septembre 1939 : la France entre en guerre.", "Juillet 1940 : drame de Mers el-Kébir.",
+               "Novembre 1942 : la flotte se saborde à Toulon."]
+
+
+def lines_page_svg():
+    """Right-hand page 217, after the page turn: the whole history of the fleet in three lines, then nothing."""
+    rows = "".join(f'<text x="214" y="{560 + i * 96}" font-family="EB Garamond" font-size="60" fill="#1f1c18">{html.escape(t)}</text>'
+                   for i, t in enumerate(THREE_LINES))
+    return (f'<defs>{PAPER_DEFS}</defs>{page_ground()}'
+            f'<text x="214" y="380" font-family="EB Garamond" font-weight="700" font-size="46" letter-spacing="6" fill="#5b5346">LA FLOTTE FRANÇAISE, 1939-1945</text>'
+            f'<line x1="214" y1="414" x2="1706" y2="414" stroke="#5b5346" stroke-width="2"/><g filter="url(#ink)">{rows}</g>{folio(217, "right")}')
+
+
+def blank_page_svg(n):
+    return f'{page_ground()}{folio(n, "left")}'
+
+
+def open_book(x, y, w, left_svg, right_svg, rot=0):
+    """An open book lying flat on the chart (chart coordinates of its top-left corner), pages at 3:4."""
+    ph = w / 2 * PAGE_H / PAGE_W
+    page = lambda svg, side: (f'<svg viewBox="0 0 {PAGE_W} {PAGE_H}" width="{w / 2:.0f}" height="{ph:.0f}" '
+                              f'style="position:absolute;top:0;{side}:0">{svg}</svg>')
+    edges = "".join(f'<div style="position:absolute;left:{6 + i * 3}px;right:{6 + i * 3}px;top:{ph + i * 4:.0f}px;height:5px;'
+                    f'background:{c};border-radius:0 0 4px 4px"></div>' for i, c in enumerate(("#ded2b6", "#d2c5a6", "#c6b896")))
+    return (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{w}px;height:{ph:.0f}px;transform:rotate({rot}deg);transform-origin:50% 50%">'
+            f'<div style="position:absolute;inset:-16px -24px -34px -24px;background:#3b2a1c;border-radius:10px;box-shadow:26px 44px 64px rgba(10,6,2,.7)"></div>'
+            f'{edges}{page(left_svg, "left")}{page(right_svg, "right")}'
+            f'<div style="position:absolute;left:{w / 2 - 110:.0f}px;top:0;width:220px;height:{ph:.0f}px;'
+            f'background:linear-gradient(90deg,rgba(60,40,15,0),rgba(60,40,15,.32) 40%,rgba(30,20,8,.62) 50%,rgba(60,40,15,.32) 60%,rgba(60,40,15,0))"></div></div>')
+
+
+def moor_row(c, ships, cx, cy, spacing, angle, clearance=26, step=2, frame=""):
+    """A squadron moored side by side, sterns on one line (the jetty) and bows to the land. The row starts at sea around
+    (cx, cy) and slides along the bow direction until a footprint comes within the check margin plus a clearance of the land."""
+    a = math.radians(angle)
+    bx, by = -math.cos(a), -math.sin(a)  # bow direction of place_model
+    ux, uy = by, -bx                      # along the jetty, eastward
+    n = len(ships)
+
+    def place(d):
+        out = []
+        for i, (kind, length) in enumerate(ships):
+            off = (i - (n - 1) / 2) * spacing
+            sx, sy = cx + off * ux + d * bx, cy + off * uy + d * by
+            out.append((kind, round(sx + bx * length / 2), round(sy + by * length / 2), length, angle))
+        return out
+
+    def clear(d):
+        return all(footprint_on_land(c, m, 18 + clearance) is None for m in place(d))
+
+    if not clear(0):
+        raise SystemExit(f"{frame}: moor_row starts on land")
+    d = 0
+    while clear(d + step):
+        d += step
+        if d > 4000:
+            raise SystemExit(f"{frame}: moor_row found no coast")
+    return place(d)
+
+
+def check_route_at_sea(c, pts, frame="", port=14, clear=4, narrows=()):
+    """Stop the generator if a leg of a route passes over land or within `clear` px of it. The two ports at its ends are
+    excepted within `port` px (the way in is narrow); in a strait, given as (x, y, radius), only the line itself must be
+    at sea."""
+    bad = []
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        length = math.dist((ax, ay), (bx, by))
+        nx, ny = -(by - ay) / length, (bx - ax) / length
+        n = max(2, int(length / 1.5))
+        for i in range(n + 1):
+            x, y = ax + (bx - ax) * i / n, ay + (by - ay) * i / n
+            if math.dist((x, y), pts[0]) < port or math.dist((x, y), pts[-1]) < port:
+                continue
+            margin = 0 if any(math.dist((x, y), (sx, sy)) < r for sx, sy, r in narrows) else clear
+            if any(on_land(c, x + s * nx, y + s * ny) for s in (-margin, 0, margin)):
+                bad.append((round(x), round(y)))
+    if bad:
+        raise SystemExit(f"{frame}: route on land at {bad[:6]}")
+    print(f"{frame}: route of {len(pts)} points checked at sea")
+
+
+def frame_d1():
+    # 4.40 s, « avec la quatrième » : the page of the history book, the fleet engraved, « 4e » rushes in from the camera
+    svg = f'<svg class="f" width="1920" height="1080" viewBox="0 0 1920 1080">{engraving_page_svg()}</svg>'
+    shade = ('<div class="f" style="background:linear-gradient(90deg,rgba(90,63,28,.42),rgba(90,63,28,0) 20%),'
+             'radial-gradient(ellipse at 52% 46%,rgba(107,74,34,0) 55%,rgba(107,74,34,.32) 100%)"></div>')
+    curl = ('<div style="position:absolute;left:-170px;top:-140px;width:300px;height:1360px;border-radius:46%;'
+            'background:linear-gradient(90deg,#cdbf9f,#f3ead6 58%,#e1d5ba);filter:blur(16px);box-shadow:40px 0 70px rgba(70,45,15,.38)"></div>')
+    four = ""
+    for dx, op, bl in ((150, .12, 26), (78, .25, 18), (0, 1, 8)):
+        four += (f'<div style="position:absolute;left:{1250 + dx}px;top:60px;font:400 700px/1 \'Archivo Black\';color:{ACC_D};'
+                 f'text-shadow:14px 14px 0 #1b1a17;opacity:{op};filter:blur({bl}px);transform:scale(1.12);transform-origin:80% 50%">'
+                 f'4<span style="font-size:.42em;vertical-align:.9em">e</span></div>')
+    body = (f'<div class="f">{svg}{shade}{curl}{four}'
+            + sub([("avec la ", False), ("quatrième", True)], INK, ACC_D, ACC_D_INK)
+            + grain(.07, .9, "multiply", 2) + "</div>")
+    page("D1", "D1 · Le manuel et la carte · 4,40 s", body)
+
+
+# The line of 1939, leaving the roads of Toulon to the south-west: the same models come back up in D6.
+LINE_1939 = [("bb", 2700, 1030, 230, -30), ("bb", 2480, 1150, 230, -30), ("ca", 2285, 1262, 200, -30), ("ct3", 2120, 1360, 170, -30), ("ct3", 1975, 1446, 170, -30)]
+PHONE_AT = (2880, 1180, 330)  # where the phone lies on the chart from the pivot on (x, y, width)
+
+
+def toulon_labels(c):
+    tx, ty = c["places"]["toulon"]
+    mx, my = c["places"]["marseille"]
+    return [("TOULON", tx + 26, ty - 48, 48, "caps", 9, "start", "#2a2722"), ("MARSEILLE", mx - 10, my - 46, 38, "caps", 7, "middle", "#2a2722")]
+
+
+def frame_d2():
+    # 5.30 s, « … flotte du monde. » : the camera tips back off the page: the book lies open on the chart, the fleet beside it
+    c = GEO["med"]
+    ty = c["places"]["toulon"][1]
+    chart = chart_svg(c, "d2", toulon_labels(c), (2000, ty + 170, 3250, ty + 1000, 40), seed=3, n_snd=30)
+    book = open_book(780, 120, 1250, verso_page_svg(), engraving_page_svg(with_four=True), rot=-8)
+    fleet = models_html(c, LINE_1939, "D2")
+    scene = chart_scene(c, (2080, 1070), (980, 470), 46, .95, chart + book + fleet)
+    body = (f'<div class="f" style="background:#0c0906"><div class="f" style="filter:blur(1.1px)">{scene}</div>{lamp(1000, 520, 1060, 600)}'
+            + sub([("avec la ", False), ("quatrième", True), (" flotte du monde.", False)], LIGHT_TEXT, ACC_D, ACC_D_INK, SHADOW_DARK)
+            + grain(.07, .9, "overlay", 21) + "</div>")
+    page("D2", "D2 · Le manuel et la carte · 5,30 s", body)
+
+
+def frame_d3():
+    # 8.90 s, « Juillet 1940 : Mers el-Kébir. » : the squadron moored side by side, sterns to the jetty, bows to the land;
+    # the old battleship of the Bretagne type sinks into the chart
+    c = GEO["med"]
+    mx, my = c["places"]["merselkebir"]
+    ox, oy = c["places"]["oran"]
+    labels = [("MERS EL-KÉBIR", mx - 40, my + 120, 44, "caps", 8, "middle", "#2a2722"), ("ORAN", ox + 210, oy + 66, 40, "caps", 9, "start", "#2a2722")]
+    chart = chart_svg(c, "d3", labels, (300, my - 1000, 1800, my - 330, 1400), seed=5, n_snd=26)
+    row = moor_row(c, [("bb", 230), ("bb2", 180), ("bb2", 180), ("bb", 230)], mx + 40, my - 560, 92, -110, frame="D3")
+    row = [(k, x, y, l, a + j) for (k, x, y, l, a), j in zip(row, (1.5, -1, 3, -2))]
+    check_at_sea(c, row, frame="D3")
+    models = ""
+    for i, (k, x, y, l, a) in enumerate(row):
+        if i == 2:  # the Bretagne: rings on the chart, the model already half gone, the loss ringed in red pencil
+            models += (f'<svg style="position:absolute;left:{x}px;top:{y}px;overflow:visible" width="1" height="1">{ripples(0, 0, 4, 70, 34)}'
+                       f'<ellipse cx="0" cy="0" rx="{l / 2 + 34:.0f}" ry="44" transform="rotate({a})" fill="none" stroke="{DRAMA}" stroke-width="5" '
+                       f'opacity=".85" stroke-dasharray="34 10"/></svg>')
+            models += place_model(k, x, y, l, a, opacity=.45, blur=2.5, uid=f"d3{i}")
+        else:
+            models += place_model(k, x, y, l, a, uid=f"d3{i}")
+    cx = sum(m[1] for m in row) / len(row)
+    cy = sum(m[2] for m in row) / len(row)
+    note = (f'<svg style="position:absolute;left:{cx + 200:.0f}px;top:{cy - 170:.0f}px;overflow:visible" width="1" height="1">'
+            f'<text x="0" y="0" font-family="Space Mono" font-size="44" fill="#3a3530" opacity=".85">3·7·40</text></svg>')
+    scene = chart_scene(c, (cx, cy + 120), (960, 450), 46, 1.4, chart + models + note)
+    body = (f'<div class="f" style="background:#0c0906">{scene}{lamp(960, 470, 900, 520, .88)}'
+            + sub([("Juillet 1940 : ", False), ("Mers el-Kébir", True), (".", False)], LIGHT_TEXT, ACC_D, ACC_D_INK, SHADOW_DARK)
+            + grain(.07, .9, "overlay", 22) + "</div>")
+    page("D3", "D3 · Le manuel et la carte · 8,90 s", body)
+
+
+def frame_d4():
+    # 15.20 s, « Dans les manuels, » : the book has fallen on the empty sea of the chart, open on the three lines
+    c = GEO["med"]
+    chart = chart_svg(c, "d4", [("MER MÉDITERRANÉE", 2650, 2350, 96, "it", 30, "middle", "#4b6b7a")], (1900, 1300, 3300, 2600, 900), seed=8, n_snd=26)
+    bx, by, bw = 1980, 1330, 1300
+    bh = bw / 2 * PAGE_H / PAGE_W
+    rings = (f'<svg style="position:absolute;left:{bx + bw / 2:.0f}px;top:{by + bh / 2:.0f}px;overflow:visible" width="1" height="1">'
+             f'{ripples(0, 0, 3, 760, 150, op=.4)}</svg>')
+    book = open_book(bx, by, bw, blank_page_svg(216), lines_page_svg(), rot=4)
+    scene = chart_scene(c, (bx + bw * .64, by + bh * .4), (960, 430), 40, 1.3, chart + rings + book)
+    dust = (f'<svg class="f" width="1920" height="1080" style="mix-blend-mode:screen;filter:blur(1.4px)">'
+            f'{particles(70, 41, (300, 80, 1700, 820), 1, 3.4, "#ffe2b0", (.15, .6))}</svg>')
+    body = (f'<div class="f" style="background:#0c0906">{scene}{lamp(1000, 460, 1200, 680, .62)}{dust}'
+            + sub([("Dans les manuels,", False)], INK, shadow="0 0 16px rgba(241,232,214,.9),0 0 3px rgba(241,232,214,.8)")
+            + grain(.07, .9, "overlay", 23) + "</div>")
+    page("D4", "D4 · Le manuel et la carte · 15,20 s", body)
+
+
+def phone(x, y, w, src, rot=0, lit=1.0):
+    """A recent phone lying on the chart, its screen showing the real blog (the author's capture)."""
+    h = w * 2.08
+    return (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{w}px;height:{h:.0f}px;transform:rotate({rot}deg);border-radius:{w * .13:.0f}px;'
+            f'background:#0c0c0e;box-shadow:22px 34px 46px rgba(30,20,8,.45),inset 0 0 0 3px #3a3a40">'
+            f'<div style="position:absolute;left:{w * .035:.0f}px;top:{w * .035:.0f}px;right:{w * .035:.0f}px;bottom:{w * .035:.0f}px;border-radius:{w * .1:.0f}px;'
+            f'overflow:hidden;background:{BLOG_BG};filter:brightness({lit})">'
+            f'<div style="height:{w * .1:.0f}px;background:#1d1d20;color:#cfcfd4;font:500 {w * .04:.0f}px/{w * .1:.0f}px \'Instrument Sans\';text-align:center">marine1939.blogspot.com</div>'
+            f'<img src="{src}" style="width:100%;display:block"></div></div>')
+
+
+def photo_card(src, w, h, caption, rot=0):
+    return (f'<div style="width:{w}px;transform:rotate({rot}deg);background:#f4efe3;padding:14px 14px 0;box-shadow:12px 18px 26px rgba(40,25,10,.35)">'
+            f'<div style="width:{w - 28}px;height:{h}px;background:url({src}) center/cover;filter:grayscale(1) contrast(1.05)"></div>'
+            f'<div style="font:400 22px/1.25 \'EB Garamond\';font-style:italic;color:#3b352c;padding:10px 2px 14px">{html.escape(caption)}</div></div>')
+
+
+def blog_card(title, date, thumb, w=560, th=300):
+    """A post of the blog printed in its own look, to pin on the chart: picture, date, title, the yellow of the title bar."""
+    return (f'<div style="width:{w}px;background:#141414;border-radius:4px;box-shadow:16px 24px 34px rgba(40,25,10,.42);overflow:hidden">'
+            f'<div style="width:{w}px;height:{th}px;overflow:hidden">{thumb}</div>'
+            f'<div style="padding:20px 26px 26px"><div style="font:500 22px/1 \'Instrument Sans\';color:#9a9a9a">{html.escape(date)}</div>'
+            f'<div style="font:600 40px/1.1 \'Instrument Sans\';color:#ececec;margin-top:12px">{html.escape(title)}</div>'
+            f'<div style="height:6px;width:96px;background:{ACC_D};margin-top:18px"></div></div></div>')
+
+
+def photo_thumb(src, soften=0):
+    return (f'<div style="width:100%;height:100%;background:url({src}) center/cover;'
+            f'filter:grayscale(1) contrast(1.06){f" blur({soften}px)" if soften else ""};transform:scale(1.04)"></div>')
+
+
+def drawn_thumb(kind, w=560, h=300, seed=4):
+    """Stand-in for a photograph of the author's article (to replace with the real picture): a grey print of the ship type."""
+    return (f'<svg width="{w}" height="{h}" style="filter:blur(.6px)"><defs><linearGradient id="dt{seed}" x1="0" y1="0" x2="0" y2="1">'
+            f'<stop offset="0" stop-color="#d8d8d4"/><stop offset=".62" stop-color="#9c9c98"/><stop offset="1" stop-color="#4a4a48"/></linearGradient>'
+            f'<filter id="dg{seed}"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="{seed}"/><feColorMatrix type="saturate" values="0"/></filter></defs>'
+            f'<rect width="{w}" height="{h}" fill="url(#dt{seed})"/><rect y="{h * .66:.0f}" width="{w}" height="{h * .34:.0f}" fill="#3e3e3c" opacity=".7"/>'
+            + ship(kind, w * .1, h * .67, w * .8, fill="#232322") +
+            f'<rect width="{w}" height="{h}" filter="url(#dg{seed})" opacity=".18" style="mix-blend-mode:multiply"/></svg>')
+
+
+def pin(x, y, d=30):
+    return (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{d}px;height:{d}px;border-radius:50%;'
+            'background:radial-gradient(circle at 35% 35%,#f7dc9c,#9a7432 60%,#4a3410);box-shadow:4px 6px 8px rgba(30,15,5,.45)"></div>')
+
+
+DAY = ('<div class="f" style="background:radial-gradient(ellipse 1300px 800px at 900px 420px,rgba(255,248,232,.2),rgba(255,248,232,0) 70%);mix-blend-mode:screen"></div>'
+       '<div class="f" style="background:radial-gradient(ellipse 1400px 900px at 960px 460px,rgba(0,0,0,0) 55%,rgba(70,50,25,.32) 100%)"></div>')
+DAY_TEXT_SHADOW = "0 0 18px rgba(255,250,238,.95),0 0 4px rgba(255,250,238,.9)"
+
+
+def frame_d5():
+    # 29.40 s, « MARINE 1939 fait revivre » : out of the black of the pivot, the phone lights up on the chart: the real blog
+    c = GEO["med"]
+    ty = c["places"]["toulon"][1]
+    chart = chart_svg(c, "d5", toulon_labels(c), (2000, ty + 170, 3250, ty + 1000, 40), seed=3, n_snd=30)
+    px, py, pw = PHONE_AT
+    ph_h = pw * 2.08
+    spill = (f'<div style="position:absolute;left:{px - 520:.0f}px;top:{py - 420:.0f}px;width:{pw + 1040:.0f}px;height:{ph_h + 840:.0f}px;'
+             f'background:radial-gradient(ellipse at 50% 50%,rgba(236,240,200,.55),rgba(236,240,200,.16) 38%,rgba(236,240,200,0) 62%);mix-blend-mode:screen"></div>')
+    ph = f'<div style="position:absolute;left:{px}px;top:{py}px">{phone(0, 0, pw, IMG + "blog-accueil-mobile.png", -10)}</div>'
+    scene = chart_scene(c, (px + pw / 2, py + ph_h * .5), (960, 440), 30, 1.22, chart + spill + ph)
+    dawn = ('<div class="f" style="background:radial-gradient(ellipse 860px 700px at 960px 430px,rgba(10,7,3,0) 32%,rgba(10,7,3,.78) 100%)"></div>'
+            '<div class="f" style="background:linear-gradient(180deg,rgba(10,7,3,0) 70%,rgba(10,7,3,.55))"></div>')
+    body = (f'<div class="f" style="background:#0c0906">{scene}{dawn}'
+            + sub([("MARINE 1939 fait ", False), ("revivre", True)], LIGHT_TEXT, ACC_D, ACC_D_INK, SHADOW_DARK)
+            + grain(.07, .9, "overlay", 27) + "</div>")
+    page("D5", "D5 · Le manuel et la carte · 29,40 s", body)
+
+
+def frame_d6():
+    # 32.30 s, « Ses navires, un par un. » : daylight on the chart; the models of D2 come back up one at a time, here the
+    # contre-torpilleur, and its photograph from the author's collection is pinned beside it
+    c = GEO["med"]
+    ty = c["places"]["toulon"][1]
+    chart = chart_svg(c, "d6", toulon_labels(c), (2000, ty + 170, 3250, ty + 1000, 40), seed=3, n_snd=30)
+    fleet = models_html(c, LINE_1939[:3], "D6")
+    check_at_sea(c, LINE_1939[3:], frame="D6 coming up")
+    k, x, y, l, a = LINE_1939[3]
+    rising = (f'<svg style="position:absolute;left:{x}px;top:{y}px;overflow:visible" width="1" height="1">{ripples(0, 0, 4, 100, 40, "#2f6c80", .65)}</svg>'
+              + place_model(k, x, y, l, a, opacity=.85, blur=1.2, uid="d6r"))
+    k, x, y, l, a = LINE_1939[4]
+    under = (f'<svg style="position:absolute;left:{x}px;top:{y}px;overflow:visible" width="1" height="1">{ripples(0, 0, 1, 96, 0, "#2f6c80", .35)}</svg>'
+             + place_model(k, x, y, l, a, opacity=.16, blur=5, uid="d6u", shadow=False))
+    cx, cy = 2235, 1395
+    card = (f'<div style="position:absolute;left:{cx}px;top:{cy}px;transform:scale(1.2);transform-origin:0 0">'
+            f'{photo_card(IMG + "epervier-collection-langry.jpg", 380, 250, "L’Épervier. Collection Wilfried Langry.", -3)}</div>')
+    px, py, pw = PHONE_AT
+    ph = f'<div style="position:absolute;left:{px}px;top:{py}px">{phone(0, 0, pw, IMG + "blog-accueil-mobile.png", -10, lit=.9)}</div>'
+    scene = chart_scene(c, (2270, 1400), (960, 430), 42, 1.18, chart + fleet + rising + under + card + pin(cx + 215, cy - 12) + ph)
+    body = (f'<div class="f" style="background:#8a7353">{scene}{DAY}'
+            + sub([("Ses navires, ", False), ("un par un", True), (".", False)], "#1d1b18", ACC_D, ACC_D_INK, DAY_TEXT_SHADOW)
+            + grain(.05, .9, "multiply", 24) + "</div>")
+    page("D6", "D6 · Le manuel et la carte · 32,30 s", body)
+
+
+def frame_d7():
+    # 39.30 s, « De New York à Toulon, » : daylight on the chart of the Atlantic, the route of the 4e DC from New York to Toulon
+    c = GEO["atlantic"]
+    P = c["places"]
+    way = ["newyork", "narrows", "sandyhook", "r1", "r2", "r3d", "r4", "strait", "r5", "bals", "bale", "toulonapp", "toulon"]
+    pts = [P[k] for k in way]
+    check_route_at_sea(c, pts, "D7", narrows=[(*P["strait"], 24)])
+    cut = way.index("r2")
+    tx, ty = pts[cut]
+    done = " ".join(f"{x},{y}" for x, y in pts[:cut + 1])
+    todo = " ".join(f"{x},{y}" for x, y in pts[cut:])
+    labels = [("NEW YORK", P["newyork"][0] + 40, P["newyork"][1] + 64, 40, "caps", 7, "start", "#2a2722"),
+              ("TOULON", P["toulon"][0] + 24, P["toulon"][1] - 18, 40, "caps", 7, "start", "#2a2722"),
+              ("GIBRALTAR", P["gibraltar"][0] - 20, P["gibraltar"][1] + 64, 30, "caps", 6, "end", "#2a2722"),
+              ("OCÉAN ATLANTIQUE", 1500, 1420, 110, "it", 40, "middle", "#4b6b7a")]
+    chart = chart_svg(c, "d7", labels, None, rose=(760, 1560, 130), route=(done, todo))
+    heading = math.degrees(math.atan2(pts[cut + 1][1] - ty, pts[cut + 1][0] - tx)) + 180
+    model = models_html(c, [("cl", tx, ty, 250, heading)], "D7")
+    trail = "".join(f'<div style="position:absolute;left:0;top:0;opacity:{op};filter:blur({bl}px);transform:translateX({-dx}px)">'
+                    f'{place_model("cl", tx, ty, 250, heading, shadow=False)}</div>' for dx, op, bl in ((120, .18, 10), (60, .35, 5)))
+    ny = (P["newyork"][0] + 70, P["newyork"][1] - 640)
+    tl = (P["toulon"][0] - 620, P["toulon"][1] - 700)
+    cards = (f'<div style="position:absolute;left:{ny[0]}px;top:{ny[1]}px;transform:rotate(-4deg);transform-origin:50% 0">'
+             f'{blog_card("La 4ème DC à New York", "août 2013", drawn_thumb("cl"))}</div>'
+             f'<div style="position:absolute;left:{tl[0]}px;top:{tl[1]}px;transform:rotate(3deg);transform-origin:50% 0">'
+             f'{blog_card("Les épaves de Toulon", "jeudi 5 mai 2016", photo_thumb(IMG + "vignette-epaves-toulon.png", 2))}</div>')
+    pins = "".join(pin(x + 263, y - 14, 34) for x, y in (ny, tl))
+    scene = chart_scene(c, (1720, 900), (960, 470), 22, .56, chart + cards + pins + trail + model, persp=2600, origin="960px 300px")
+    body = (f'<div class="f" style="background:#8a7353">{scene}{DAY}'
+            + sub([("De New York à Toulon,", False)], "#1d1b18", shadow=DAY_TEXT_SHADOW)
+            + grain(.05, .9, "multiply", 25) + "</div>")
+    page("D7", "D7 · Le manuel et la carte · 39,30 s", body)
+
+
+def frame_d8():
+    # 46.60 s, after « Montez à bord. » : the end card in the blog's own look; the cursor has just clicked the button
+    stripes = "repeating-linear-gradient(135deg,#070707 0 6px,#161616 6px 8px)"
+    header = (f'<div style="position:absolute;left:420px;top:150px;width:1080px;height:395px;box-shadow:0 30px 60px rgba(0,0,0,.6);'
+              f'background:url({IMG}blog-bandeau.png) center/cover"></div>')
+    tagline = ('<div style="position:absolute;left:420px;top:575px;width:1080px;font:500 30px/1.35 \'Instrument Sans\';color:#d8d8d8;text-align:center">'
+               'Les navires, les matériels et les hommes de la flotte française de 1939.</div>')
+    rings = "".join(f'<div style="position:absolute;left:{760 - g}px;top:{690 - g}px;width:{400 + 2 * g}px;height:{104 + 2 * g}px;border-radius:{10 + g}px;'
+                    f'border:{w}px solid rgba(230,236,55,{op})"></div>' for g, w, op in ((14, 3, .75), (34, 2, .35), (58, 1.5, .14)))
+    button = (f'<div style="position:absolute;left:760px;top:690px;width:400px;height:104px;border-radius:8px;background:#cdd32c;'
+              f'box-shadow:inset 0 4px 10px rgba(0,0,0,.28);transform:scale(.97);'
+              f'display:flex;align-items:center;justify-content:center;font:400 42px/1 \'Archivo Black\';color:{ACC_D_INK}">Montez à bord</div>')
+    url = ('<div style="position:absolute;left:0;top:886px;width:1920px;text-align:center;font:500 34px/1 \'Instrument Sans\';color:#9a9a9a;letter-spacing:.02em">'
+           'marine1939.blogspot.com</div>')
+    cursor = ('<svg style="position:absolute;left:1030px;top:742px" width="60" height="80" viewBox="0 0 24 32">'
+              '<path d="M2 2 L2 26 L8.5 20 L13 30 L17 28.2 L12.6 18.6 L21 18.6 Z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>')
+    body = (f'<div class="f" style="background:{stripes}">{header}{tagline}{rings}{button}{url}{cursor}'
+            '<div class="f" style="background:radial-gradient(ellipse 1300px 820px at 960px 480px,rgba(0,0,0,0) 55%,rgba(0,0,0,.6) 100%)"></div>'
+            + grain(.05, .9, "overlay", 26) + "</div>")
+    page("D8", "D8 · Le manuel et la carte · 46,60 s", body)
+
+
+FRAMES = {f.__name__[6:].upper(): f for f in (frame_a1, frame_a2, frame_a3, frame_b1, frame_b2, frame_b3, frame_c1, frame_c2, frame_c3,
+                                               frame_d1, frame_d2, frame_d3, frame_d4, frame_d5, frame_d6, frame_d7, frame_d8)}
+chosen = sys.argv[3:] or list(FRAMES)
+for name in chosen:
+    FRAMES[name]()
+print(len(chosen), "styleframes written to", OUT)

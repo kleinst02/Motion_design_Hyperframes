@@ -1,41 +1,43 @@
-# MARINE 1939 : script validé (45 s)
+# MARINE 1939 : script validé (50,1 s)
 
 - **Validé** le 28 octobre 2026 : version A, « Trois lignes dans les manuels ».
 - **Objectif** : donner envie aux passionnés d'histoire maritime de visiter le blog MARINE 1939.
 - **Adresse de la carte de fin** : marine1939.blogspot.com.
-- **Le nom à l'oral** : « Marine trente-neuf ». À l'écran, il s'écrit MARINE 1939.
+- **Le nom à l'oral** : « Marine mille neuf cent trente-neuf », comme dans la prise retenue. À l'écran, il s'écrit
+  MARINE 1939.
 - **Ton** : dramatique, grave, documentaire. Vouvoiement, comme le blog (« Vous y découvrirez les navires qui l'ont
   composée, ses matériels et les hommes qui l'ont créé et fait vivre. »).
-- **Durée** : environ 45 s. 95 mots dits sur un débit posé, plus un silence de 2,5 s, le pivot sur noir (1,5 s de
-  silence) et la carte de fin. Les temps ci-dessous sont des estimations : les vrais viendront de la voix.
+- **Durée** : 50,1 s, le montage naturel validé le 28 octobre 2026. La prise dure 43,15 s ; le montage ajoute 2,5 s de
+  silence après « Toulon », 1,5 s après « leur histoire », une respiration avant la carte de fin et 4,2 s de fin. Les
+  temps ci-dessous sont ceux du montage (`onsets.json`).
 
-Les silences ne sont pas lus par la voix : ils se font au montage. À l'écran, chaque phrase de la voix arrive mot par
+Les silences ne sont pas lus par la voix : ils sont faits au montage. À l'écran, chaque phrase de la voix arrive mot par
 mot en sous-titre, en bas au centre. Le mot en **gras** est le mot clé de la phrase (petite boîte de couleur ou trait
 fin dessous). La mise en scène notée ici est une première intention : le storyboard (étape 3) la précisera.
 
 ## Version mise en scène (texte de l'écran)
 
-| Temps (≈ s) | Partie | Voix | À l'écran |
+| Temps (s) | Partie | Voix | À l'écran |
 | --- | --- | --- | --- |
 | 0,0 | 1. Accroche datée | « **Septembre 1939.** » | Gros plan sur une page de manuel d'histoire : la date se tape à la machine. |
-| 1,8 | | « La France entre en guerre avec **la quatrième flotte du monde**. » | La caméra recule : la flotte de 1939 en ligne de file, en silhouettes. « 4e » arrive trop grand et flou, puis se pose. |
-| 5,6 | | « Juillet 1940 : **Mers el-Kébir**. » | La ligne de file glisse ; un éclair de salve à l'horizon. |
-| 8,0 | | « Novembre 1942 : **Toulon**. » | La rade de Toulon, de nuit : les silhouettes s'enfoncent une à une, la fumée monte. |
-| 10,2 | 2. Silence (2,5 s) | | Une main tourne la page du manuel : le chapitre suivant commence. On n'entend que la page, puis la mer. |
-| 12,7 | 3. Diagnostic | « Dans les manuels, toute son histoire tient en **trois lignes**. » | Retour sur la page : trois lignes, rien de plus. |
-| 16,0 | | « Le reste **a sombré**. » | La page devient la surface de l'eau ; la caméra plonge. |
-| 17,3 | | « Ses **navires**. Ses **matériels**. Ses **hommes**. » | Sous l'eau, trois objets coulent l'un après l'autre : la silhouette d'un navire, un cadran de conduite de tir, une photo d'équipage. |
-| 20,0 | 4. Pivot sur noir (puis 1,5 s de silence) | « Il est temps de **renflouer** leur histoire. » | Noir. La phrase seule, centrée. |
-| 23,5 | 5. Solution | « MARINE 1939 **fait revivre** cette flotte. » | La lumière revient : le vrai blog, son titre. |
-| 25,9 | | « Ses navires, **un par un**. » | Les fiches navires du blog remontent à la surface (sous-marin Amphitrite, aviso La Surprise, chasseur CH4…). |
-| 27,6 | | « Ses matériels, **pièce par pièce**. » | Le cadran remonte, net : l'article « Les cadrans optiques ». |
-| 29,5 | | « Ses hommes, **de l'amiral au matelot**. » | La photo d'équipage remonte : les visages redeviennent nets. |
-| 31,7 | | « De New York à Toulon, ses heures de gloire… **et ses drames**. » | Deux articles côte à côte : « La 4ème DC à New York » et « Les épaves de Toulon ». Toulon, l'accroche, revient. |
-| 35,8 | 6. Marque et appel | « **MARINE 1939.** » | Carte de fin : le titre du blog sur une mer de nuit. |
-| 37,2 | | « **Montez à bord.** » | Le bouton « Montez à bord » et l'adresse marine1939.blogspot.com. Le curseur arrive et clique, la mer vit encore 2 à 3 s, puis l'iris. |
-| 45,0 | Fin | | |
+| 2,3 | | « La France entre en guerre avec **la quatrième flotte du monde**. » | La caméra recule : la flotte de 1939 en ligne de file, en silhouettes. « 4e » arrive trop grand et flou, puis se pose. |
+| 6,2 | | « Juillet 1940 : **Mers el-Kébir**. » | La ligne de file glisse ; un éclair de salve à l'horizon. |
+| 9,6 | | « Novembre 1942 : **Toulon**. » | La rade de Toulon, de nuit : les silhouettes s'enfoncent une à une, la fumée monte. |
+| 12,1 | 2. Silence (2,5 s) | | Une main tourne la page du manuel : le chapitre suivant commence. On n'entend que la page, puis la mer. |
+| 14,6 | 3. Diagnostic | « Dans les manuels, toute son histoire tient en **trois lignes**. » | Retour sur la page : trois lignes, rien de plus. |
+| 18,1 | | « Le reste **a sombré**. » | La page devient la surface de l'eau ; la caméra plonge. |
+| 20,0 | | « Ses **navires**. Ses **matériels**. Ses **hommes**. » | Sous l'eau, trois objets coulent l'un après l'autre : la silhouette d'un navire, un cadran de conduite de tir, une photo d'équipage. |
+| 23,7 | 4. Pivot sur noir (1,5 s de silence après) | « Il est temps de **renflouer** leur histoire. » | Noir. La phrase seule, centrée. |
+| 27,2 | 5. Solution | « MARINE 1939 **fait revivre** cette flotte. » | La lumière revient : le vrai blog, son titre. |
+| 30,7 | | « Ses navires, **un par un**. » | Les fiches navires du blog remontent à la surface (sous-marin Amphitrite, aviso La Surprise, chasseur CH4…). |
+| 32,7 | | « Ses matériels, **pièce par pièce**. » | Le cadran remonte, net : l'article « Les cadrans optiques ». |
+| 35,3 | | « Ses hommes, **de l'amiral au matelot**. » | La photo d'équipage remonte : les visages redeviennent nets. |
+| 38,1 | | « De New York à Toulon, ses heures de gloire… **et ses drames**. » | Deux articles côte à côte : « La 4ème DC à New York » et « Les épaves de Toulon ». Toulon, l'accroche, revient. |
+| 42,8 | 6. Marque et appel | « **MARINE 1939.** » | Carte de fin : le titre du blog sur une mer de nuit. |
+| 45,0 | | « **Montez à bord.** » | Le bouton « Montez à bord » et l'adresse marine1939.blogspot.com. Le curseur arrive et clique, la mer vit encore 2 à 3 s, puis l'iris. |
+| 50,1 | Fin | | |
 
-## Version à coller dans ElevenLabs
+## Texte lu par la voix
 
 ```
 Septembre mille neuf cent trente-neuf.
@@ -48,35 +50,29 @@ Ses navires.
 Ses matériels.
 Ses hommes.
 [lower, slower] Il est temps de renflouer leur histoire.
-Marine trente-neuf fait revivre cette flotte.
+Marine mille neuf cent trente-neuf fait revivre cette flotte.
 Ses navires, un par un.
 Ses matériels, pièce par pièce.
 Ses hommes, de l'amiral au matelot.
 De New York à Toulon, ses heures de gloire... et ses drames.
-Marine trente-neuf.
+Marine mille neuf cent trente-neuf.
 Montez à bord.
 ```
 
-95 mots.
+101 mots.
 
-## La voix (étape 2)
+## La voix et le montage
 
-1. Sur [elevenlabs.io](https://elevenlabs.io) : Text to Speech, modèle **Eleven v4**.
-2. Une voix grave et posée, de documentaire ou de bande-annonce. Le film d'exemple du dépôt utilise « Paul K, French
-   Ad & Trailer Voice ».
-3. Langue réglée à la main sur le **français** : en automatique, l'accent peut dériver, souvent vers le québécois.
-   Stabilité **45 à 50 %** (un débit régulier pour le ton dramatique), Similarité **80 à 90 %**.
-4. Coller tout le texte en une fois : l'intonation se tient d'une phrase à l'autre.
-5. Faire **2 ou 3 prises** et garder la meilleure. Écouter surtout « Mers el-Kébir », « renflouer » et « Marine
-   trente-neuf ». Si un seul mot est faux dans la meilleure prise, on refait cette phrase seule et on la recolle au
-   montage.
-6. Télécharger la prise en MP3 : elle deviendra `marine-1939/assets/audio/voix.mp3`.
-
-Un forfait payant ElevenLabs est nécessaire pour un usage commercial de la voix.
-
-Après la voix, le montage ajoute le silence de 2,5 s après « Toulon », 1,5 s après « leur histoire », une respiration
-avant la carte de fin et environ 4 s de fin. Il ne coupe que dans les silences. Ensuite, Whisper relève le moment de
-chaque mot : chaque animation tombera sur un mot.
+- **Prise retenue** : ElevenLabs, modèle Eleven v4, voix « Paul K, Deep French Narrator », vitesse 1,07, stabilité
+  50 %, similarité 80 % (d'après le nom du fichier). 43,15 s, dans `assets/audio/voix.mp3`.
+- **Montage** : `build-audio.sh` (`CUTS`, `TAIL`, `TOTAL`), écrit `assets/audio/voix-montage.wav` (50,1 s). Il ne coupe
+  que dans les silences.
+- **Minutage** : Whisper (modèle medium) dans `assets/audio/voix-montage-mots.json`, débuts de phrase recalés sur le son
+  dans `onsets.json`. Corrigé à la main d'après le script, là où Whisper confond des mots qui se prononcent pareil :
+  « Mers el-Kébir », « Toulon », « l'amiral », « Montez ». Les débuts de « La » (2,32 s) et de « Montez » (45,00 s) ont
+  aussi été recalés.
+- **Si une phrase doit être refaite** : la regénérer avec sa voisine, même voix et mêmes réglages, la recoller dans les
+  silences au montage, puis refaire le minutage : tous les temps qui suivent bougent.
 
 ## Musique et sons (étape 5)
 
@@ -119,7 +115,7 @@ page qui tourne et une sirène de navire n'y sont pas : il faudra les trouver en
 | 5 | Les actualités d'octobre 1939 | Le film imite les actualités de la semaine du 16 octobre 1939 (ton premier article), puis la pellicule casse : la suite, les actualités ne l'ont jamais montrée. | « Actualités. Semaine du 16 octobre 1939. » | « MARINE 1939. La suite des actualités. » |
 | 6 | Derrière la photo | Une photo de ta collection : un équipage en rang sur le pont. Qui sont-ils, sur quel navire, que sont-ils devenus ? | « Cette photo a plus de quatre-vingts ans. » | « MARINE 1939. L'histoire derrière chaque photo. » |
 
-### Version B, « La catastrophe du Pluton » (texte de la voix, avant le choix du nom à l'oral)
+### Version B, « La catastrophe du Pluton » (texte de la voix)
 
 ```
 Casablanca, treize septembre mille neuf cent trente-neuf.

@@ -25,18 +25,17 @@
    "end": 1.88,
    "silence_after": 0.44,
    "cut_point": 2.1,
-   "text": "la",
-   "words": [
-    2
-   ]
+   "text": "",
+   "words": []
   },
   {
    "start": 2.32,
    "end": 5.48,
    "silence_after": 0.67,
    "cut_point": 5.82,
-   "text": "france entre en guerre avec la quatrième flotte du monde",
+   "text": "la france entre en guerre avec la quatrième flotte du monde",
    "words": [
+    2,
     3,
     4,
     5,
@@ -65,7 +64,7 @@
    "end": 9.06,
    "silence_after": 0.53,
    "cut_point": 9.32,
-   "text": "mercel kébir",
+   "text": "Mers el-Kébir",
    "words": [
     15,
     16
@@ -87,10 +86,9 @@
    "end": 12.1,
    "silence_after": 2.5,
    "cut_point": 13.35,
-   "text": "tout long",
+   "text": "Toulon",
    "words": [
-    19,
-    20
+    19
    ]
   },
   {
@@ -100,9 +98,9 @@
    "cut_point": 15.54,
    "text": "dans les manuels",
    "words": [
+    20,
     21,
-    22,
-    23
+    22
    ]
   },
   {
@@ -112,13 +110,13 @@
    "cut_point": 17.84,
    "text": "toute son histoire tient en trois lignes",
    "words": [
+    23,
     24,
     25,
     26,
     27,
     28,
-    29,
-    30
+    29
    ]
   },
   {
@@ -128,8 +126,8 @@
    "cut_point": 18.77,
    "text": "le reste",
    "words": [
-    31,
-    32
+    30,
+    31
    ]
   },
   {
@@ -139,8 +137,8 @@
    "cut_point": 19.73,
    "text": "a sombré",
    "words": [
-    33,
-    34
+    32,
+    33
    ]
   },
   {
@@ -150,8 +148,8 @@
    "cut_point": 20.94,
    "text": "ses navires",
    "words": [
-    35,
-    36
+    34,
+    35
    ]
   },
   {
@@ -161,8 +159,8 @@
    "cut_point": 22.26,
    "text": "ses matériels",
    "words": [
-    37,
-    38
+    36,
+    37
    ]
   },
   {
@@ -172,8 +170,8 @@
    "cut_point": 23.37,
    "text": "ses hommes",
    "words": [
-    39,
-    40
+    38,
+    39
    ]
   },
   {
@@ -183,13 +181,13 @@
    "cut_point": 26.4,
    "text": "il est temps de renflouer leur histoire",
    "words": [
+    40,
     41,
     42,
     43,
     44,
     45,
-    46,
-    47
+    46
    ]
   },
   {
@@ -199,12 +197,12 @@
    "cut_point": 30.41,
    "text": "marine 1939 fait revivre cette flotte",
    "words": [
+    47,
     48,
     49,
     50,
     51,
-    52,
-    53
+    52
    ]
   },
   {
@@ -214,8 +212,8 @@
    "cut_point": 31.59,
    "text": "ses navires",
    "words": [
-    54,
-    55
+    53,
+    54
    ]
   },
   {
@@ -225,9 +223,9 @@
    "cut_point": 32.5,
    "text": "un par un",
    "words": [
+    55,
     56,
-    57,
-    58
+    57
    ]
   },
   {
@@ -237,8 +235,8 @@
    "cut_point": 33.73,
    "text": "ses matériels",
    "words": [
-    59,
-    60
+    58,
+    59
    ]
   },
   {
@@ -248,9 +246,9 @@
    "cut_point": 35.07,
    "text": "pièce par pièce",
    "words": [
+    60,
     61,
-    62,
-    63
+    62
    ]
   },
   {
@@ -260,8 +258,8 @@
    "cut_point": 36.08,
    "text": "ses hommes",
    "words": [
-    64,
-    65
+    63,
+    64
    ]
   },
   {
@@ -271,10 +269,10 @@
    "cut_point": 37.9,
    "text": "de l'amiral au matelot",
    "words": [
+    65,
     66,
     67,
-    68,
-    69
+    68
    ]
   },
   {
@@ -282,14 +280,13 @@
    "end": 39.24,
    "silence_after": 0.27,
    "cut_point": 39.38,
-   "text": "de new york à tout long",
+   "text": "de new york à Toulon",
    "words": [
+    69,
     70,
     71,
     72,
-    73,
-    74,
-    75
+    73
    ]
   },
   {
@@ -299,10 +296,10 @@
    "cut_point": 40.92,
    "text": "ses heures de gloire",
    "words": [
+    74,
+    75,
     76,
-    77,
-    78,
-    79
+    77
    ]
   },
   {
@@ -312,9 +309,9 @@
    "cut_point": 42.36,
    "text": "et ses drames",
    "words": [
-    80,
-    81,
-    82
+    78,
+    79,
+    80
    ]
   },
   {
@@ -322,11 +319,10 @@
    "end": 44.58,
    "silence_after": 0.42,
    "cut_point": 44.79,
-   "text": "marine 1939 monter",
+   "text": "marine 1939",
    "words": [
-    83,
-    84,
-    85
+    81,
+    82
    ]
   },
   {
@@ -334,10 +330,11 @@
    "end": 45.87,
    "silence_after": 4.23,
    "cut_point": null,
-   "text": "à bord",
+   "text": "Montez à bord",
    "words": [
-    86,
-    87
+    83,
+    84,
+    85
    ]
   }
  ],
@@ -351,20 +348,20 @@
   {
    "w": "1939",
    "s": 0.78,
-   "e": 1.82,
+   "e": 1.96,
    "whisper_s": 0.78
   },
   {
    "w": "la",
-   "s": 1.82,
-   "e": 2.32,
-   "whisper_s": 1.96
+   "s": 2.32,
+   "e": 2.48,
+   "whisper_s": 2.3
   },
   {
    "w": "france",
-   "s": 2.32,
+   "s": 2.5,
    "e": 2.88,
-   "whisper_s": 2.58
+   "whisper_s": 2.5
   },
   {
    "w": "entre",
@@ -433,13 +430,13 @@
    "whisper_s": 6.72
   },
   {
-   "w": "mercel",
+   "w": "Mers",
    "s": 8.07,
    "e": 8.62,
    "whisper_s": 7.94
   },
   {
-   "w": "kébir",
+   "w": "el-Kébir",
    "s": 8.62,
    "e": 9.5,
    "whisper_s": 8.62
@@ -457,16 +454,10 @@
    "whisper_s": 10.28
   },
   {
-   "w": "tout",
+   "w": "Toulon",
    "s": 11.76,
-   "e": 12.0,
+   "e": 12.1,
    "whisper_s": 11.6
-  },
-  {
-   "w": "long",
-   "s": 12.0,
-   "e": 13.92,
-   "whisper_s": 12.0
   },
   {
    "w": "dans",
@@ -787,16 +778,10 @@
    "whisper_s": 38.78
   },
   {
-   "w": "tout",
+   "w": "Toulon",
    "s": 38.92,
-   "e": 39.06,
-   "whisper_s": 38.92
-  },
-  {
-   "w": "long",
-   "s": 39.06,
    "e": 39.46,
-   "whisper_s": 39.06
+   "whisper_s": 38.92
   },
   {
    "w": "ses",
@@ -853,10 +838,10 @@
    "whisper_s": 43.36
   },
   {
-   "w": "monter",
-   "s": 44.54,
+   "w": "Montez",
+   "s": 45.0,
    "e": 45.4,
-   "whisper_s": 44.54
+   "whisper_s": 45.0
   },
   {
    "w": "à",

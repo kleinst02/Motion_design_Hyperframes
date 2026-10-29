@@ -21,3 +21,5 @@ _references/
 !examples/*.mp4
 !examples/*/*.mp4
 !examples/*/*/*.mp4
+# index.html of a project is rebuilt from scratch by its assemble.sh: never edited by hand, never committed.
+/*/index.html

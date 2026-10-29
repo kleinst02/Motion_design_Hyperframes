@@ -230,8 +230,11 @@ remonte reste à sa place.
   début de chaque séquence : T = `MX.FRAMES[n][1]` + temps local.
 - Modes des segments : lerp (`MX.lerpCam`, l'échelle en logarithme), in / follow / out (la caméra prend, suit puis lâche le
   Strasbourg, net dans sa propre scène sans flou), zoom (le grand recul de 37.40 à 38.60 : l'échelle en logarithme, le
-  point de départ reste à l'image), curve (le centre suit une courbe qui garde le croiseur au milieu du cadre). Courbes :
-  celles de GSAP, et whip(us) qui accélère jusqu'à us et freine ensuite, sans saut de vitesse : la couture tombe en us.
+  point de départ reste à l'image), curve (le centre suit une courbe qui garde le croiseur au milieu du cadre). Courbes : powerN vaut u^N dans tout le projet
+  (storyboard, kit, référence) : power2 est la quadratique, power3 la cubique, power4 la quartique ; dans GSAP, les mêmes
+  courbes s'appellent power1, power2, power3 : écrire power(N-1) (« 0,2 s power2.in » devient GSAP power1.in) ; expo et sine sont
+  les mêmes ; whip(us) accélère jusqu'à us et freine ensuite, sans saut de vitesse : la couture tombe en us. Les mouvements
+  de caméra de 0,5 à 0,7 s sont en power4.inOut, la plongée finale en power4.in.
 - **Gros plan sur une page** : la caméra met un point de page au centre (`MX.bookPoint`) avec rz = -rotation du livre ;
   à l'échelle 1920 / (largeur du livre / 2), une unité de page fait un pixel.
 - **Flou** : `MX.blurAt(T)` sur `.mx-stage` seulement ; les objets portent leur propre flou (arrivée, naufrage,

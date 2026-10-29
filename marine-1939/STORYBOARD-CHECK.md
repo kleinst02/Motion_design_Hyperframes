@@ -113,8 +113,9 @@ Corrigé à la passe précédente :
 - les lueurs et les fondus ont été raccourcis.
 
 Corrigé à ce passage :
-- la bascule du début, le cran qui prend le Strasbourg et la pose sur Toulon (0,5 à 0,7 s) passent de power2.inOut à
-  power3.inOut ;
+- tous les mouvements de caméra de 0,5 à 0,7 s (la bascule, la prise du Strasbourg, la pose sur Toulon, les crans vers le
+  cadran, le tirage et le cadran remonté) et la plongée finale passent à une courbe quartique : power4 dans la
+  convention du projet, où powerN vaut u^N (power3 dans GSAP ; frame.md, « CAMÉRA ») ;
 - la lumière de la page qui s'efface : 0,6 s → 1,0 s linéaire (4.70 à 5.70) ;
 - les gerbes de Mers el-Kébir : 0,4 s → elles paraissent d'un coup, puis s'effacent en 1,0 s ;
 - les petits ronds au départ et à l'arrivée du Strasbourg : 0,8 s → 1,0 s linéaire ;

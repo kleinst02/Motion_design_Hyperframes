@@ -1,0 +1,259 @@
+<template>
+  <div id="root" data-composition-id="01-manuel" data-width="1920" data-height="1080" data-duration="5.82">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world: a shake moves the picture inside the frame and never
+         uncovers its edge (the stage clips at 1920 x 1080) */
+      #p01-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* page 215 at handoff_in: no smoke, no bow wave, the date not typed yet, the stamp not set */
+      #p01-a-pr .mx-smoke polyline, #p01-a-pr .mx-wake path { stroke-dashoffset: 1; }
+      #p01-date { opacity: .85; }
+      #p01-date .p01-tc { opacity: 0; }
+
+      /* the line of 1939 waits in the shadow, the lamp reaches it from head to tail */
+      #p01-world .p01-ln { filter: brightness(.7); }
+
+      /* lights: the warm light of the page, then the night lamp (frame.md, lights.night) */
+      #p01-pagelight { background: linear-gradient(90deg, rgba(90,63,28,.42), rgba(90,63,28,0) 20%), radial-gradient(ellipse at 52% 46%, rgba(107,74,34,0) 55%, rgba(107,74,34,.32) 100%); }
+      #p01-lights .mx-lamp, #p01-lights .mx-lamp-dark { opacity: 0; }
+
+      /* the 4e in flight and its two echoes, drawn like the page stamp it becomes (its e raised by 300/560 em, its hard
+         shadow 20/560 em), so that at contact the copy and the stamp coincide */
+      #p01-fly .mx-4e { opacity: 0; text-shadow: .0357em .0357em 0 #1b1a17; }
+      #p01-fly .mx-4e span { vertical-align: 1.306em; }
+
+      /* the voice line, word by word */
+      #p01-subs .mx-w { opacity: 0; }
+      #p01-subs .mx-w.mx-box { opacity: 1; }
+      #p01-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p01-subs .mx-box-bg { transform: scaleX(0); }
+    </style>
+
+    <!-- the table at night; inside it the perspective stage, the shake wrapper and the world (the chart, book A, the line) -->
+    <div id="p01-ground" class="clip mx-ground" data-start="0" data-duration="5.82" data-track-index="0" data-layout-allow-overflow>
+      <div id="p01-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p01-shake" data-layout-allow-overflow>
+          <div id="p01-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D lights over the stage: the page light fades while the night lamp rises (4.70 to 5.70) -->
+    <div id="p01-lights" class="clip mx-layer" data-start="0" data-duration="5.82" data-track-index="1">
+      <div id="p01-pagelight" class="mx-layer"></div>
+    </div>
+
+    <!-- the 4e that arrives from the camera -->
+    <div id="p01-fly" class="clip mx-layer" data-start="0" data-duration="5.82" data-track-index="2" data-layout-allow-overflow></div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p01-subs" class="clip mx-layer" data-start="0" data-duration="5.82" data-track-index="3" data-layout-allow-caption-zone></div>
+
+    <!-- film grain, 6 % -->
+    <div id="p01-grain" class="clip mx-grain" data-start="0" data-duration="5.82" data-track-index="4"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "01-manuel", DUR = 5.82, W = MX.W, SVGNS = "http://www.w3.org/2000/svg";
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        var stage = $("p01-stage"), shake = $("p01-shake"), world = $("p01-world");
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p01-med"));
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p01-a", W.BOOK_A, MX.pageVersoSVG("p01-av"), MX.pageEngravingSVG("p01-ae", false)));
+        // the line of 1939 at its stations (MX.W.LINE), head first
+        var line = W.LINE.map(function (m, i) {
+          var on = document.createElement("div");
+          on.id = "p01-ln" + i;
+          on.className = "mx-on p01-ln";
+          on.innerHTML = MX.modelHTML(m[0], m[3], "p01-ln" + i + "-m");
+          world.appendChild(on);
+          gsap.set(on, { x: m[1], y: m[2], rotation: m[4] });
+          return on;
+        });
+
+        // « SEPTEMBRE 1939 » : the kit's date stays hidden; one clone of it per letter shows that letter only (the
+        // others at fill-opacity 0), so each letter is struck (scale, blur) exactly where the kit sets it.
+        var page = $("p01-a-pr"), tcs = page.querySelectorAll(".mx-tc"), dateText = tcs[0].parentNode;
+        var dateG = document.createElementNS(SVGNS, "g");
+        dateG.setAttribute("id", "p01-date");
+        dateText.parentNode.insertBefore(dateG, dateText.nextSibling);
+        var letters = [], base = 232;
+        for (var i = 0; i < tcs.length; i++) {
+          base += parseFloat(tcs[i].getAttribute("dy")) || 0;          // baseline of letter i (dy is cumulative)
+          if (tcs[i].textContent === " ") { letters.push(null); continue; }
+          var cl = dateText.cloneNode(true), ts = cl.querySelectorAll("tspan");
+          cl.setAttribute("id", "p01-tc" + i);
+          cl.setAttribute("class", "p01-tc");
+          for (var k = 0; k < ts.length; k++) { ts[k].removeAttribute("class"); if (k !== i) ts[k].setAttribute("fill-opacity", "0"); }
+          dateG.appendChild(cl);
+          // glyph center in page units (Space Mono 700, 56 u, letter-spacing 17 : cells of 51.28 u from x 601.03, glyph 34.28 u wide)
+          letters.push({ el: cl, o: (618.17 + 51.28 * i).toFixed(2) + " " + (base - 20).toFixed(1) });
+        }
+        dateText.setAttribute("opacity", "0");
+
+        // the stamp on the page : a wrapper group for its crush (the kit group already carries rotate(-6 1540 640))
+        var stamp = $("p01-ae-stamp"), stampWrap = document.createElementNS(SVGNS, "g");
+        stampWrap.setAttribute("id", "p01-stampwrap");
+        stamp.parentNode.insertBefore(stampWrap, stamp);
+        stampWrap.appendChild(stamp);
+        gsap.set(stampWrap, { scale: 1, svgOrigin: "1540 640" });       // identity baselines : every seek order ends in the same state
+        gsap.set(shake, { x: 0, y: 0 });
+
+        // lights
+        var lights = $("p01-lights"), pageLight = $("p01-pagelight");
+        lights.insertAdjacentHTML("beforeend", MX.lampHTML(960, 480, 980, 580));
+        var lamp = [lights.querySelector(".mx-lamp"), lights.querySelector(".mx-lamp-dark")];
+
+        // the 4e in flight : two echoes, then the lead, all at the stamp's size on screen once landed
+        var C434 = MX.camAt(4.34), SP = MX.bookPoint(W.BOOK_A, "r", 1540, 640), TG = MX.project(C434, SP[0], SP[1]);
+        var PX = 560 * C434.s * (W.BOOK_A.w / 2 / 1920);
+        var fly = $("p01-fly");
+        fly.innerHTML = MX.stamp4eHTML("p01-4e2", PX.toFixed(1)) + MX.stamp4eHTML("p01-4e1", PX.toFixed(1)) + MX.stamp4eHTML("p01-4e0", PX.toFixed(1));
+        var FLY = [[$("p01-4e0"), 0, 1, 12], [$("p01-4e1"), .25, .3, 16], [$("p01-4e2"), .5, .14, 24]];   // [el, lag, opacity, blur]
+        // path of the « le 4e en vol » block, from (1500, -300) to the stamp ; the landing is corrected by (-9, -30.5) px,
+        // measured once, so that the landed copy covers the page stamp glyph for glyph
+        var FX0 = 1500 - .45 * PX, FY0 = -300 - .5 * PX, FX1 = TG.x - .45 * PX - 9, FY1 = TG.y + 40 - .5 * PX - 30.5;
+        FLY.forEach(function (G) { gsap.set(G[0], { x: FX0, y: FY0, rotation: -6, scale: 1.25, filter: "blur(" + G[3] + "px)" }); });
+
+        // the voice line : two chunks, theme .paper (the book is under it), then .night from 5.05
+        var subs = $("p01-subs");
+        var S1 = [["La", 2.32], ["France", 2.50], ["entre", 2.88], ["en", 3.28], ["guerre", 3.48]];
+        var S2 = [["avec", 3.74], ["la", 4.08], ["quatrième", 4.34, "box"], ["flotte", 4.80], ["du", 5.00], ["monde.", 5.24]];
+        subs.innerHTML = MX.subHTML("p01-s1", S1.map(function (w) { return [w[0], ""]; }), "paper") +
+          MX.subHTML("p01-s2", S2.map(function (w) { return [w[0], w[2] || ""]; }), "paper");
+        var s1 = $("p01-s1"), s2 = $("p01-s2");
+
+        var grain = $("p01-grain");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease, reference/carte.html) : powerN = u^N.
+        // GSAP's powerN is u^(N+1), so a storyboard « power2.in » is GSAP power1.in, a « power3.out » is GSAP power2.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the camera : ONE proxy tween over the whole frame ; the film's score MX.camAt / MX.blurAt (film time = local time).
+        // onUpdate renders it on every seek ; the modifier renders it too when events are suppressed (a seek that lands
+        // exactly on the frame's end, 5.82, where the engine's second pass is a no-op).
+        var cam = { t: 0 };
+        function render(T) {
+          MX.applyCam(world, MX.camAt(T));
+          var b = MX.blurAt(T);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                   // grain : offset from the image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+        }
+        ft(cam, { t: 0 }, { t: DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // ---- scene 1 : « SEPTEMBRE 1939 » is typed on the page (each letter on the voice)
+        var TYPED = [0.04, 0.11, 0.18, 0.25, 0.32, 0.39, 0.46, 0.53, 0.60, 0.69, 0.78, 1.06, 1.38, 1.68];
+        TYPED.forEach(function (c, i) {
+          var t0 = c - 0.025;                                           // the strike lands on the cue
+          ft(shake, { y: 0 }, { y: 1.5, duration: 0.02, ease: "power2.out" }, t0);      // the page jolts 1.5 px down
+          ft(shake, { y: 1.5 }, { y: 0, duration: 0.04, ease: "power2.inOut" }, t0 + 0.02);
+          var L = letters[i];
+          if (!L) return;                                               // the space : the jolt alone
+          ft(L.el, { opacity: 0, scale: 1.6, svgOrigin: L.o, filter: "blur(4px)" },
+            { opacity: 1, scale: 1, svgOrigin: L.o, filter: "blur(0px)", duration: 0.05, ease: "power2.out" }, t0);
+          tl.set(L.el, { filter: "none" }, t0 + 0.05);
+        });
+        // 1.22 the carriage moves one notch to the left ; 1.96 the light carriage return brings it back
+        ft(shake, { x: 0 }, { x: -4, duration: 0.05, ease: "power2.out" }, 1.22);
+        ft(shake, { x: -4 }, { x: 0, duration: 0.2, ease: "power2.inOut" }, 1.96);
+        // 1.96 the date settles : its ink goes from 85 % to 100 % in 0.2 s
+        ft(dateG, { opacity: 0.85 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, 1.96);
+
+        // ---- scene 2 : the engraving gets under way, the 4e lands
+        [2.40, 2.58, 2.76].forEach(function (t, n) {                    // the smokes draw like a pen stroke (« power2.out »)
+          ft($("p01-ae-smoke" + n).querySelectorAll("polyline"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.4, ease: "power1.out" }, t);
+        });
+        [2.90, 3.02, 3.14].forEach(function (t, n) {                    // the bow waves : the fleet is under way
+          ft($("p01-ae-wake" + n).querySelectorAll("path"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power1.out" }, t);
+        });
+        // 4.08 the 4e arrives from the camera in 0.26 s, the echoes trail behind the lead ; 4.34 contact.
+        // The storyboard's « power2.in » is the kit's curve u² (block « le 4e en vol » : fq = fp²), which GSAP calls
+        // power1.in (GSAP power2 is u³). An echo with lag L follows u² − L from u = √L : the ease below is that curve.
+        FLY.forEach(function (G) {
+          var el = G[0], lag = G[1] * .25, a = Math.sqrt(lag), st = 4.08 + 0.26 * a;
+          var ease = a ? function (u) { return (2 * a * u + (1 - a) * u * u) / (1 + a); } : "power1.in";
+          ft(el, { opacity: 0 }, { opacity: G[2], duration: 0.052, ease: "none" }, 4.08);
+          ft(el, { scale: 1.25 }, { scale: 1, duration: 0.26, ease: "power1.in" }, 4.08);
+          ft(el, { x: FX0, y: FY0 }, { x: FX0 + (FX1 - FX0) * (1 - lag), y: FY0 + (FY1 - FY0) * (1 - lag), duration: 0.26 * (1 - a), ease: ease }, st);
+          if (!lag) ft(el, { filter: "blur(12px)" }, { filter: "blur(0px)", duration: 0.26, ease: "power1.in" }, 4.08);
+          tl.set(el, { opacity: 0 }, 4.34);                              // in the same image the page stamp appears
+        });
+        tl.set(stamp, { opacity: 1 }, 4.34);
+        ft(stampWrap, { scale: 1.04, svgOrigin: "1540 640" }, { scale: 1, svgOrigin: "1540 640", duration: 0.08, ease: "power3.out" }, 4.34);
+        ft(shake, { y: 0 }, { y: 4, duration: 0.02, ease: "power2.out" }, 4.34);         // the scene shakes 4 px down
+        ft(shake, { y: 4 }, { y: 0, duration: 0.10, ease: "power2.inOut" }, 4.36);
+
+        // ---- scene 3 : the tilt, the book lies on the night chart, the fleet is there
+        ft(pageLight, { opacity: 1 }, { opacity: 0, duration: 1.0, ease: "none" }, 4.70);
+        ft(lamp, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: "none" }, 4.70);
+        line.forEach(function (on, i) {                                 // the lamp light reaches the line, head to tail
+          ft(on, { filter: "brightness(0.7)" }, { filter: "brightness(1)", duration: 0.2, ease: "power1.out" }, 5.22 + 0.06 * i);
+          tl.set(on, { filter: "none" }, 5.42 + 0.06 * i);
+        });
+
+        // ---- the voice line
+        var INK_P = "rgb(27, 26, 23)", GREY_P = "rgba(27, 26, 23, 0.35)";          // .paper : #1b1a17
+        var INK_N = "rgb(244, 237, 221)", GREY_N = "rgba(244, 237, 221, 0.35)";    // .night : #f4eddd
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        var TH0 = 5.05, TH1 = 5.25;                                                // .paper → .night
+        function words(sub, list) {
+          var ws = sub.querySelectorAll(".mx-w");
+          list.forEach(function (w, i) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[i];
+            if (w[2] === "box") {
+              var tx = el.querySelector(".mx-box-tx");
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+              ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              return;
+            }
+            var night = t0 >= TH0, g = night ? GREY_N : GREY_P;
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: g }, { opacity: 1, y: 0, filter: "blur(0px)", color: g, duration: 0.14, ease: "power2.out" }, t0);
+            var c0 = t0 + 0.14, c1 = c0 + 0.2;                          // grey (35 %) to full ink in 0.2 s
+            if (night) { ft(el, { color: GREY_N }, { color: INK_N, duration: 0.2, ease: "power1.out" }, c0); return; }
+            if (sub !== s2 || c1 <= TH0) {
+              ft(el, { color: GREY_P }, { color: INK_P, duration: 0.2, ease: "power1.out" }, c0);
+              if (sub === s2) ft(el, { color: INK_P }, { color: INK_N, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+            } else if (c0 < TH0) {
+              ft(el, { color: GREY_P }, { color: INK_P, duration: TH0 - c0, ease: "power1.out" }, c0);
+              ft(el, { color: INK_P }, { color: INK_N, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+            } else {
+              ft(el, { color: GREY_P }, { color: INK_N, duration: Math.max(0.2, TH1 - c0), ease: "power1.inOut" }, c0);
+            }
+          });
+        }
+        words(s1, S1);
+        words(s2, S2);
+        ft(s2, { textShadow: "0px 0px 16px rgba(241, 232, 214, 0.9), 0px 0px 3px rgba(241, 232, 214, 0.8)" },
+          { textShadow: "0px 2px 14px rgba(0, 0, 0, 0.65), 0px 0px 2px rgba(0, 0, 0, 0.5)", duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+        ft(s1, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 3.58);
+        ft(s2, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 5.56);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(0);                                                      // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

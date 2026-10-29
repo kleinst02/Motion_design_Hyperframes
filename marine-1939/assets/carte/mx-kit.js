@@ -637,6 +637,8 @@ var MX = (function () {
   // ------------------------------------------------------------------------------------------------ courbes et chemins
   // Les courbes de GSAP (mêmes formules) et « whip(us) » : accélère (au carré) jusqu'à us puis freine (au cube), sans saut
   // de vitesse ; une couture placée en us tombe au sommet de la vitesse.
+  // Courbes : powerN vaut u^N dans tout le projet (power2 = quadratique, power3 = cubique, power4 = quartique) ;
+  // dans GSAP, les mêmes courbes s'appellent power1, power2, power3 : écrire power(N-1). expo et sine sont identiques.
   MX.ease = function (name, u) {
     u = Math.max(0, Math.min(1, u));
     switch (name) {
@@ -647,6 +649,9 @@ var MX = (function () {
       case "power3.in": return u * u * u;
       case "power3.out": return 1 - Math.pow(1 - u, 3);
       case "power3.inOut": return u < .5 ? 4 * u * u * u : 1 - 4 * Math.pow(1 - u, 3);
+      case "power4.in": return u * u * u * u;
+      case "power4.out": return 1 - Math.pow(1 - u, 4);
+      case "power4.inOut": return u < .5 ? 8 * u * u * u * u : 1 - 8 * Math.pow(1 - u, 4);
       case "sine.inOut": return -(Math.cos(Math.PI * u) - 1) / 2;
     }
     var m = /^whip\(([0-9.]+)\)$/.exec(name);
@@ -740,12 +745,12 @@ var MX = (function () {
   // une courbe de Bézier passant près du point de contrôle).
   MX.SCORE = [
     [0.00, 4.70, "lerp", K.A0, K.A1, "none"],                     // 1 · la page 215 : dérive vers la droite, léger recul
-    [4.70, 5.40, "lerp", K.A1, K.B, "power3.inOut"],              // 1 · la bascule : recul et inclinaison, le manuel sur la carte de nuit
+    [4.70, 5.40, "lerp", K.A1, K.B, "power4.inOut"],              // 1 · la bascule : recul et inclinaison, le manuel sur la carte de nuit
     [5.40, 6.62, "lerp", K.B, K.MK, "whip(0.3443)"],              // 1 → 2 · whip vers le sud-sud-ouest (couture 5.82) jusqu'à Mers el-Kébir
     [6.62, 8.82, "lerp", K.MK, K.MK2, "none"],                    // 2 · dérive sur l'escadre amarrée
-    [8.82, 9.32, "in", K.MK2, null, "power3.inOut"],              // 2 · la caméra prend le Strasbourg qui s'échappe (couture 9.32)
+    [8.82, 9.32, "in", K.MK2, null, "power4.inOut"],              // 2 · la caméra prend le Strasbourg qui s'échappe (couture 9.32)
     [9.32, 9.90, "follow", null, null, "none"],                   // 3 · suivi du Strasbourg vers le nord-est
-    [9.90, 10.50, "out", null, K.T1, "power3.inOut"],             // 3 · il s'amarre, la caméra se pose sur la rade de Toulon
+    [9.90, 10.50, "out", null, K.T1, "power4.inOut"],             // 3 · il s'amarre, la caméra se pose sur la rade de Toulon
     [10.50, 12.72, "lerp", K.T1, K.T2, "none"],                   // 3 · dérive pendant le sabordage
     [12.72, 14.25, "lerp", K.T2, K.BV, "whip(0.4118)"],           // 3 → 4 · la caméra se relève (couture 13.35), le manuel tombe
     [14.25, 15.56, "lerp", K.BV, K.BV2, "none"],                  // 4 · dérive sur le manuel ouvert
@@ -753,14 +758,14 @@ var MX = (function () {
     [17.05, 17.30, "lerp", K.PG, K.PG2, "none"],
     [17.30, 19.10, "lerp", K.PG2, K.V5a, "whip(0.3)"],            // 4 → 5 · recul vers l'ouest (couture 17.84)
     [19.10, 20.70, "lerp", K.V5a, K.V5b, "none"],                 // 5 · les trois maquettes qui sombrent
-    [20.70, 21.20, "lerp", K.V5b, K.V5c, "power3.inOut"],         // 5 · cran vers le cadran, dans le silence, posé sur « Ses »
+    [20.70, 21.20, "lerp", K.V5b, K.V5c, "power4.inOut"],         // 5 · cran vers le cadran, dans le silence, posé sur « Ses »
     [21.20, 22.00, "lerp", K.V5c, K.V5d, "none"],
-    [22.00, 22.50, "lerp", K.V5d, K.V5e, "power3.inOut"],         // 5 · cran vers le tirage, dans le silence, posé sur « Ses »
+    [22.00, 22.50, "lerp", K.V5d, K.V5e, "power4.inOut"],         // 5 · cran vers le tirage, dans le silence, posé sur « Ses »
     [22.50, 23.37, "lerp", K.V5e, K.V5f, "none"],                 // 5 · la lampe s'éteint (23.17 à 23.37)
     [26.40, 29.40, "lerp", K.PH1, K.PH2, "none"],                 // 7 · le téléphone s'allume, le jour se lève
     [29.40, 30.95, "lerp", K.PH2, K.L1, "whip(0.6516)"],          // 7 → 8 · vers l'ouest (couture 30.41), la ligne remonte
     [30.95, 32.50, "lerp", K.L1, K.L2, "none"],                   // 8 · un par un
-    [32.50, 33.00, "lerp", K.L2, K.D1, "power3.inOut"],           // 8 · cran vers le cadran
+    [32.50, 33.00, "lerp", K.L2, K.D1, "power4.inOut"],           // 8 · cran vers le cadran
     [33.00, 34.70, "lerp", K.D1, K.D2, "none"],                   // 8 · pièce par pièce
     [34.70, 35.62, "lerp", K.D2, K.DK1, "whip(0.4022)"],           // 8 → 9 · vers le sud (couture 35.07), la photo du Dunkerque
     [35.62, 36.20, "lerp", K.DK1, K.DK2, "none"],
@@ -769,7 +774,7 @@ var MX = (function () {
     [37.40, 38.60, "zoom", K.CR2, K.AO, "power2.inOut"],          // 9 → 10 · le grand recul jusqu'à l'Atlantique (couture 37.90)
     [38.60, 41.40, "curve", K.AO, K.TL, "power2.inOut", [2050, 875]], // 10 · vers l'est avec le croiseur, jusqu'à Toulon et sa carte
     [41.40, 41.90, "lerp", K.TL, K.TL2, "none"],
-    [41.90, 42.30, "lerp", K.TL2, K.CARD, "power3.in"],           // 10 → 11 · plongée dans la carte « Les épaves de Toulon »
+    [41.90, 42.30, "lerp", K.TL2, K.CARD, "power4.in"],           // 10 → 11 · plongée dans la carte « Les épaves de Toulon »
     [42.30, 42.36, "lerp", K.CARD, K.CARD2, "none"]               // 10 · le cadre est le noir uni du corps de la carte (couture 42.36)
   ];
   // L'état de la caméra au temps T du film, ou null (le noir du pivot, la carte de fin). Avant 37.90 : repère de la

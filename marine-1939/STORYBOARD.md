@@ -22,7 +22,7 @@ patterns: ../patterns/STORYBOARD-CRAFT.md (dont les réglages retenus), ../patte
 - **Pics** : trois traits jaunes seulement, [trait : …] sous « trois lignes » (17.10), « renflouer » (24.48), « drames » (41.56). Jamais de mot géant ni de grosse boîte.
 - **Une seule chose à regarder** : la caméra isole le sujet de chaque phrase (un navire, une page, un cadran, une photo) et ne montre l'ensemble qu'à deux moments où il a du sens (la flotte de 1939 à 5.30, l'Atlantique à 38.60) ; jamais d'aller-retour : vers le sud-ouest jusqu'à Mers el-Kébir, avec le Strasbourg jusqu'à Toulon, puis vers l'ouest et le sud ; après le pivot, du téléphone vers l'ouest et le sud, puis le grand recul et l'est jusqu'à Toulon.
 - **Vraies interfaces** : la page d'accueil mobile du blog (capture de l'auteur, `assets/img/blog-accueil-mobile.png`), son bandeau (`blog-bandeau.png`), trois articles dans le style du blog avec leurs vrais titres et leurs vraies dates, les photos de la collection de l'auteur (L'Épervier, le Dunkerque à quai, la 4e DC, les épaves de Toulon), filigrane d'origine compris ; l'article « Les cadrans optiques » (dimanche 29 janvier 2012, capture de l'auteur) et sa photo du cadran optique avant du Mogador, d'après laquelle le cadran du film est dessiné.
-- **Grammaire de mouvement** : deux vitesses : gestes de 1 à 6 images (expo.out, power3.out), dérives linéaires de la partition qui ne s'arrêtent jamais ; la zone 0,3 à 0,9 s est réservée à la caméra (la partition) et au curseur ; tout élément arrive trop grand et flou (×1,2 à ×1,6, flou 4 à 12 px) ou remonte de la carte, puis se pose ; aucune tenue figée ; aucune transition « effet ».
+- **Grammaire de mouvement** : deux vitesses : gestes de 1 à 6 images (expo.out, power3.out), dérives linéaires de la partition qui ne s'arrêtent jamais ; noms de courbes : powerN vaut u^N dans tout le projet, comme dans le kit et la référence (power2 = quadratique, power3 = cubique, power4 = quartique), donc power(N-1) dans GSAP, expo et sine identiques ; la zone 0,3 à 0,9 s est réservée à la caméra (la partition) et au curseur ; tout élément arrive trop grand et flou (×1,2 à ×1,6, flou 4 à 12 px) ou remonte de la carte, puis se pose ; aucune tenue figée ; aucune transition « effet ».
 - **Texte visible** : exactement le texte cité dans les lignes Scene, le décor fixe des cartes (`MX.DECOR`), les pages du manuel (`MX.ENGRAVING_TEXT`, `MX.VERSO_TEXT`, `MX.THREE_LINES`), les vraies interfaces et les légendes des photos ; typographie française (« », ’, espace insécable avant « : »), jamais de tiret cadratin ni demi-cadratin.
 - **Négatifs** : diaporama (tout à t = 0), écran de veille, maquette posée ou passant sur la terre, objet dédoublé (le « 4e » en vol et le tampon de la page, le tirage et la vraie photo), texte coloré hors de la boîte, mot géant, symbole abstrait, accessoire sans rôle, plusieurs objets qui bougent pendant une couture, curseur qui hésite, la marque avant le pivot.
 
@@ -55,7 +55,7 @@ patterns: ../patterns/STORYBOARD-CRAFT.md (dont les réglages retenus), ../patte
 - scene: Au plus près d'une page de manuel d'histoire, « SEPTEMBRE 1939 » se tape à la machine au-dessus d'une flotte gravée en ligne de file ; la gravure se met en route ; un « 4e » jaune arrive de la caméra et se pose comme un tampon ; la caméra recule et bascule : le manuel est posé sur une carte marine de nuit, et la flotte gravée est là en maquettes, au large de Toulon ; whip vers le sud-ouest
 - duration: 5.82s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/01-manuel.html
 - voiceover: "Septembre 1939. La France entre en guerre avec la quatrième flotte du monde."
 - type: hook
@@ -92,7 +92,7 @@ Scene 3 (4.70 à 5.82 s) : P3, la bascule : le manuel est posé sur la carte, la
   TEXTE ÉCRAN : « avec la [quatrième] flotte du monde. » continue : flotte 4.80, du 5.00, monde. 5.24 ; le sous-titre passe du thème .paper au thème .night de 5.05 à 5.25 (couleur et ombre en 0,2 s) quand la carte de nuit arrive sous lui ; sortie 5.56 à 5.70 ; écart : la bascule part 0,1 s avant « flotte », la ligne entre dans le cadre entre « du » et « monde » (le recul montre le monde).
   IMAGE DE DÉPART : la page 215 au plus près, le tampon posé.
   ÉTAPES : 4.46 à 4.70 le tampon posé se lit, la dérive continue ; 4.70 la caméra recule et bascule (MX.camAt) : la page devient le manuel A entier, ouvert sur la carte ; 4.70 à 5.70 la lumière de la page s'efface pendant que la lampe de nuit (MX.lampHTML(960, 480, 980, 580)) monte (1,0 s linéaire) ; 4.80 « flotte » ; 5.00 « du » ; 5.05 le manuel entier paraît, posé sur la carte de nuit ; 5.10 la ligne de 1939 entre dans le cadre par la droite, cinq maquettes (MX.W.LINE : cuirassé, cuirassé, croiseur lourd, deux contre-torpilleurs) en ligne de file au large de Toulon, cap au sud-ouest, dans l'ordre de la gravure, toutes à l'image à 5.20 ; 5.22 la lumière de la lampe gagne la ligne de la tête à la queue (chaque maquette passe de 70 % à 100 % de luminosité en 0,2 s, 0,06 s d'écart) ; 5.24 « monde. » ; 5.40 départ du whip ; 5.56 le sous-titre sort ; 5.82 sommet du flou.
-  PISTE CAMÉRA : 4.70 à 5.40 bascule de A1 vers B (2080, 1070, 0.95, 46, 0), power3.inOut, flou jusqu'à 14 px (le plafond) de 4.95 à 5.05 ; 5.40 à 5.82 début du whip vers Mers el-Kébir (segment 5.40 à 6.62, courbe whip(0.3443) : la caméra accélère jusqu'à la couture), flou 0 → 13,3 px.
+  PISTE CAMÉRA : 4.70 à 5.40 bascule de A1 vers B (2080, 1070, 0.95, 46, 0), power4.inOut, flou jusqu'à 14 px (le plafond) de 4.94 à 5.09 ; 5.40 à 5.82 début du whip vers Mers el-Kébir (segment 5.40 à 6.62, courbe whip(0.3443) : la caméra accélère jusqu'à la couture), flou 0 → 13,3 px.
   COUCHES ET PROFONDEUR : sujet : la ligne de maquettes et leurs ombres portées ; milieu : le manuel ouvert en haut à gauche ; fond : la côte de Provence, « TOULON », « MARSEILLE », le golfe du Lion, la vignette sombre de la lampe.
   OBJET-PONT ET VECTEUR : la ligne de maquettes (l'objet-pont de la gravure) ; vecteur : whip vers le sud-sud-ouest, repris à l'entrée de la séquence 2.
   SON : le souffle de la bascule de 4.70 à 5.40 ; un whoosh de 5.40 à 5.90.
@@ -140,7 +140,7 @@ Scene 3 (3.00 à 3.50 s) : P6, le Strasbourg s'échappe
   TEXTE ÉCRAN : le sous-titre sort de 3.26 à 3.40.
   IMAGE DE DÉPART : l'escadre, la Bretagne qui disparaît, son cercle.
   ÉTAPES : 3.00 le Strasbourg (MX.W.MK[3]) quitte son poste en suivant MX.strasAt(T) : il recule vers le nord, vire et prend l'est-nord-est (un seul mouvement de 8.82 à 10.33, partagé avec la séquence 3) ; de petits ronds s'ouvrent à son poste (1,0 s linéaire) ; à partir de 3.00 il passe dans une seconde scène (un .mx-stage sans flou, même caméra MX.camAt(T)) pour rester net pendant que la carte file ; 3.26 à 3.40 le sous-titre sort ; 3.40 la Bretagne a disparu ; 3.50 couture.
-  PISTE CAMÉRA : 3.00 à 3.50 la caméra prend le Strasbourg (segment 8.82 à 9.32, mode « in » : de MK2 vers le Strasbourg, power3.inOut, échelle 1,46 → 1,10), flou 0 → 7,9 px.
+  PISTE CAMÉRA : 3.00 à 3.50 la caméra prend le Strasbourg (segment 8.82 à 9.32, mode « in » : de MK2 vers le Strasbourg, power4.inOut, échelle 1,46 → 1,10), flou jusqu'à 8,5 px vers 3.24, 7,9 px à la couture.
   COUCHES ET PROFONDEUR : sujet : le Strasbourg net ; fond : la carte qui file, l'escadre qui sort à gauche.
   OBJET-PONT ET VECTEUR : le Strasbourg : la caméra le suit jusqu'à Toulon dans la séquence 3 ; vecteur vers l'est-nord-est.
   SON : un souffle qui monte de 3.10 à 3.50.
@@ -168,7 +168,7 @@ Scene 1 (0.00 à 1.18 s) : P6 (suite), la poursuite jusqu'à Toulon
   TEXTE ÉCRAN : sous-titre .night « Novembre 1942 : [boîte : Toulon]. » : Novembre 0.27, « 1942 : » 0.96 (suite aux scènes 2 et 3) ; écart synchro.
   IMAGE DE DÉPART : handoff_in. Le monde de cette séquence porte, dès 0.00 : les trois maquettes restées de la ligne de 1939 (MX.W.LINE[2] à [4], à flot à leurs places), la flotte amarrée à Toulon (MX.W.TOULON[0] à [3]), le manuel A, Mers el-Kébir (MX.W.MK[0] et [1], le cercle, « 3·7·40 »).
   ÉTAPES : 0.00 le Strasbourg file (MX.strasAt(T)) à l'est des Baléares, net dans sa scène sans flou, la carte filée ; 0.27 « Novembre » ; 0.30 à 0.80 les trois maquettes de la ligne passent dans l'ombre à gauche ; 0.58 la caméra le lâche et se pose sur la rade ; 0.60 le crayon écrit « 27·11·42 » en MX.W.PENCIL_TOULON, une lettre toutes les 0,12 s (0.60 à 1.44) ; 0.80 la rade de Toulon entre dans la lumière : quatre maquettes amarrées l'avant vers le quai (contre-torpilleur, croiseur lourd, cuirassé type Bretagne, croiseur léger) ; 0.96 « 1942 : » ; 1.01 le Strasbourg s'amarre à son poste (MX.W.TOULON[4], 88,5°), de petits ronds à son étrave (1,0 s linéaire) ; à 1.01 il revient dans la scène commune.
-  PISTE CAMÉRA : 0.00 à 0.58 suivi (MX.camAt : le centre est le Strasbourg, échelle 1,10, flou jusqu'à 11,6 px vers 0.24) ; 0.58 à 1.18 la caméra se pose sur T1 (2748, 1090, 1.50, 46, 0) (mode « out », power3.inOut), flou → 0.
+  PISTE CAMÉRA : 0.00 à 0.58 suivi (MX.camAt : le centre est le Strasbourg, échelle 1,10, flou jusqu'à 11,6 px vers 0.24) ; 0.58 à 1.18 la caméra se pose sur T1 (2748, 1090, 1.50, 46, 0) (mode « out », power4.inOut), flou → 0.
   COUCHES ET PROFONDEUR : sujet : le Strasbourg net ; fond : la carte filée (Minorque, Majorque), les maquettes de la ligne dans l'ombre.
   OBJET-PONT ET VECTEUR : le Strasbourg devient la cinquième maquette de la rade.
   SON : le souffle de la poursuite de 0.00 à 0.60 ; le crayon de 0.60 à 1.44 ; un clapot à 1.01.
@@ -297,7 +297,7 @@ Scene 2 (1.26 à 2.86 s) : P13, « sombré » : ses navires
 Scene 3 (2.86 à 4.16 s) : P14, « Ses matériels » : le cadran
   TEXTE ÉCRAN : « Ses navires. Ses [boîte : matériels]. Ses hommes. » : Ses 3.30, boîte tracée 3.52, matériels 3.54 ; la boîte de « navires » se retire à 3.44 (scaleX 1 → 0 vers la droite, 0,12 s) : une seule boîte allumée à la fois ; écart : le cadran est au centre 0,18 s avant « matériels » et sombre 0,1 s après le mot.
   ÉTAPES : 2.86 à 3.36 cran vers le cadran, dans le silence ; 3.30 « Ses » ; 3.36 la caméra se pose sur le cadran optique, entier, au centre ; 3.54 « matériels. » ; 3.64 il sombre sur place (0,2 s power2.in puis 1,0 s linéaire) avec ses ronds (4 ellipses, rayon 120 u) ; 3.84 il n'est plus qu'à moitié visible, ses ronds s'élargissent ; 4.84 il a disparu, hors champ (pendant le cran suivant).
-  PISTE CAMÉRA : 2.86 à 3.36 cran de V5b vers V5c (1960, 1700, 0.86, 44, 0), power3.inOut, flou jusqu'à 5 px ; 3.36 à 4.16 dérive V5c → V5d.
+  PISTE CAMÉRA : 2.86 à 3.36 cran de V5b vers V5c (1960, 1700, 0.86, 44, 0), power4.inOut, flou jusqu'à 7 px ; 3.36 à 4.16 dérive V5c → V5d.
   COUCHES ET PROFONDEUR : sujet : le cadran ; fond : Majorque, la mer ; le manuel B qui sort en haut à droite.
   OBJET-PONT ET VECTEUR : le cadran remontera pièce par pièce (séquence 8) ; vecteur : cran vers le sud.
   SON : un plouf métallique à 3.69.
@@ -306,7 +306,7 @@ Scene 3 (2.86 à 4.16 s) : P14, « Ses matériels » : le cadran
 Scene 4 (4.16 à 5.53 s) : P15, « Ses hommes » : le tirage, la lampe s'éteint
   TEXTE ÉCRAN : « Ses navires. Ses matériels. Ses [boîte : hommes]. » : Ses 4.64, boîte tracée 4.96, hommes 4.98 (la boîte de « matériels » se retire à 4.88) ; sortie 5.28 à 5.42 ; écart : le tirage est au centre 0,32 s avant « hommes » et sombre 0,1 s après le mot.
   ÉTAPES : 4.16 à 4.66 cran vers le sud, vers le tirage, dans le silence ; 4.64 « Ses » ; 4.66 le tirage au centre : le pont du Dunkerque et ses marins ; 4.98 « hommes. » ; 5.08 il sombre (0,2 s power2.in puis 1,0 s linéaire) avec ses ronds (4 ellipses, rayon 170 u) ; 5.28 il n'en reste qu'une ombre ; 5.33 à 5.53 la lampe s'éteint : les deux calques de lampe et toute la scène passent au noir #0c0906 (0,2 s power2.in) ; 5.53 noir.
-  PISTE CAMÉRA : 4.16 à 4.66 cran de V5d vers V5e (1980, 2600, 1.00, 44, 0), power3.inOut, flou jusqu'à 10 px ; 4.66 à 5.53 dérive V5e → V5f.
+  PISTE CAMÉRA : 4.16 à 4.66 cran de V5d vers V5e (1980, 2600, 1.00, 44, 0), power4.inOut, flou jusqu'à 14 px (le plafond) ; 4.66 à 5.53 dérive V5e → V5f.
   COUCHES ET PROFONDEUR : sujet : le tirage ; fond : la mer, « Mer Méditerranée », « Baléares », « 3·7·40 » à gauche.
   OBJET-PONT ET VECTEUR : la place du tirage : la vraie photo du Dunkerque y remontera (séquence 9) ; la lampe qui s'éteint fait le noir du pivot.
   SON : un plouf feutré à 5.13 ; le déclic de la lampe à 5.33, avec l'impact grave de la musique.
@@ -408,7 +408,7 @@ Scene 1 (0.00 à 2.09 s) : P19, un par un
 Scene 2 (2.09 à 4.66 s) : P20, pièce par pièce
   TEXTE ÉCRAN : « Ses matériels, [boîte : pièce par pièce]. » : Ses 2.30, matériels, 2.59, boîte tracée 3.44, groupe « pièce par pièce » 3.46 ; sortie 4.46 à 4.60 ; écart : chaque pièce se pose sur son mot.
   ÉTAPES : 2.09 à 2.59 cran vers le cadran ; 2.35, 2.45, 2.55 ses trois pièces remontent de la carte, éparses autour de sa place (MX.dialSVG : la couronne #p08-…-bezel décalée de 70 u à l'ouest et 40 u au nord, le disque noir #…-face de 80 u à l'est et 50 u au sud, l'aiguille blanche #…-hands de 110 u au nord), chacune avec ses ronds ; 2.59 « matériels, » ; 2.75 l'article « Les cadrans optiques » (MX.blogRowHTML, une entrée de la liste du blog : la vignette du cadran optique avant du Mogador, « dimanche 29 janvier 2012 », en MX.W.CARD_DIAL) arrive de la caméra et se pose ; 2.85 son épingle (MX.W.PIN_DIAL) ; 3.46 « pièce » : la couronne glisse à sa place (0,18 s power3.out) ; 3.85 « par » : le disque s'y emboîte ; 4.09 « pièce » : l'aiguille se pose et pivote jusqu'à sa position (rotation -40° → 0, 0,2 s power3.out) ; 4.29 la caméra part vers le sud.
-  PISTE CAMÉRA : 2.09 à 2.59 cran de L2 vers D1 (1990, 1840, 1.20, 40, 0), power3.inOut, flou jusqu'à 8,7 px ; 2.59 à 4.29 dérive D1 → D2 ; 4.29 à 4.66 départ vers la photo (segment 34.70 à 35.62, courbe whip(0.4022)), flou 0 → 7 px.
+  PISTE CAMÉRA : 2.09 à 2.59 cran de L2 vers D1 (1990, 1840, 1.20, 40, 0), power4.inOut, flou jusqu'à 10,3 px ; 2.59 à 4.29 dérive D1 → D2 ; 4.29 à 4.66 départ vers la photo (segment 34.70 à 35.62, courbe whip(0.4022)), flou 0 → 7 px.
   COUCHES ET PROFONDEUR : sujet : la pièce qui se pose ; milieu : l'article ; fond : Majorque, la photo de L'Épervier en haut à droite.
   OBJET-PONT ET VECTEUR : le cadran remonté reste ; vecteur : vers le sud, vers la place du tirage.
   SON : un pop par pièce à 2.35, 2.45, 2.55 ; l'épingle à 2.85 ; trois clics mécaniques à 3.46, 3.85, 4.09.
@@ -500,7 +500,7 @@ Scene 3 (3.50 à 4.00 s) : P24, et ses drames
 Scene 4 (4.00 à 4.46 s) : P25, la plongée dans l'article
   TEXTE ÉCRAN : le sous-titre est sorti à 4.12.
   ÉTAPES : 4.00 la caméra plonge dans l'article de Toulon : elle se redresse au-dessus de lui (inclinaison 26° → 0, rotation -3° pour l'aligner) et fonce dans son corps sombre, à droite de son titre ; 4.40 le cadre n'est plus que le noir #141414 de l'article ; 4.40 à 4.46 la plongée continue dans ce noir uni ; couture à 4.46.
-  PISTE CAMÉRA : 4.00 à 4.40 de TL2 vers CARD (3386.7, 698.9, 22, 0, -3), power3.in, flou jusqu'à 14 px ; 4.40 à 4.46 de CARD vers CARD2 (échelle 26), linéaire.
+  PISTE CAMÉRA : 4.00 à 4.40 de TL2 vers CARD (3386.7, 698.9, 22, 0, -3), power4.in, flou jusqu'à 14 px ; 4.40 à 4.46 de CARD vers CARD2 (échelle 26), linéaire.
   COUCHES ET PROFONDEUR : l'article qui grandit jusqu'au plein cadre ; la carte qui fuit autour.
   OBJET-PONT ET VECTEUR : le corps noir de l'article devient le fond du blog (séquence 11).
   SON : un whoosh cinématique de 4.00 à 4.46.

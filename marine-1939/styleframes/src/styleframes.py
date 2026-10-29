@@ -178,7 +178,7 @@ def funnel_tops(kind, x0, y0, length, facing=1):
     """Page coordinates of the top of each funnel of a profile drawn by ship()."""
     s = length / 1000
     tops = {"bb": [(587, -146)], "ca": [(482, -119)], "ct": [(423, -82), (533, -80)], "av": [(505, -86)], "ch": [(543, -60)], "ss": [],
-            "ct3": [(612, -96), (735, -88), (785, -88)], "cl": [(495, -136), (622, -126)]}
+            "ct4": [(478, -98), (528, -98), (736, -90), (788, -90)]}
     return [(x0 + facing * s * x, y0 + s * y) for x, y in tops[kind]]
 
 
@@ -879,41 +879,31 @@ def dial_html(w, h):
 # The chosen direction: the film opens in the history book, then tips over onto the operations chart.
 # Rule from the author: every ship model lies on the sea of the chart, never on land (checked by check_at_sea below).
 
-# Kind "ct3" (directions A to C keep the two-funnel "ct"): contre-torpilleur with three funnels, one behind the bridge and two aft (as L'Épervier in the author's collection).
-SHIPS["ct3"] = [
-    ("p", [(18, 0), (990, 0), (1000, -16), (560, -20), (550, -30), (0, -38)]),
+# Kind "ct4" (directions A to C keep the two-funnel "ct"): contre-torpilleur of the Aigle type, as L'Épervier in the
+# author's collection: four funnels in two pairs, the first right behind the bridge (hidden by it on the photograph).
+SHIPS["ct4"] = [
+    ("p", [(18, 0), (990, 0), (1000, -16), (575, -20), (565, -30), (0, -38)]),
     ("p", [(132, -36), (132, -50), (144, -54), (172, -54), (172, -35)]), ("l", (132, -47, 76, -48, 3)),
     ("p", [(225, -34), (225, -43), (272, -43), (272, -33)]),
     ("p", [(220, -43), (220, -57), (232, -61), (264, -61), (264, -43)]), ("l", (220, -54, 162, -55, 3)),
-    ("p", [(290, -33), (290, -52), (300, -52), (300, -80), (372, -80), (372, -52), (560, -52), (560, -30)]),
-    ("p", [(296, -86), (378, -86), (378, -80), (296, -80)]),
-    ("l", (490, -52, 488, -170, 2.5)), ("l", (474, -146, 504, -146, 2)),
-    ("p", [(588, -20), (594, -96), (632, -96), (628, -20)]),
-    ("p", [(714, -19), (719, -88), (752, -88), (749, -19)]),
-    ("p", [(763, -19), (768, -88), (802, -88), (799, -19)]),
-    ("p", [(650, -20), (650, -28), (700, -28), (700, -19)]),
+    ("p", [(290, -33), (290, -52), (300, -52), (300, -84), (378, -84), (378, -52), (448, -52), (448, -31)]),
+    ("p", [(296, -90), (382, -90), (382, -84), (296, -84)]),
+    ("l", (392, -52, 390, -176, 2.5)), ("l", (376, -150, 406, -150, 2)),
+    ("p", [(458, -31), (462, -98), (494, -98), (492, -31)]),
+    ("p", [(508, -30), (512, -98), (544, -98), (542, -30)]),
+    ("p", [(600, -20), (600, -28), (650, -28), (650, -19)]),
+    ("p", [(700, -19), (700, -32), (815, -32), (815, -18)]),
+    ("p", [(716, -32), (720, -90), (752, -90), (750, -32)]),
+    ("p", [(768, -32), (772, -90), (804, -90), (802, -32)]),
     ("l", (853, -18, 851, -130, 2.5)),
     ("p", [(840, -18), (840, -38), (930, -38), (930, -17)]),
+    ("p", [(862, -38), (862, -51), (874, -55), (902, -55), (902, -38)]), ("l", (902, -48, 950, -49, 3)),
     ("p", [(940, -17), (940, -30), (968, -30), (982, -22), (982, -16)]), ("l", (982, -25, 1020, -25, 3)),
 ]
-TOP_PLANS["ct3"] = {"beam": 46, "turrets": [(152, 0, 40, 30, 1, -1), (245, 0, 42, 32, 1, -1), (885, 0, 40, 30, 1, 1), (958, 0, 36, 28, 1, 1)],
-                   "blocks": [(290, -24, 270, 48), (650, -16, 50, 32), (840, -22, 90, 44)],
-                   "funnels": [(610, 0, 22, 17), (733, 0, 19, 15), (783, 0, 19, 15)]}
+TOP_PLANS["ct4"] = {"beam": 46, "turrets": [(152, 0, 40, 30, 1, -1), (245, 0, 42, 32, 1, -1), (882, 0, 38, 28, 1, 1), (958, 0, 36, 28, 1, 1)],
+                    "blocks": [(290, -24, 158, 48), (600, -14, 50, 28), (700, -20, 115, 40), (840, -22, 90, 44)],
+                    "funnels": [(476, 0, 18, 14), (526, 0, 18, 14), (735, 0, 18, 14), (786, 0, 18, 14)]}
 # Light cruiser, La Galissonnière type (the 4e DC of 1939): three triple turrets, two forward and one aft, two funnels.
-SHIPS["cl"] = [
-    ("p", [(22, 0), (985, 0), (1000, -20), (1000, -28), (580, -30), (566, -38), (0, -48)]),
-    ("p", [(160, -44), (160, -62), (173, -68), (222, -68), (222, -45)]), ("l", (160, -57, 96, -59, 3.5)),
-    ("p", [(256, -46), (256, -60), (318, -60), (318, -45)]),
-    ("p", [(252, -60), (252, -78), (265, -84), (314, -84), (314, -60)]), ("l", (252, -73, 186, -75, 3.5)),
-    ("p", [(340, -45), (340, -112), (352, -112), (352, -146), (404, -146), (404, -112), (420, -112), (420, -62), (462, -62), (462, -44)]),
-    ("p", [(344, -156), (412, -156), (412, -146), (344, -146)]),
-    ("l", (432, -62, 430, -214, 3)), ("l", (414, -186, 448, -186, 2)),
-    ("p", [(470, -44), (476, -136), (514, -136), (512, -43)]),
-    ("p", [(598, -38), (604, -126), (640, -126), (638, -37)]),
-    ("p", [(566, -38), (566, -58), (820, -58), (820, -30)]),
-    ("l", (770, -58, 766, -176, 3)),
-    ("p", [(852, -29), (852, -47), (865, -53), (912, -53), (912, -29)]), ("l", (912, -42, 976, -44, 3.5)),
-]
 TOP_PLANS["cl"] = {"beam": 50, "turrets": [(192, 0, 66, 54, 3, -1), (285, 0, 70, 58, 3, -1), (882, 0, 66, 54, 3, 1)],
                    "blocks": [(338, -24, 84, 48), (566, -22, 254, 44)], "funnels": [(492, 0, 22, 17), (620, 0, 20, 16)]}
 # Old battleship, Bretagne type (Bretagne and Provence at Mers el-Kébir): five twin turrets on the centre line, two funnels.
@@ -1070,7 +1060,7 @@ VERSO_TEXT = [
 def engraving_page_svg(with_four=False):
     """Right-hand page 215: the typed date, the fleet engraved in line ahead, then the text of the history book."""
     sea_top = 650
-    line = [("bb", 228, 640), ("ca", 920, 470), ("ct3", 1452, 300)]
+    line = [("bb", 228, 640), ("ca", 920, 470), ("ct4", 1452, 300)]
     fleet, smokes, waves = "", "", ""
     for n, (kind, x0, length) in enumerate(line):
         fleet += ship(kind, x0, sea_top, length, fill="url(#hatch)", stroke=INK, sw=1.5, hull_fill="url(#hatchd)")
@@ -1204,7 +1194,7 @@ def frame_d1():
 
 
 # The line of 1939, leaving the roads of Toulon to the south-west: the same models come back up in D6.
-LINE_1939 = [("bb", 2700, 1030, 230, -30), ("bb", 2480, 1150, 230, -30), ("ca", 2285, 1262, 200, -30), ("ct3", 2120, 1360, 170, -30), ("ct3", 1975, 1446, 170, -30)]
+LINE_1939 = [("bb", 2700, 1030, 230, -30), ("bb", 2480, 1150, 230, -30), ("ca", 2285, 1262, 200, -30), ("ct4", 2120, 1360, 170, -30), ("ct4", 1975, 1446, 170, -30)]
 PHONE_AT = (2880, 1180, 330)  # where the phone lies on the chart from the pivot on (x, y, width)
 
 
@@ -1308,16 +1298,6 @@ def photo_thumb(src, soften=0):
             f'filter:grayscale(1) contrast(1.06){f" blur({soften}px)" if soften else ""};transform:scale(1.04)"></div>')
 
 
-def drawn_thumb(kind, w=560, h=300, seed=4):
-    """Stand-in for a photograph of the author's article (to replace with the real picture): a grey print of the ship type."""
-    return (f'<svg width="{w}" height="{h}" style="filter:blur(.6px)"><defs><linearGradient id="dt{seed}" x1="0" y1="0" x2="0" y2="1">'
-            f'<stop offset="0" stop-color="#d8d8d4"/><stop offset=".62" stop-color="#9c9c98"/><stop offset="1" stop-color="#4a4a48"/></linearGradient>'
-            f'<filter id="dg{seed}"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="{seed}"/><feColorMatrix type="saturate" values="0"/></filter></defs>'
-            f'<rect width="{w}" height="{h}" fill="url(#dt{seed})"/><rect y="{h * .66:.0f}" width="{w}" height="{h * .34:.0f}" fill="#3e3e3c" opacity=".7"/>'
-            + ship(kind, w * .1, h * .67, w * .8, fill="#232322") +
-            f'<rect width="{w}" height="{h}" filter="url(#dg{seed})" opacity=".18" style="mix-blend-mode:multiply"/></svg>')
-
-
 def pin(x, y, d=30):
     return (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{d}px;height:{d}px;border-radius:50%;'
             'background:radial-gradient(circle at 35% 35%,#f7dc9c,#9a7432 60%,#4a3410);box-shadow:4px 6px 8px rgba(30,15,5,.45)"></div>')
@@ -1396,9 +1376,9 @@ def frame_d7():
     ny = (P["newyork"][0] + 70, P["newyork"][1] - 640)
     tl = (P["toulon"][0] - 620, P["toulon"][1] - 700)
     cards = (f'<div style="position:absolute;left:{ny[0]}px;top:{ny[1]}px;transform:rotate(-4deg);transform-origin:50% 0">'
-             f'{blog_card("La 4ème DC à New York", "août 2013", drawn_thumb("cl"))}</div>'
+             f'{blog_card("La 4ème DC à New York", "août 2013", photo_thumb(IMG + "4e-dc-collection-langry.jpg"))}</div>'
              f'<div style="position:absolute;left:{tl[0]}px;top:{tl[1]}px;transform:rotate(3deg);transform-origin:50% 0">'
-             f'{blog_card("Les épaves de Toulon", "jeudi 5 mai 2016", photo_thumb(IMG + "vignette-epaves-toulon.png", 2))}</div>')
+             f'{blog_card("Les épaves de Toulon", "jeudi 5 mai 2016", photo_thumb(IMG + "epaves-toulon-collection-langry.jpg"))}</div>')
     pins = "".join(pin(x + 263, y - 14, 34) for x, y in (ny, tl))
     scene = chart_scene(c, (1720, 900), (960, 470), 22, .56, chart + cards + pins + trail + model, persp=2600, origin="960px 300px")
     body = (f'<div class="f" style="background:#8a7353">{scene}{DAY}'

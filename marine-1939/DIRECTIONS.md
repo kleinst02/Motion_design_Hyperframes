@@ -175,8 +175,9 @@ garder la même règle à chaque image : les maquettes ne bougent que sur la mer
 **Types de navires, d'après tes documents.** Les maquettes et la gravure suivent des types de 1939, pas des navires
 nommés : cuirassé rapide type Dunkerque (deux tourelles quadruples à l'avant), cuirassé ancien type Bretagne (cinq
 tourelles doubles), croiseur lourd, croiseur léger type La Galissonnière pour la 4e DC (trois tourelles triples, deux
-cheminées), contre-torpilleur à trois cheminées dessiné d'après ta photo de L'Épervier. À Mers el-Kébir, l'escadre est
-amarrée côte à côte, l'arrière à la jetée et l'avant vers la terre ; la maquette qui sombre est de type Bretagne.
+cheminées), contre-torpilleur type Aigle à quatre cheminées en deux paires, comme L'Épervier (sur ta photo, la
+première est cachée par la passerelle). À Mers el-Kébir, l'escadre est amarrée côte à côte, l'arrière à la jetée et
+l'avant vers la terre ; la maquette qui sombre est de type Bretagne.
 
 **Le film en 13 séquences** (minutage de la voix ci-dessus).
 1. 0,00 à 4,90, le manuel (D1). 0,04 « Septembre 1939 » se tape sur la page ; 2,32, la caméra glisse le long de la
@@ -200,7 +201,7 @@ amarrée côte à côte, l'arrière à la jetée et l'avant vers la terre ; la m
 10. 30,55 à 35,15, un par un, pièce par pièce (D6). Les maquettes remontent à l'endroit d'où elles étaient parties, une
     sur chaque « un · par · un » (31,71, 31,98, 32,20), avec ta photo de L'Épervier ; 32,71 « Ses matériels » : le
     cadran remonte, avec l'article « Les cadrans optiques ».
-11. 35,15 à 37,95, ses hommes. Ta photo du cuirassé à quai, l'équipage sur le pont, épinglée sur la carte ; la caméra
+11. 35,15 à 37,95, ses hommes. Ta photo du Dunkerque à quai, l'équipage sur le pont, épinglée sur la carte ; la caméra
     glisse le long des marins, « de l'amiral au matelot ».
 12. 37,95 à 42,40, de New York à Toulon (D7). La caméra recule sur la carte de l'Atlantique ; la route de la 4e DC, une
     maquette de croiseur léger la suit ; tes articles « La 4ème DC à New York » et « Les épaves de Toulon » épinglés à
@@ -235,13 +236,15 @@ EB Garamond pour le manuel et la carte, Space Mono pour la machine à écrire, I
   téléphone au bord de l'image. Sous-titre « Ses navires, [un par un]. »
 - D7 (39,30 s, « De New York à Toulon, ») : la carte de l'Atlantique ; la route de la 4e DC, faite jusqu'au milieu de
   l'océan, la suite en pointillés, qui contourne les Baléares ; la maquette de croiseur léger ; les deux articles dans
-  le style du blog (vignette de New York dessinée en attendant ta photo). Sous-titre « De New York à Toulon, ».
+  le style du blog, avec tes photos (la 4e DC ; la Provence coulée et le Condorcet vus depuis le Commandant Teste).
+  Sous-titre « De New York à Toulon, ».
 - D8 (46,60 s, la fin) : le fond rayé du blog, ton bandeau, « Les navires, les matériels et les hommes de la flotte
   française de 1939. », le bouton « Montez à bord » cliqué, l'adresse marine1939.blogspot.com.
 
-**À fournir ou à confirmer par l'auteur.** Une photo de l'article « La 4ème DC à New York » ; l'original de la vignette
-« Les épaves de Toulon » (216 px, trop petite pour l'écran) ; le nom du cuirassé de la photo à quai, pour sa légende ;
-le nombre de cheminées des croiseurs type La Galissonnière (deux, à confirmer).
+**Précisions de l'auteur (29 octobre 2026).** L'Épervier avait quatre cheminées (le modèle à trois cheminées est
+corrigé) ; les croiseurs type La Galissonnière en avaient deux ; le cuirassé de la photo à quai est le Dunkerque. Reçus :
+une photo de la 4e DC (`assets/img/4e-dc-collection-langry.jpg`) et l'article « Les épaves de Toulon », dont la photo
+d'origine est extraite (`assets/img/epaves-toulon-collection-langry.jpg`).
 
 ## Choix
 

@@ -112,6 +112,15 @@ La caméra suit déjà ces courbes dans `MX.camAt` : il n'y a rien à convertir 
   coordonnées de la Méditerranée. Dès 37.90, `MX.camAt(T)` est dans le repère de l'Atlantique.
 - **Couture** : la première image est `handoff_in`, la dernière est `handoff_out`. Rien ne naît ni ne meurt dans les
   deux images autour d'une couture.
+- **La vérification de mise en page de HyperFrames** (`npx hyperframes check`, lancée par l'orchestrateur) audite tout
+  texte visible.
+  - Le kit marque déjà comme décor le texte de la carte, celui des pages du manuel et les dates au crayon
+    (`data-layout-ignore`), ainsi que ses calques de lumière (`data-layout-allow-occlusion`).
+  - Vos propres calques qui couvrent le monde exprès portent `data-layout-allow-occlusion` : la lumière de la page, le
+    halo, le voile d'ombre, le noir de la lampe qui s'éteint.
+  - Des copies de texte superposées exprès portent `data-layout-allow-overlap`, sur chaque bloc de texte : ce marqueur
+    ne s'hérite pas.
+  - Le calque du sous-titre porte `data-layout-allow-caption-zone`, comme dans le pilote.
 
 ## 5. Vérifier avant de finir
 

@@ -164,6 +164,8 @@ var MX = (function () {
   // ------------------------------------------------------------------------------------------------ la carte marine
   var TEX = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='t'><feTurbulence type='fractalNoise' baseFrequency='.012 .02' numOctaves='3' seed='12'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .2  0 0 0 .55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23t)'/></svg>\")";
   MX.PAPER_TEX = TEX;
+  // Le texte de la carte et des pages du manuel est un décor : data-layout-ignore (la vérification de mise en page de
+  // HyperFrames ne l'audite pas) ; les calques de lumière couvrent le monde exprès : data-layout-allow-occlusion.
   // Le décor de chaque carte est FIXE (mêmes étiquettes, mêmes sondes dans toutes les séquences) ; aucune étiquette ne
   // s'arrête dans la bande du sous-titre à un cadrage du film (vérifié sur toute la partition) : labels
   // [texte, x, y, taille, "caps"|"it"|"land", interlettrage, ancre, couleur], soundings [x0, y0, x1, y1, base, n, graine],
@@ -196,7 +198,7 @@ var MX = (function () {
   MX.chartSVG = function (name, uid) {
     var o = MX.DECOR[name], d = MX_DATA[name], W = d.w, H = d.h, C = MX.C, u = uid || name, k;
     var bands = [[190, "#c9dcdc"], [186, C.sea], [110, "#9ebfca"], [106, "#c2d9dc"], [52, "#8fb2c0"], [48, "#b1cfd6"]];
-    var s = ['<svg class="mx-chart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + " " + H + '"><defs><path id="' + u + '-land" d="' + d.land + '"/></defs>',
+    var s = ['<svg class="mx-chart" data-layout-ignore width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + " " + H + '"><defs><path id="' + u + '-land" d="' + d.land + '"/></defs>',
       '<rect width="' + W + '" height="' + H + '" fill="' + C.sea + '"/>'];
     bands.forEach(function (b) { s.push('<use href="#' + u + '-land" fill="none" stroke="' + b[1] + '" stroke-width="' + b[0] + '" stroke-linejoin="round"/>'); });
     s.push('<use href="#' + u + '-land" fill="' + C.land + '" stroke="' + C.coast + '" stroke-width="2.6" stroke-linejoin="round"/>');
@@ -427,7 +429,7 @@ var MX = (function () {
   // centre). Hauteur = w × 2/3 (pages de 3 × 4). Ids : <u>-book, <u>-pl (page gauche), <u>-pr (page droite).
   MX.bookHTML = function (u, b, leftSVG, rightSVG) {
     var w = b.w, ph = w / 2 * MX.PAGE_H / MX.PAGE_W, page = function (svg, side, id) {
-      return '<svg id="' + id + '" class="mx-page" viewBox="0 0 1920 2560" width="' + n0(w / 2) + '" height="' + n0(ph) + '" style="' + side + ':0">' + svg + "</svg>";
+      return '<svg id="' + id + '" class="mx-page" data-layout-ignore viewBox="0 0 1920 2560" width="' + n0(w / 2) + '" height="' + n0(ph) + '" style="' + side + ':0">' + svg + "</svg>";
     }, edges = "";
     ["#ded2b6", "#d2c5a6", "#c6b896"].forEach(function (c, i) {
       edges += '<div class="mx-edge" style="left:' + (6 + i * 3) + "px;right:" + (6 + i * 3) + "px;top:" + n0(ph + i * 4) + "px;background:" + c + '"></div>';
@@ -530,7 +532,7 @@ var MX = (function () {
   MX.pencilSVG = function (text, size, color) {
     var t = "";
     for (var i = 0; i < text.length; i++) t += '<tspan class="mx-pc">' + esc(text[i]) + "</tspan>";
-    return '<svg class="mx-pencil" width="1" height="1" style="overflow:visible"><text x="0" y="0" font-family="Space Mono" font-size="' + size + '" fill="' + (color || MX.C.pencil) +
+    return '<svg class="mx-pencil" data-layout-ignore width="1" height="1" style="overflow:visible"><text x="0" y="0" font-family="Space Mono" font-size="' + size + '" fill="' + (color || MX.C.pencil) +
       '" opacity=".88">' + t + "</text></svg>";
   };
   // Cercle au crayon rouge (une perte), ellipse tournée dans le plan de la carte ; le tracé se dessine par strokeDashoffset.
@@ -542,12 +544,12 @@ var MX = (function () {
 
   // ------------------------------------------------------------------------------------------------ calques 2D
   MX.lampHTML = function (cx, cy, rx, ry, dark) {
-    return '<div class="mx-layer mx-lamp" style="background:radial-gradient(ellipse ' + rx + "px " + ry + "px at " + cx + "px " + cy + 'px,rgba(255,206,140,.24),rgba(255,206,140,0) 70%)"></div>' +
-      '<div class="mx-layer mx-lamp-dark" style="background:radial-gradient(ellipse ' + n0(rx * 1.25) + "px " + n0(ry * 1.25) + "px at " + cx + "px " + cy + "px,rgba(0,0,0,0) 38%,rgba(6,4,2," + (dark || .86) + ') 100%)"></div>';
+    return '<div class="mx-layer mx-lamp" data-layout-allow-occlusion style="background:radial-gradient(ellipse ' + rx + "px " + ry + "px at " + cx + "px " + cy + 'px,rgba(255,206,140,.24),rgba(255,206,140,0) 70%)"></div>' +
+      '<div class="mx-layer mx-lamp-dark" data-layout-allow-occlusion style="background:radial-gradient(ellipse ' + n0(rx * 1.25) + "px " + n0(ry * 1.25) + "px at " + cx + "px " + cy + "px,rgba(0,0,0,0) 38%,rgba(6,4,2," + (dark || .86) + ') 100%)"></div>';
   };
   MX.dayHTML = function () {
-    return '<div class="mx-layer mx-day" style="background:radial-gradient(ellipse 1300px 800px at 900px 420px,rgba(255,248,232,.2),rgba(255,248,232,0) 70%)"></div>' +
-      '<div class="mx-layer mx-day-edge" style="background:radial-gradient(ellipse 1400px 900px at 960px 460px,rgba(0,0,0,0) 55%,rgba(70,50,25,.32) 100%)"></div>';
+    return '<div class="mx-layer mx-day" data-layout-allow-occlusion style="background:radial-gradient(ellipse 1300px 800px at 900px 420px,rgba(255,248,232,.2),rgba(255,248,232,0) 70%)"></div>' +
+      '<div class="mx-layer mx-day-edge" data-layout-allow-occlusion style="background:radial-gradient(ellipse 1400px 900px at 960px 460px,rgba(0,0,0,0) 55%,rgba(70,50,25,.32) 100%)"></div>';
   };
   MX.dividersSVG = function (u) {
     return '<svg class="mx-dividers" width="420" height="760" viewBox="0 0 420 760"><defs><linearGradient id="' + u + '-br" x1="0" y1="0" x2="1" y2="0">' +

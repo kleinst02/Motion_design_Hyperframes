@@ -82,9 +82,9 @@ components:
   print:
     look: "le tirage anonyme du manuel, avant le pivot : MX.printHTML(id, src, 420, 300, '50% 100%', '130% auto') ; le pont du Dunkerque et ses marins, viré au sépia, sans légende et sans le filigrane du blog (cadré dessous). Après le pivot, la vraie photo avec sa légende le remplace."
   blog-card:
-    look: "un article du blog, imprimé dans son propre style : MX.blogCardHTML(id, titre, date, image) ; fond #141414, date grise, titre clair, barre jaune ; épinglé sur la carte. Articles : « La 4ème DC à New York » (août 2013, photo assets/img/4e-dc-collection-langry.jpg), « Les épaves de Toulon » (jeudi 5 mai 2016, photo assets/img/epaves-toulon-collection-langry.jpg), « Les cadrans optiques » (janvier 2012 ; sans image tant que l'auteur n'a pas fourni sa capture)."
+    look: "un article du blog, imprimé dans son propre style : MX.blogCardHTML(id, titre, date, image) ; fond #141414, date grise, titre clair, barre jaune ; épinglé sur la carte. Articles : « La 4ème DC à New York » (août 2013, photo assets/img/4e-dc-collection-langry.jpg), « Les épaves de Toulon » (jeudi 5 mai 2016, photo assets/img/epaves-toulon-collection-langry.jpg), « Les cadrans optiques » (dimanche 29 janvier 2012), en entrée de liste comme sur la page d'accueil du blog : MX.blogRowHTML(id, titre, date, image), la vignette à gauche (assets/img/cadrans-optiques-mogador.jpg, le cadran optique avant du Mogador, tiré de la capture de l'auteur assets/img/blog-article-cadrans-optiques.jpg), 640 × 170."
   dial:
-    look: "cadran de conduite de tir en laiton (MX.dialSVG(uid, 110)) en trois pièces : #<uid>-bezel (couronne et vis), #<uid>-face (cadran gradué 0 à 100), #<uid>-hands (aiguilles noire et rouge). Avant le pivot il coule entier ; après, « pièce par pièce » le remonte pièce après pièce."
+    look: "cadran optique de passerelle, dessiné d'après la photo du Mogador de l'article « Les cadrans optiques » (MX.dialSVG(uid, 110)) : un disque noir à douze repères blancs et une aiguille blanche, dans sa couronne d'acier ; trois pièces : #<uid>-bezel (la couronne et ses vis), #<uid>-face (le disque et ses repères), #<uid>-hands (l'aiguille et son moyeu). Avant le pivot il coule entier ; après, « pièce par pièce » le remonte pièce après pièce."
   route:
     look: "la route de la 4e DC au crayon magenta (MX.routeSVG(uid, MX.W.ROUTE, avancée)) : toute la route en pointillés (#<uid>-todo), la partie faite tracée en continu par strokeDashoffset (#<uid>-done) ; l'avancée au temps T est MX.routeDoneAt(T) (strokeDashoffset = data-len × (1 − avancée)) ; la maquette de croiseur léger qui la suit est en MX.clAt(T) : [x, y, angle]."
   lights:
@@ -144,7 +144,7 @@ de la page d'un manuel d'histoire posé sur la carte : la date tapée à la mach
 « 4e » jaune qui se pose comme un tampon. La caméra recule et bascule : la flotte gravée est là, en maquettes peintes, au
 large de Toulon. On la suit jusqu'à Mers el-Kébir, où la Bretagne sombre dans la carte ; le Strasbourg s'échappe et la
 caméra le suit jusqu'à Toulon, où la flotte se saborde, maquette après maquette. Le manuel tombe sur la rade vide,
-ouvert sur trois lignes. Le reste sombre aussi : un contre-torpilleur, un cadran de conduite de tir, une photo
+ouvert sur trois lignes. Le reste sombre aussi : un contre-torpilleur, un cadran optique de passerelle, une photo
 d'équipage. La lampe s'éteint. Dans le noir, « Il est temps de renflouer leur histoire. » Un téléphone s'allume là où
 était le manuel : c'est le blog. Le jour se lève sur la même carte ; les maquettes remontent là d'où elles étaient
 parties, avec la vraie photo de L'Épervier ; le cadran se remonte pièce par pièce ; la vraie photo du Dunkerque et de son
@@ -181,7 +181,7 @@ liste les images clés du storyboard ; une maquette posée à terre y est barré
 | `TOULON` la flotte amarrée, avant vers le quai | contre-torpilleur (2888, 995, 88°) ; croiseur lourd (2818, 980, 91,5°) ; cuirassé type Bretagne (2748, 990, 89°) ; croiseur léger (2678, 980, 92°) ; le Strasbourg (2608, 965, 88,5°) | dès la séquence 3 ; sabordés à 11.52, 11.72, 11.92, 12.12, 12.32 | 3 |
 | `PENCIL_TOULON` | « 27·11·42 » à (2950, 870) | écrit à 9.92, puis reste | 3 à 10 |
 | `BOOK_B` le manuel B, pages 216-217 | coin (2440, 987), largeur 1300, 4° (centre (3090, 1420)) ; les trois lignes autour du point de page (820, 640) | tombe à 14.40, retiré dans le noir du pivot | 4, 5 |
-| `DIAL` le cadran de conduite de tir | centre (1850, 1720), rayon 110, 8° | posé dès la séquence 5, sombre à 21.48 ; ses pièces remontent à 32.76, il se remonte à 33.87, 34.26, 34.50 | 5, 8, 9, 10 |
+| `DIAL` le cadran optique de passerelle | centre (1850, 1720), rayon 110, 8° | posé dès la séquence 5, sombre à 21.48 ; ses pièces remontent à 32.76, il se remonte à 33.87, 34.26, 34.50 | 5, 8, 9, 10 |
 | `PRINT` le tirage du manuel | centre (1900, 2700), 420 × 300, -4° | posé dès la séquence 5, sombre à 22.92 | 5 |
 | `PHOTO`, `PIN_PHOTO` la photo du Dunkerque | centre-x 1900, haut 2460, image 360 × 390, -3° ; épingle (1898, 2470) | remonte à 35.17 à la place du tirage | 9, 10 |
 | `PHONE` le téléphone | centre (3250, 1250), largeur 330, -10° | posé dans le noir du pivot, là où était le manuel B ; s'allume à 26.62 | 7, 8, 10 |

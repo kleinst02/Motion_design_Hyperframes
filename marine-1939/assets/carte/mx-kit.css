@@ -58,6 +58,9 @@
 .mx-blogcard-date { font: 500 22px/1 "Instrument Sans", sans-serif; color: #9a9a9a; }
 .mx-blogcard-title { font: 600 40px/1.1 "Instrument Sans", sans-serif; color: #ececec; margin-top: 12px; }
 .mx-blogcard-bar { height: 6px; width: 96px; background: #e6ec37; margin-top: 18px; transform-origin: 0 50%; }
+.mx-blogrow { display: flex; }
+.mx-blogrow-img { flex: none; height: 100%; background-size: cover; background-position: 50% 35%; filter: grayscale(1) contrast(1.06); }
+.mx-blogrow .mx-blogcard-body { flex: 1; padding: 22px 24px 0; }
 .mx-pin { position: absolute; left: 0; top: 0; border-radius: 50%; margin: -15px 0 0 -15px;
   background: radial-gradient(circle at 35% 35%, #f7dc9c, #9a7432 60%, #4a3410); box-shadow: 4px 6px 8px rgba(30, 15, 5, .45); }
 .mx-dial, .mx-crew { position: absolute; left: 0; top: 0; display: block; }

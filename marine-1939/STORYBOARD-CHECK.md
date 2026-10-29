@@ -394,8 +394,12 @@ au mot près).
   - le graticule de la carte est le fond, pas un trait du décor.
   Tenu.
 - **Vraies interfaces récentes** : la capture de la page d'accueil fournie par l'auteur, le bandeau du blog, les
-  photos de sa collection avec leur filigrane, les articles avec leurs vrais titres et leurs vraies dates. Tenu, sauf
-  la capture de l'article « Les cadrans optiques », qui manque.
+  photos de sa collection avec leur filigrane, les articles avec leurs vrais titres et leurs vraies dates. Tenu.
+  - Reçue après ce passage, la capture de l'article « Les cadrans optiques » (dimanche 29 janvier 2012) donne la photo
+    du cadran optique avant du Mogador. Le cadran du film est redessiné d'après elle : un disque noir à douze repères
+    blancs, une aiguille blanche, au lieu d'un cadran gradué en laiton.
+  - L'article s'affiche en entrée de liste, comme sur la page d'accueil du blog (vignette à gauche, 640 × 170), pour
+    rester hors de la bande du sous-titre.
 - **Curseur** : un seul mouvement, clic direct. Tenu.
 - **Rythme** : deux vitesses (dérives de la partition, gestes de 1 à 6 images) ; les éléments arrivent trop grands et
   flous, puis se posent. Tenu.
@@ -405,8 +409,6 @@ au mot près).
 
 ## Limites connues
 
-- **La capture de l'article « Les cadrans optiques » manque.** Sa carte d'article est sans image tant que l'auteur ne
-  l'a pas fournie (séquences 8 à 10). Avec la capture, elle prendra la même forme que les deux autres.
 - **La page d'accueil du blog sur le téléphone est une capture fixe** (1080 × 1976). Elle tient entière dans l'écran du
   téléphone : il n'y a rien à faire défiler. Le produit se montre par l'écran qui s'allume, les articles qui se
   posent et le clic final.

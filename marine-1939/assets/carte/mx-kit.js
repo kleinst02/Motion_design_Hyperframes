@@ -469,32 +469,37 @@ var MX = (function () {
   MX.pinHTML = function (id, d) {
     return '<div class="mx-pin"' + (id ? ' id="' + id + '"' : "") + ' style="width:' + (d || 30) + "px;height:" + (d || 30) + 'px"></div>';
   };
-  // Cadran de conduite de tir en laiton, en trois pièces que « pièce par pièce » assemble : #<u>-bezel, #<u>-face, #<u>-hands.
+  // Cadran optique de passerelle, dessiné d'après la photo du Mogador de l'article « Les cadrans optiques » : un disque noir à
+  // douze repères blancs et une aiguille blanche, dans sa couronne d'acier. Trois pièces que « pièce par pièce » assemble :
+  // #<u>-bezel (la couronne et ses vis), #<u>-face (le disque et ses repères), #<u>-hands (l'aiguille et son moyeu).
   MX.dialSVG = function (u, r) {
-    var ticks = [], i;
-    for (i = 0; i < 100; i += 2) {
-      var a = (i * 3.6 - 90) * Math.PI / 180, long = i % 10 === 0, r1 = r * (long ? .70 : .76), r2 = r * .82;
-      ticks.push('<line x1="' + n1(r1 * Math.cos(a)) + '" y1="' + n1(r1 * Math.sin(a)) + '" x2="' + n1(r2 * Math.cos(a)) + '" y2="' + n1(r2 * Math.sin(a)) +
-        '" stroke="#1e1b16" stroke-width="' + (long ? 3.2 : 1.6) + '"/>');
-      if (long) ticks.push('<text x="' + n1(r * .58 * Math.cos(a)) + '" y="' + n1(r * .58 * Math.sin(a) + r * .05) + '" text-anchor="middle" font-family="Space Mono" font-weight="700" font-size="' +
-        n0(r * .12) + '" fill="#1e1b16">' + i + "</text>");
+    var marks = [], i;
+    for (i = 0; i < 12; i++) {
+      var a = (i * 30 - 90) * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a), px = -sn, py = c;
+      var r1 = r * .56, r2 = r * .84, w1 = r * .035, w2 = r * .075;
+      marks.push('<polygon points="' + [[r1 * c + w1 * px, r1 * sn + w1 * py], [r2 * c + w2 * px, r2 * sn + w2 * py], [r2 * c - w2 * px, r2 * sn - w2 * py], [r1 * c - w1 * px, r1 * sn - w1 * py]]
+        .map(function (q) { return n1(q[0]) + "," + n1(q[1]); }).join(" ") + '" fill="#f1efe8"/>');
     }
-    var screws = "";
+    var bolts = "";
     [45, 135, 225, 315].forEach(function (d) {
       var a = d * Math.PI / 180;
-      screws += '<circle cx="' + n1(r * .94 * Math.cos(a)) + '" cy="' + n1(r * .94 * Math.sin(a)) + '" r="' + n1(r * .03) + '" fill="#3a2a12" stroke="#e6c98a" stroke-width="1.2"/>';
+      bolts += '<circle cx="' + n1(r * .95 * Math.cos(a)) + '" cy="' + n1(r * .95 * Math.sin(a)) + '" r="' + n1(r * .028) + '" fill="#8a9096" stroke="#1a1d20" stroke-width="1.2"/>';
     });
-    var h1 = 38 * Math.PI / 180, h2 = -128 * Math.PI / 180;
     return '<svg class="mx-dial" width="' + n0(2 * r) + '" height="' + n0(2 * r) + '" viewBox="' + n0(-r) + " " + n0(-r) + " " + n0(2 * r) + " " + n0(2 * r) + '" style="overflow:visible">' +
-      '<defs><radialGradient id="' + u + '-brass" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#f1d79a"/><stop offset=".45" stop-color="#b48b4a"/><stop offset=".8" stop-color="#6b4f25"/><stop offset="1" stop-color="#3d2b12"/></radialGradient>' +
-      '<radialGradient id="' + u + '-face" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="#f4eedc"/><stop offset="1" stop-color="#d9ceb1"/></radialGradient></defs>' +
-      '<g id="' + u + '-bezel"><circle cx="0" cy="' + n1(r * .05) + '" r="' + n1(r * 1.02) + '" fill="#000" opacity=".35"/><circle r="' + r + '" fill="url(#' + u + '-brass)"/>' +
-      '<circle r="' + n1(r * .88) + '" fill="#3b2a12"/>' + screws + "</g>" +
-      '<g id="' + u + '-face"><circle r="' + n1(r * .86) + '" fill="url(#' + u + '-face)"/>' + ticks.join("") + "</g>" +
-      '<g id="' + u + '-hands"><line x1="0" y1="0" x2="' + n1(r * .66 * Math.cos(h1)) + '" y2="' + n1(r * .66 * Math.sin(h1)) + '" stroke="#16130f" stroke-width="' + n1(r * .035) + '" stroke-linecap="round"/>' +
-      '<line x1="0" y1="0" x2="' + n1(r * .46 * Math.cos(h2)) + '" y2="' + n1(r * .46 * Math.sin(h2)) + '" stroke="#9b2a20" stroke-width="' + n1(r * .05) + '" stroke-linecap="round"/>' +
-      '<circle r="' + n1(r * .07) + '" fill="url(#' + u + '-brass)" stroke="#2a1d0b" stroke-width="2"/>' +
-      '<path d="M ' + n1(-r * .7) + " " + n1(-r * .3) + " A " + n1(r * .8) + " " + n1(r * .8) + " 0 0 1 " + n1(r * .35) + " " + n1(-r * .72) + '" stroke="#fff" stroke-width="' + n1(r * .06) + '" fill="none" opacity=".35" stroke-linecap="round"/></g></svg>';
+      '<defs><radialGradient id="' + u + '-steel" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#6a7076"/><stop offset=".55" stop-color="#3a3f44"/><stop offset="1" stop-color="#16191c"/></radialGradient>' +
+      '<radialGradient id="' + u + '-black" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="#2a2a2a"/><stop offset="1" stop-color="#0b0b0b"/></radialGradient></defs>' +
+      '<g id="' + u + '-bezel"><circle cx="0" cy="' + n1(r * .05) + '" r="' + n1(r * 1.02) + '" fill="#000" opacity=".35"/><circle r="' + r + '" fill="url(#' + u + '-steel)"/>' +
+      '<circle r="' + n1(r * .9) + '" fill="#0d0e0f"/>' + bolts + "</g>" +
+      '<g id="' + u + '-face"><circle r="' + n1(r * .88) + '" fill="url(#' + u + '-black)"/>' + marks.join("") + "</g>" +
+      '<g id="' + u + '-hands"><polygon points="' + [[-r * .07, r * .1], [r * .07, r * .1], [r * .045, -r * .74], [-r * .045, -r * .74]].map(function (q) { return n1(q[0]) + "," + n1(q[1]); }).join(" ") +
+      '" fill="#f1efe8"/><circle r="' + n1(r * .1) + '" fill="#f1efe8"/><circle r="' + n1(r * .035) + '" fill="#0d0e0f"/></g></svg>';
+  };
+  // Une entrée de la liste du blog, comme sur sa page d'accueil : la vignette à gauche, la date et le titre à droite.
+  MX.blogRowHTML = function (id, title, date, src, w, h) {
+    w = w || 640; h = h || 170;
+    return '<div class="mx-blogcard mx-blogrow"' + (id ? ' id="' + id + '"' : "") + ' style="width:' + w + "px;height:" + h + 'px"><div class="mx-blogrow-img" style="width:' + h +
+      "px;background-image:url(" + src + ')"></div><div class="mx-blogcard-body"><div class="mx-blogcard-date">' + esc(date) + '</div><div class="mx-blogcard-title">' + esc(title) +
+      '</div><div class="mx-blogcard-bar"></div></div></div>';
   };
   // Un tirage du manuel : une photo sans légende, virée au sépia, cadrée par pos (ex. le pont du Dunkerque, sans le filigrane
   // du blog : « 50% 100% » avec size « 100% auto ») ; avant le pivot, c'est l'image anonyme ; après, la vraie photo revient.

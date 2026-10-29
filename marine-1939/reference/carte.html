@@ -278,7 +278,7 @@ function buildMed(world, T) {
     });
     EV.pieces.forEach(function (t, i) { ripples(world, T, t, D[0] + off[i][0], D[1] + off[i][1], 50, 24, 2); });
   }
-  if (T >= EV.cardDial) keep(land(world, T, EV.cardDial, MX.blogCardHTML(null, "Les cadrans optiques", "janvier 2012", null, 520), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]));
+  if (T >= EV.cardDial) keep(land(world, T, EV.cardDial, MX.blogRowHTML(null, "Les cadrans optiques", "dimanche 29 janvier 2012", IMG + "cadrans-optiques-mogador.jpg"), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]));
   if (T >= EV.cardDial + .1) keep(onChart(world, MX.pinHTML(null, 30), W.PIN_DIAL[0], W.PIN_DIAL[1]));
   // le tirage du manuel (sombre à 22,92), puis la vraie photo du Dunkerque (remonte à 35,17)
   var P = W.PRINT;

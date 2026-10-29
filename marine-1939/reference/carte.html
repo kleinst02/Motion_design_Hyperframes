@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>MARINE 1939 · le manuel et la carte, référence exécutable</title>
+<!--
+  Référence exécutable du film (voir ../frame.md et ../STORYBOARD.md). Le code commun n'est PAS ici : il est dans
+  ../assets/carte/mx-kit.css, ../assets/carte/mx-data.js et ../assets/carte/mx-kit.js, que chaque séquence charge tels
+  quels (stations MX.W, partition caméra MX.camAt et MX.blurAt, Strasbourg MX.strasAt, croiseur MX.clAt, route
+  MX.routeDoneAt). Cette page reconstruit l'image du film à n'importe quel temps T (secondes du film) : ouvrir dans
+  Chromium et appeler demo(5.30), ou ajouter ?t=5.30&guides=1 à l'adresse ; KEYS liste les images clés du storyboard.
+  guides=1 trace la bande du sous-titre (y 890 à 980) ; une maquette posée à terre est barrée d'une croix rouge et
+  signalée dans la console (règle de l'auteur : les navires sont toujours sur la mer).
+  Les temps des événements (EV) sont ceux du storyboard, en temps du film ; les séquences les rejouent en temps local.
+-->
+<link rel="stylesheet" href="../assets/carte/mx-kit.css">
+<style>
+  html, body { margin: 0; background: #000; }
+  #frame { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+  .guide { position: absolute; pointer-events: none; }
+  .guide.band { left: 0; top: 890px; width: 1920px; height: 90px; outline: 2px dashed rgba(255, 0, 140, .8); outline-offset: -2px; }
+  .bad { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; color: #f00; font: 700 60px/60px sans-serif; text-align: center; }
+  #label { position: absolute; left: 12px; top: 8px; font: 600 18px "Instrument Sans"; color: #ff2d8c; text-shadow: 0 0 3px #000; }
+</style>
+</head>
+<body>
+<div id="frame"></div>
+<script src="../assets/carte/mx-data.js"></script>
+<script src="../assets/carte/mx-kit.js"></script>
+<script>
+var IMG = "../assets/img/", W = MX.W;
+/* ===================== les événements du storyboard (temps du film) ===================== */
+var EV = {
+  typed: [0.04, 0.11, 0.18, 0.25, 0.32, 0.39, 0.46, 0.53, 0.60, 0.69, 0.78, 1.06, 1.38, 1.68],   // « SEPTEMBRE 1939 », lettre à lettre
+  smoke: [2.40, 2.58, 2.76], wake: [2.90, 3.02, 3.14],              // la gravure se met en route
+  four: [4.08, 4.34],                                               // le « 4e » arrive de la caméra, se pose
+  pageToNight: [4.70, 5.70], lampOut: [23.17, 23.37], phoneOn: 26.62, dayRise: [28.70, 29.90],
+  lineSink: { 2: 19.24, 3: 19.54, 4: 19.84 }, sinkD: 1.2,
+  mkSink: 8.02, salvo: [7.87, 8.12, 8.37], lossMK: [8.52, 8.92], pencilMK: 6.42, pencilMKstep: .2,
+  toulonSink: [11.42, 11.57, 11.72, 11.87, 12.02], toulonSinkD: 1.2, pencilT: 9.92, pencilTstep: .12,
+  bookFall: [14.14, 14.40], bookShadow: 13.80, hl: [16.45, 16.73, 17.01],
+  dialSink: 21.48, printSink: 22.92,
+  ghost: [29.40, 29.40, 29.60, 29.80, 30.00], lineRise: [30.86, 31.66, 31.93, 32.15, 32.41],
+  epervier: 32.36, pieces: [32.76, 32.86, 32.96], cardDial: 33.16, assemble: [33.87, 34.26, 34.50],
+  photoRise: 35.17, sheetFade: [38.35, 38.55], clRise: 38.40, cardNY: 38.50, cardToulon: 38.75, lossToulon: [41.45, 41.85],
+  stripes: [42.43, 42.63], header: [42.66, 42.82], tag: 43.36, button: [44.76, 44.91], url: 45.06, cursor: [45.21, 45.64], cursorAway: 46.26, iris: [48.60, 50.10], sheen: [46.60, 47.60]
+};
+/* les morceaux de sous-titre : [entrée, sortie, thèmes [[t, thème]…], mots [[texte, type, t]…]] */
+var SUBS = [
+  [2.32, 3.72, [[0, "paper"]], [["La", "", 2.32], ["France", "", 2.50], ["entre", "", 2.88], ["en", "", 3.28], ["guerre", "", 3.48]]],
+  [3.74, 5.70, [[0, "paper"], [5.05, "night"]], [["avec", "", 3.74], ["la", "", 4.08], ["quatrième", "box", 4.34], ["flotte", "", 4.80], ["du", "", 5.00], ["monde.", "", 5.24]]],
+  [6.15, 9.22, [[0, "night"]], [["Juillet", "", 6.15], ["1940 :", "", 6.72], ["Mers el-Kébir", "box", 8.07], [".", "", 8.07]]],
+  [9.59, 12.56, [[0, "night"]], [["Novembre", "", 9.59], ["1942 :", "", 10.28], ["Toulon", "box", 11.76], [".", "", 11.76]]],
+  [14.60, 15.61, [[0, "night"]], [["Dans", "", 14.60], ["les", "", 14.78], ["manuels,", "", 15.02]]],
+  [15.66, 17.79, [[0, "night"], [15.95, "paper"]], [["toute", "", 15.66], ["son", "", 15.92], ["histoire", "", 16.12], ["tient", "", 16.56], ["en", "", 16.84], ["trois lignes", "boxstroke", 17.10], [".", "", 17.10]]],
+  [18.12, 19.93, [[0, "paper"], [18.20, "night"]], [["Le", "", 18.12], ["reste", "", 18.34], ["a", "", 18.84], ["sombré", "box", 19.14], [".", "", 19.14]]],
+  [20.01, 23.26, [[0, "night"]], [["Ses", "", 20.01], ["navires", "box", 20.22], [".", "", 20.22], ["Ses", "", 21.14], ["matériels", "box", 21.38], [".", "", 21.38], ["Ses", "", 22.48], ["hommes", "box", 22.82], [".", "", 22.82]]],
+  [27.16, 30.34, [[0, "night"], [29.40, "day"]], [["MARINE", "", 27.16], ["1939", "", 27.60], ["fait", "", 28.72], ["revivre", "box", 29.14], ["cette", "", 29.78], ["flotte.", "", 29.98]]],
+  [30.70, 32.65, [[0, "day"]], [["Ses", "", 30.70], ["navires,", "", 30.94], ["un par un", "box", 31.71], [".", "", 31.71]]],
+  [32.71, 35.01, [[0, "day"]], [["Ses", "", 32.71], ["matériels,", "", 33.00], ["pièce par pièce", "box", 33.87], [".", "", 33.87]]],
+  [35.29, 37.83, [[0, "day"]], [["Ses", "", 35.29], ["hommes,", "", 35.64], ["de l’amiral au matelot", "box", 36.22], [".", "", 36.22]]],
+  [38.09, 39.44, [[0, "day"]], [["De", "", 38.09], ["New", "", 38.32], ["York", "", 38.54], ["à", "", 38.78], ["Toulon,", "", 38.92]]],
+  [39.51, 42.02, [[0, "day"]], [["ses", "", 39.51], ["heures", "", 39.80], ["de", "", 40.02], ["gloire…", "", 40.28], ["et", "", 41.15], ["ses", "", 41.40], ["drames", "boxstroke", 41.56], [".", "", 41.56]]]
+];
+var TYPE = [[["Il", "", 23.67], ["est", "", 23.86], ["temps", "", 24.12], ["de", "", 24.24], ["renflouer", "boxstroke", 24.48], ["leur", "", 25.00], ["histoire.", "", 25.16]], 23.67, 26.17, 26.31];
+/* les images clés du storyboard : [séquence, temps local, ce qu'on voit] */
+var KEYS = [
+  ["F1", 1.70, "la date se tape"], ["F1", 4.30, "le 4e arrive"], ["F1", 5.30, "la bascule : le manuel sur la carte, la flotte"],
+  ["F2", 1.40, "l'escadre à Mers el-Kébir, 3·7·40"], ["F2", 3.05, "la Bretagne sombre, cerclée de rouge"], ["F2", 3.40, "le Strasbourg s'échappe"],
+  ["F3", 0.40, "le Strasbourg file"], ["F3", 1.70, "la rade de Toulon"], ["F3", 2.62, "le sabordage"], ["F3", 3.80, "la rade vide"],
+  ["F4", 1.10, "le manuel tombe"], ["F4", 1.85, "le manuel tombé, « Dans les manuels, »"], ["F4", 4.15, "les trois lignes"], ["F4", 4.40, "le recul vers l'ouest"],
+  ["F5", 1.10, "le reste"], ["F5", 1.90, "le reste sombre"], ["F5", 3.80, "le cadran sombre"], ["F5", 5.15, "le tirage sombre"],
+  ["F6", 2.00, "le pivot"], ["F7", 1.40, "le blog s'allume"], ["F7", 3.40, "le jour se lève"],
+  ["F8", 1.85, "un par un"], ["F8", 4.20, "pièce par pièce"], ["F9", 0.80, "la photo du Dunkerque"], ["F9", 2.25, "l'équipage"],
+  ["F10", 0.75, "l'Atlantique, New York"], ["F10", 2.40, "ses heures de gloire"], ["F10", 3.85, "Toulon, et ses drames"], ["F10", 4.30, "la plongée dans l'article"],
+  ["F11", 1.60, "le bandeau du blog"], ["F11", 3.40, "le clic"], ["F11", 5.50, "la tenue vivante"]
+];
+function keyT(k) { var f = MX.FRAMES[+k[0].slice(1) - 1]; return f[1] + k[1]; }
+
+/* ===================== petits outils ===================== */
+function el(html) { var d = document.createElement("div"); d.innerHTML = html; return d.firstElementChild; }
+function clamp(v) { return Math.max(0, Math.min(1, v)); }
+function onChart(world, html, x, y, rot, extra) {
+  var e = el('<div class="mx-on">' + html + "</div>");
+  e.style.transform = "translate(" + x + "px," + y + "px) rotate(" + (rot || 0) + "deg)" + (extra || "");
+  world.appendChild(e); return e;
+}
+function sinkState(e, T, t0) {             // sombrer en deux vitesses : 0,2 s power2.in, puis 1,0 s linéaire ; false si disparu
+  if (T < t0) return true;
+  var a = clamp((T - t0) / .2), qa = a * a, b = clamp((T - t0 - .2) / 1.0);
+  if (b >= 1) { e.remove(); return false; }
+  var op = T < t0 + .2 ? 1 - .65 * qa : .35 * (1 - b), bl = T < t0 + .2 ? 3 * qa : 3 + 3 * b;
+  e.style.opacity = op; e.style.filter = "blur(" + bl + "px)"; e.style.transform += " scale(" + (1 - .1 * qa) + ")"; return true;
+}
+function riseState(e, T, t0, d) {          // remonter : depuis 40 %, flou 6, échelle 1,04 (expo.out)
+  d = d || .2; var p = clamp((T - t0) / d), q = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+  if (T < t0) { e.style.opacity = .16; e.style.filter = "blur(5px)"; return; }
+  e.style.opacity = .4 + .6 * q; e.style.filter = "blur(" + (6 * (1 - q)) + "px)"; e.style.transform += " scale(" + (1.04 - .04 * q) + ")";
+}
+function ripples(world, T, t0, x, y, r0, step, n) {   // des ronds dans l'eau ouverts à t0, 1,0 s
+  var p = (T - t0) / 1.0; if (p < 0 || p >= 1) return;
+  var e = onChart(world, MX.ripplesSVG(n || 3, r0, step, "#2f6c80", .85 * (1 - p)), x, y, 0, " scale(" + (1 + .35 * p) + ")");
+}
+function land(world, T, t0, html, x, y, rot) {      // un objet qui arrive de la caméra (×1,2, flou 8) et se pose en 0,2 s
+  if (T < t0) return null;
+  var p = clamp((T - t0) / .2), q = 1 - Math.pow(1 - p, 3), e = onChart(world, html, x, y, rot, " scale(" + (1.2 - .2 * q) + ")");
+  e.style.opacity = clamp(p * 4); e.style.filter = "blur(" + (8 * (1 - q)) + "px)"; return e;
+}
+function model(world, m, chart, T, state) {
+  var e = onChart(world, MX.modelHTML(m[0], m[3]), m[1], m[2], m[4]);
+  var bad = MX.footprintClear(chart, m[0], m[1], m[2], m[3], m[4]);
+  if (bad) { console.error("T " + T.toFixed(2) + " : maquette à terre", m, bad); world.insertAdjacentHTML("beforeend", '<div class="bad" style="left:' + bad[0] + "px;top:" + bad[1] + 'px">✕</div>'); }
+  return e;
+}
+
+/* ===================== l'image du film au temps T ===================== */
+function demo(T) {
+  T = +T; var F = document.getElementById("frame"); F.innerHTML = "";
+  var cam = MX.camAt(T), night = T < EV.lampOut[1], day = T >= EV.dayRise[0];
+  var dayK = clamp((T - EV.dayRise[0]) / (EV.dayRise[1] - EV.dayRise[0]));
+  F.appendChild(el('<div class="mx-ground' + (dayK >= 1 ? " day" : "") + '"></div>'));
+  if (cam) {
+    var stage = el('<div class="mx-stage"></div>'), world = el('<div class="mx-world"></div>'), med = world, atl = cam.chart === "atlantic";
+    stage.appendChild(world); F.appendChild(stage);
+    if (atl) {                                    // séquence 10 : la carte de l'Atlantique, la feuille de la Méditerranée posée dessus
+      world.innerHTML = MX.chartSVG("atlantic", "ref-atl");
+      world.insertAdjacentHTML("beforeend", MX.medSheetHTML("ref-sheet", '<div id="ref-sheet-objects"></div>'));
+      med = document.getElementById("ref-sheet-objects");        // les objets de la Méditerranée s'effacent quand ils deviennent minuscules
+      med.style.opacity = 1 - clamp((T - EV.sheetFade[0]) / (EV.sheetFade[1] - EV.sheetFade[0]));
+    } else world.innerHTML = MX.chartSVG("med", "ref-med");
+    buildMed(med, T);
+    if (atl) buildAtl(world, T);
+    MX.applyCam(world, cam);
+    var b = MX.blurAt(T); if (b > .3) stage.style.filter = "blur(" + b + "px)";
+    if (!atl && T >= 8.82 && T < 10.33) {          // le Strasbourg qui s'échappe : sa propre scène, même caméra, sans flou
+      var st2 = el('<div class="mx-stage"></div>'), w2 = el('<div class="mx-world"></div>'), q2 = MX.strasAt(T);
+      st2.appendChild(w2); F.appendChild(st2); model(w2, ["bb", q2[0], q2[1], 230, q2[2]], "med", T); MX.applyCam(w2, cam);
+    }
+  }
+  // lumières
+  if (T < EV.pageToNight[1]) {
+    var pk = 1 - clamp((T - EV.pageToNight[0]) / (EV.pageToNight[1] - EV.pageToNight[0]));
+    var pg = el('<div class="mx-layer" style="background:linear-gradient(90deg,rgba(90,63,28,.42),rgba(90,63,28,0) 20%),radial-gradient(ellipse at 52% 46%,rgba(107,74,34,0) 55%,rgba(107,74,34,.32) 100%)"></div>');
+    pg.style.opacity = pk; F.appendChild(pg);
+  }
+  if (T >= EV.pageToNight[0] && T < EV.lampOut[1]) {
+    var lk = clamp((T - EV.pageToNight[0]) / (EV.pageToNight[1] - EV.pageToNight[0])) * (1 - clamp((T - EV.lampOut[0]) / (EV.lampOut[1] - EV.lampOut[0])));
+    var lamp = el("<div>" + MX.lampHTML(960, 480, 980, 580) + "</div>"); lamp.style.opacity = lk; F.appendChild(lamp);
+    if (T > EV.lampOut[0]) { var bl = el('<div class="mx-layer" style="background:#0c0906"></div>'); bl.style.opacity = clamp((T - EV.lampOut[0]) / (EV.lampOut[1] - EV.lampOut[0])); F.appendChild(bl); }
+  }
+  if (T >= EV.lampOut[1] && T < 26.40) F.appendChild(el('<div class="mx-layer" style="background:#0c0906"></div>'));
+  if (T >= 26.40 && T < EV.dayRise[1]) {          // l'aube : la lumière du téléphone, puis le jour qui gagne les bords
+    var glow = clamp((T - EV.phoneOn) / 1.0), r1 = 260 + 120 * clamp((T - 27.62) / 1.08) + 900 * dayK;
+    F.appendChild(el('<div class="mx-layer" style="background:radial-gradient(circle ' + Math.round(r1 + 600) + 'px at 960px 470px,rgba(8,6,3,0) ' +
+      Math.round(r1 * glow) + 'px,rgba(8,6,3,' + (.97 * (1 - dayK)).toFixed(2) + ') ' + Math.round(r1 + 560) + 'px)"></div>'));
+  }
+  if (day && cam) { var dl = el("<div>" + MX.dayHTML() + "</div>"); dl.style.opacity = dayK; F.appendChild(dl); }
+  // le « 4e » en vol
+  if (T >= EV.four[0] && T < EV.four[1]) {
+    var fp = clamp((T - EV.four[0]) / (EV.four[1] - EV.four[0])), fq = fp * fp;
+    var target = MX.project(cam, MX.bookPoint(W.BOOK_A, "r", 1540, 640)[0], MX.bookPoint(W.BOOK_A, "r", 1540, 640)[1]);
+    var px = 560 * cam.s * (W.BOOK_A.w / 2 / 1920) * (1.25 - .25 * fq);    // la taille du tampon à l'écran, de ×1,25 à ×1
+    [[.5, .14, 24], [.25, .3, 16], [0, 1, 12 * (1 - fq)]].forEach(function (G) {
+      var q2 = clamp(fq - G[0] * .25), x = 1500 + (target.x - 1500) * q2, y = -300 + (target.y + 40 - -300) * q2;
+      var e = el(MX.stamp4eHTML(null, px)); e.style.transform = "translate(" + (x - px * .45) + "px," + (y - px * .5) + "px) rotate(-6deg)";
+      e.style.opacity = G[1] * clamp(fp * 5); e.style.filter = "blur(" + G[2] + "px)"; F.appendChild(e);
+    });
+  }
+  // sous-titre
+  SUBS.forEach(function (S) {
+    if (T < S[0] - .001 || T >= S[1]) return;
+    var theme = S[2][0][1]; S[2].forEach(function (th) { if (th[0] === 0 || T >= th[0]) theme = th[1]; });
+    var sb = el(MX.subHTML(null, S[3].map(function (w) { return [w[0], w[1]]; }), theme));
+    sb.querySelectorAll(".mx-w").forEach(function (w, i) {
+      var t0 = S[3][i][2]; if (T < t0 - .07) { w.style.opacity = 0; return; }
+      var bx = w.querySelector(".mx-box-bg"), nb = S[3].slice(i + 1).filter(function (x) { return x[1].indexOf("box") === 0; })[0];
+      if (bx) bx.style.transform = "scaleX(" + clamp((T - t0 + .07) / .16) * (nb ? 1 - clamp((T - nb[2] + .1) / .12) : 1) + ")";
+      if (bx && nb && T > nb[2] - .1) { bx.style.transformOrigin = "100% 50%"; w.querySelector(".mx-box-tx").style.color = "inherit"; }
+      var st = w.querySelector(".mx-stroke"); if (st) st.style.transform = "scaleX(" + clamp((T - t0) / .4) + ")";
+    });
+    if (T > S[1] - .14) { sb.style.opacity = (S[1] - T) / .14; sb.style.filter = "blur(" + (6 * (1 - (S[1] - T) / .14)) + "px)"; }
+    F.appendChild(sb);
+  });
+  if (T >= TYPE[1] - .1 && T < TYPE[3]) {         // le pivot : la phrase sur le noir
+    var ty = el(MX.typeHTML(null, TYPE[0].map(function (w) { return [w[0], w[1]]; })));
+    ty.querySelectorAll(".mx-w").forEach(function (w, i) {
+      var t0 = TYPE[0][i][2]; if (T < t0 - .07) { w.style.opacity = 0; return; }
+      if (w.querySelector(".mx-box-bg")) { w.querySelector(".mx-box-bg").style.transform = "scaleX(" + clamp((T - t0 + .07) / .16) + ")"; var rp = clamp((T - t0) / .2); w.style.transform = "translateY(" + (40 * (rp >= 1 ? 0 : Math.pow(2, -10 * rp))) + "px)"; }
+      var st = w.querySelector(".mx-stroke"); if (st) st.style.transform = "scaleX(" + clamp((T - t0 - .04) / .4) + ")";
+    });
+    ty.firstElementChild.style.transform = "scale(" + (1 + .05 * clamp((T - 23.67) / 2.5)) + ")";       // la phrase avance du premier mot à sa sortie
+    if (T > TYPE[2]) { ty.style.opacity = 1 - clamp((T - TYPE[2]) / .15); ty.style.filter = "blur(" + (6 * clamp((T - TYPE[2]) / .15)) + "px)"; }
+    F.appendChild(ty);
+  }
+  if (T >= 42.36) endCard(F, T);
+  F.insertAdjacentHTML("beforeend", '<div class="mx-grain' + (dayK >= 1 && T < 42.36 ? " day" : "") + '"></div>');
+  if (/guides=1/.test(location.search)) F.insertAdjacentHTML("beforeend", '<div class="guide band"></div><div id="label">' + T.toFixed(2) + "</div>");
+  return T;
+}
+
+/* la carte de la Méditerranée et ses objets (dans le monde, ou dans la feuille posée sur l'Atlantique) */
+function buildMed(world, T) {
+  function keep(e) { return e; }
+  // le manuel A (toujours là, sur la France)
+  world.insertAdjacentHTML("beforeend", MX.bookHTML("refa", W.BOOK_A, MX.pageVersoSVG("refav"), MX.pageEngravingSVG("refae", T >= EV.four[1])));
+  keep(document.getElementById("refa-book"));
+  document.querySelectorAll("#refa-pr .mx-tc").forEach(function (t, i) { if (T < EV.typed[i]) t.style.opacity = 0; });
+  [0, 1, 2].forEach(function (n) {
+    var sk = clamp((T - EV.smoke[n]) / .4), wk = clamp((T - EV.wake[n]) / .3);
+    document.querySelectorAll("#refae-smoke" + n + " polyline").forEach(function (p) { p.setAttribute("stroke-dashoffset", (1 - sk).toFixed(3)); });
+    document.querySelectorAll("#refae-wake" + n + " path").forEach(function (p) { p.setAttribute("stroke-dashoffset", (1 - wk).toFixed(3)); });
+  });
+  // les crayons et les cercles rouges (une fois écrits, ils restent)
+  if (T >= EV.pencilMK) { var pm = keep(onChart(world, MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1]));
+    pm.querySelectorAll(".mx-pc").forEach(function (c, i) { if (T < EV.pencilMK + i * EV.pencilMKstep) c.style.opacity = 0; }); }
+  if (T >= EV.lossMK[0]) { var lm = keep(onChart(world, MX.lossRingSVG(null, W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1])), le = lm.querySelector("ellipse");
+    le.setAttribute("stroke-dashoffset", (+le.dataset.len * (1 - clamp((T - EV.lossMK[0]) / .4))).toFixed(1)); }
+  if (T >= EV.pencilT) { var pt = keep(onChart(world, MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1]));
+    pt.querySelectorAll(".mx-pc").forEach(function (c, i) { if (T < EV.pencilT + i * EV.pencilTstep) c.style.opacity = 0; }); }
+  // la ligne de 1939 : à flot (0 à 6,2 pour les deux cuirassés ; jusqu'à 19,2 à 20,6 pour les trois autres), puis épaves sous le papier, puis remontée
+  W.LINE.forEach(function (m, i) {
+    if (T < 6.2 || (i >= 2 && T < EV.lineSink[i] + EV.sinkD)) {
+      var e = keep(model(world, m, "med", T)); if (i >= 2) sinkState(e, T, EV.lineSink[i]);
+      if (i >= 2) ripples(world, T, EV.lineSink[i], m[1], m[2], 70, 34, 4);
+    } else if (T >= EV.ghost[i]) {
+      var g = keep(model(world, m, "med", T));
+      if (T < EV.lineRise[i]) { g.style.opacity = .16 * clamp((T - EV.ghost[i]) / .2); g.style.filter = "blur(5px)"; } else riseState(g, T, EV.lineRise[i]);
+      ripples(world, T, EV.lineRise[i], m[1], m[2], 70, 34, 3);
+    }
+  });
+  // Mers el-Kébir
+  if (T >= 5.82) W.MK.forEach(function (m, i) {
+    if (i === 3) return;
+    if (i === 2) { if (T < EV.mkSink + 1.2) { var e = model(world, m, "med", T); sinkState(e, T, EV.mkSink); } ripples(world, T, EV.mkSink, m[1], m[2], 70, 34, 4); return; }
+    keep(model(world, m, "med", T));
+  });
+  EV.salvo.forEach(function (t, k) { ripples(world, T, t, [1050, 1140, 980][k], [3070, 3040, 3010][k], 14, 10, 3); });
+  // le Strasbourg (MK[3]) : amarré, puis MX.strasAt, puis à son poste à Toulon, puis sabordé
+  ripples(world, T, 8.82, W.MK[3][1], W.MK[3][2], 60, 30, 3);       // il quitte son poste
+  ripples(world, T, 10.33, W.TOULON[4][1], W.TOULON[4][2], 60, 30, 3); // il s'amarre à Toulon
+  if (T >= 5.82 && T < EV.toulonSink[4] + EV.toulonSinkD && !(T >= 8.82 && T < 10.33)) {
+    var q = T < 8.82 ? [W.MK[3][1], W.MK[3][2], W.MK[3][4]] : T < 10.33 ? MX.strasAt(T) : [W.TOULON[4][1], W.TOULON[4][2], W.TOULON[4][4]];
+    var se = model(world, ["bb", q[0], q[1], 230, q[2]], "med", T);
+    if (T >= EV.toulonSink[4]) sinkState(se, T, EV.toulonSink[4]);
+  }
+  // Toulon, novembre 1942
+  if (T >= 9.32) W.TOULON.forEach(function (m, i) {
+    if (i === 4) { ripples(world, T, EV.toulonSink[4], m[1], m[2], 60, 30, 3); return; }
+    if (T < EV.toulonSink[i] + EV.toulonSinkD) { var e = model(world, m, "med", T); sinkState(e, T, EV.toulonSink[i]); }
+    ripples(world, T, EV.toulonSink[i], m[1], m[2], 60, 30, 3);
+  });
+  // le manuel B, tombé sur la rade (13,80 à 14,40), jusqu'au noir du pivot
+  if (T >= EV.bookShadow && T < EV.bookFall[1]) {         // l'ombre du manuel qui va tomber : elle paraît (0,2 s), puis se resserre avec la chute
+    var sa = clamp((T - EV.bookShadow) / .2), sf = clamp((T - EV.bookFall[0]) / (EV.bookFall[1] - EV.bookFall[0])), sq = sf * sf;
+    var sh = onChart(world, '<div style="width:1400px;height:930px;margin:-465px 0 0 -700px;border-radius:40px;background:rgba(10,6,2,.5)"></div>', 3090, 1440, 4, " scale(" + (1.4 - .4 * sq) + ")");
+    sh.style.opacity = .2 * sa + .5 * sq; sh.style.filter = "blur(" + (40 - 25 * sq) + "px)";
+  }
+  if (T >= EV.bookFall[0] && T < EV.lampOut[1]) {
+    world.insertAdjacentHTML("beforeend", MX.bookHTML("refb", W.BOOK_B, MX.pageBlankSVG(216), MX.pageLinesSVG("refbl")));
+    var bk = document.getElementById("refb-book"), fp = clamp((T - EV.bookFall[0]) / (EV.bookFall[1] - EV.bookFall[0])), fq = fp * fp;
+    if (fp < 1) { bk.style.transform = "translateZ(" + (700 * (1 - fq)) + "px) rotate(" + (4 + 6 * (1 - fq)) + "deg)"; bk.style.filter = "blur(" + (10 * (1 - fq)) + "px)"; }
+    else if (T >= 19.04) bk.style.filter = "blur(" + (4 * clamp((T - 19.04) / .2)).toFixed(2) + "px)";   // séquence 5 : au bord droit, flou de profondeur
+    EV.hl.forEach(function (t, i) { var r = document.getElementById("refbl-hl" + i); r.setAttribute("opacity", ".85"); r.style.transformBox = "fill-box"; r.style.transform = "scaleX(" + clamp((T - t) / .2) + ")"; });
+    ripples(world, T, EV.bookFall[1], 3090, 1420, 760, 150, 3);
+  }
+  // le cadran : là dès la séquence 5, sombre à 21,48 ; ses trois pièces remontent (32,76) et s'assemblent (33,87, 34,26, 34,50)
+  var D = W.DIAL;
+  if (T >= 17.84 && T < EV.dialSink + 1.2) { var dz = onChart(world, MX.dialSVG("refdial", D[2]), D[0], D[1], D[3]); dz.querySelector("svg").style.transform = "translate(" + -D[2] + "px," + -D[2] + "px)"; sinkState(dz, T, EV.dialSink); }
+  ripples(world, T, EV.dialSink, D[0], D[1], 120, 40, 4);
+  if (T >= EV.pieces[0]) {
+    var dz2 = keep(onChart(world, MX.dialSVG("refdial2", D[2]), D[0], D[1], D[3])); dz2.querySelector("svg").style.transform = "translate(" + -D[2] + "px," + -D[2] + "px)";
+    var off = [[-70, -40], [80, 50], [10, -110]];
+    ["bezel", "face", "hands"].forEach(function (p, i) {
+      var g = document.getElementById("refdial2-" + p), a = clamp((T - EV.assemble[i]) / (p === "hands" ? .2 : .18)), k = 1 - Math.pow(1 - a, 3);
+      if (T < EV.pieces[i]) { g.style.opacity = 0; return; }
+      g.style.transform = "translate(" + (off[i][0] * (1 - k)) + "px," + (off[i][1] * (1 - k)) + "px)" + (p === "hands" ? " rotate(" + (-40 * (1 - k)) + "deg)" : "");
+      g.style.opacity = .4 + .6 * clamp((T - EV.pieces[i]) / .2);
+    });
+    EV.pieces.forEach(function (t, i) { ripples(world, T, t, D[0] + off[i][0], D[1] + off[i][1], 50, 24, 2); });
+  }
+  if (T >= EV.cardDial) keep(land(world, T, EV.cardDial, MX.blogCardHTML(null, "Les cadrans optiques", "janvier 2012", null, 520), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]));
+  if (T >= EV.cardDial + .1) keep(onChart(world, MX.pinHTML(null, 30), W.PIN_DIAL[0], W.PIN_DIAL[1]));
+  // le tirage du manuel (sombre à 22,92), puis la vraie photo du Dunkerque (remonte à 35,17)
+  var P = W.PRINT;
+  if (T >= 17.84 && T < EV.printSink + 1.2) { var pr = onChart(world, MX.printHTML(null, IMG + "dunkerque-a-quai-collection-langry.jpg", P[2], P[3], "50% 100%", "130% auto"), P[0], P[1], P[4]); sinkState(pr, T, EV.printSink); }
+  ripples(world, T, EV.printSink, P[0], P[1], 170, 50, 4);
+  if (T >= EV.photoRise) {
+    var ph = keep(onChart(world, MX.photoCardHTML(null, IMG + "dunkerque-a-quai-collection-langry.jpg", W.PHOTO[2], W.PHOTO[3], "Le Dunkerque. Collection Wilfried Langry."), W.PHOTO[0], W.PHOTO[1], W.PHOTO[4]));
+    riseState(ph, T, EV.photoRise); ripples(world, T, EV.photoRise, P[0], P[1], 260, 60, 2);
+    if (T >= EV.photoRise + .35) keep(onChart(world, MX.pinHTML(null, 30), W.PIN_PHOTO[0], W.PIN_PHOTO[1]));
+  }
+  // le téléphone (à la place du manuel B), la photo de L'Épervier
+  if (T >= 26.40) {
+    var pz = keep(onChart(world, MX.phoneHTML(null, W.PHONE[2], IMG + "blog-accueil-mobile.png"), W.PHONE[0], W.PHONE[1], W.PHONE[3]));
+    pz.querySelector(".mx-phone-screen").style.filter = "brightness(" + clamp((T - EV.phoneOn) / .2).toFixed(2) + ")";
+  }
+  if (T >= EV.epervier) {
+    keep(land(world, T, EV.epervier, MX.photoCardHTML(null, IMG + "epervier-collection-langry.jpg", 456, 300, "L’Épervier. Collection Wilfried Langry."), W.CARD_EPERVIER[0], W.CARD_EPERVIER[1], W.CARD_EPERVIER[2]));
+    if (T >= EV.epervier + .1) keep(onChart(world, MX.pinHTML(null, 30), W.PIN_EPERVIER[0], W.PIN_EPERVIER[1]));
+  }
+}
+/* la carte de l'Atlantique : la route, le croiseur, les deux articles, le cercle rouge de Toulon */
+function buildAtl(world, T) {
+  onChart(world, MX.routeSVG("refroute", W.ROUTE, MX.routeDoneAt(T)), 0, 0);
+  if (T >= EV.clRise && T < 42.36) { var q = MX.clAt(T), e = model(world, ["cl", q[0], q[1], 250, q[2]], "atlantic", T); riseState(e, T, EV.clRise); ripples(world, T, EV.clRise, q[0], q[1], 60, 30, 3); }
+  if (T >= EV.cardNY) { land(world, T, EV.cardNY, MX.blogCardHTML(null, "La 4ème DC à New York", "août 2013", IMG + "4e-dc-collection-langry.jpg"), W.CARD_NY[0], W.CARD_NY[1], W.CARD_NY[2]);
+    if (T >= EV.cardNY + .1) onChart(world, MX.pinHTML(null, 34), W.PIN_NY[0], W.PIN_NY[1]); }
+  if (T >= EV.cardToulon) { land(world, T, EV.cardToulon, MX.blogCardHTML(null, "Les épaves de Toulon", "jeudi 5 mai 2016", IMG + "epaves-toulon-collection-langry.jpg"), W.CARD_TOULON[0], W.CARD_TOULON[1], W.CARD_TOULON[2]);
+    if (T >= EV.cardToulon + .1) onChart(world, MX.pinHTML(null, 34), W.PIN_TOULON[0], W.PIN_TOULON[1]); }
+  if (T >= EV.lossToulon[0]) { var L = W.LOSS_TOULON, lz = onChart(world, MX.lossRingSVG(null, L[2], L[3], L[4]), L[0], L[1]), le = lz.querySelector("ellipse");
+    le.setAttribute("stroke-dashoffset", (+le.dataset.len * (1 - clamp((T - EV.lossToulon[0]) / .4))).toFixed(1)); }
+}
+/* la carte de fin */
+function endCard(F, T) {
+  F.insertAdjacentHTML("beforeend", MX.endCardHTML("ref", IMG));
+  var g = document.getElementById("ref-endground"), cover = el('<div class="mx-layer" style="background:#141414"></div>');
+  F.insertBefore(cover, g.nextSibling);           // le fond rayé sort du noir de l'article : il arrive de la caméra (×1,15, flou 8, expo.out)
+  var gp = clamp((T - EV.stripes[0]) / (EV.stripes[1] - EV.stripes[0])), gq = gp >= 1 ? 1 : 1 - Math.pow(2, -10 * gp);
+  cover.style.opacity = 1 - gq; g.style.transform = "scale(" + (1.15 - .15 * gq) + ")"; g.style.filter = gq < 1 ? "blur(" + (8 * (1 - gq)) + "px)" : "";
+  var h = document.getElementById("ref-header"), hp = clamp((T - EV.header[0]) / (EV.header[1] - EV.header[0])), hq = 1 - Math.pow(1 - hp, 3);
+  h.style.opacity = clamp(hp * 4); h.style.transform = "scale(" + (1.15 - .15 * hq) + ")"; h.style.filter = "blur(" + (10 * (1 - hq)) + "px)";
+  var tag = document.getElementById("ref-tag"), words = tag.textContent.split(" ");
+  tag.innerHTML = words.map(function (w, i) { return '<span style="opacity:' + (T >= EV.tag + i * .07 ? 1 : 0) + '">' + w + "</span>"; }).join(" ");
+  var btn = document.getElementById("ref-btn"), bp = clamp((T - EV.button[0]) / (EV.button[1] - EV.button[0])), bq = bp * bp;
+  btn.style.opacity = T >= EV.button[0] ? 1 : 0; btn.style.transform = "scale(" + (T < EV.button[1] ? 1.25 - .25 * bq : 1) + ")"; btn.style.filter = "blur(" + (T < EV.button[1] ? 12 * (1 - bq) : 0) + "px)";
+  var click = EV.cursor[1], dt = T - click;         // le clic en trois couleurs : enfoncé, relâché, son jaune
+  if (dt >= 0 && dt < .05) { btn.style.transform = "scale(.97)"; btn.style.background = MX.C.accentPress; }
+  else if (dt >= .05 && dt < .15) { btn.style.transform = "scale(" + (.97 + .03 * clamp((dt - .05) / .08)) + ")"; btn.style.background = MX.C.accentFlash; }
+  EV.sheen.forEach(function (t0) {                 // le reflet qui court le long du bouton, deux fois
+    var sp = (T - t0) / 1.0; if (sp < 0 || sp >= 1) return; var x = -30 + 160 * sp;
+    btn.style.backgroundImage = "linear-gradient(100deg,rgba(255,255,255,0) " + x.toFixed(1) + "%,rgba(255,255,255,.6) " + (x + 10).toFixed(1) + "%,rgba(255,255,255,0) " + (x + 20).toFixed(1) + "%)";
+  });
+  document.getElementById("ref-url").style.opacity = T >= EV.url ? 1 : 0;
+  var cu = document.getElementById("ref-cursor"), cp = clamp((T - EV.cursor[0]) / (EV.cursor[1] - EV.cursor[0])), cq = 1 - Math.pow(1 - cp, 3);
+  var away = clamp((T - EV.cursorAway) / .2);
+  cu.style.opacity = T >= EV.cursor[0] ? 1 - away : 0;
+  cu.style.transform = "translate(" + (1500 + (1030 - 1500) * cq + 60 * away) + "px," + (1060 + (742 - 1060) * cq - 120 * Math.sin(Math.PI * cq) * .4) + "px)" + (dt >= 0 && dt < .05 ? " scale(.85)" : "");
+  document.querySelectorAll("#ref-rings i").forEach(function (i, k) { var rp = (T - click - k * .08) / .6; i.style.opacity = rp > 0 && rp < 1 ? (1 - rp).toFixed(2) : 0; i.style.transform = "scale(" + (1 + .12 * clamp(rp)) + ")"; });
+  if (T >= EV.iris[0]) {                           // l'iris se ferme sur le bouton
+    var ip = clamp((T - EV.iris[0]) / (EV.iris[1] - EV.iris[0])), rad = Math.round(1250 * (1 - ip * ip));
+    F.insertAdjacentHTML("beforeend", '<div class="mx-layer" style="background:radial-gradient(circle at 960px 742px,rgba(0,0,0,0) ' + rad + 'px,#000 ' + (rad + 1) + 'px)"></div>');
+  }
+}
+var q = /[?&]t=([0-9.]+)/.exec(location.search);
+demo(q ? +q[1] : 5.30);
+</script>
+</body>
+</html>

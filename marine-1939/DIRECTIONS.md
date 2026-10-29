@@ -180,6 +180,11 @@ première est cachée par la passerelle). À Mers el-Kébir, l'escadre est amarr
 l'avant vers la terre ; la maquette qui sombre est de type Bretagne.
 
 **Le film en 13 séquences** (minutage de la voix ci-dessus).
+
+> Note du storyboard (29 octobre 2026) : `STORYBOARD.md` regroupe ces 13 étapes en 11 séquences. La bascule (2) est la
+> fin de la séquence 1, et le silence (5) ouvre la séquence 4 « Trois lignes ». Les temps qui font foi sont ceux du
+> storyboard, calés au centième sur `onsets.json`.
+
 1. 0,00 à 4,90, le manuel (D1). 0,04 « Septembre 1939 » se tape sur la page ; 2,32, la caméra glisse le long de la
    gravure ; 4,34, « 4e » arrive de la caméra, trop grand et flou, et se pose sur la page comme un tampon jaune.
 2. 4,90 à 6,15, la bascule (D2). La caméra recule et se relève : le livre ouvert est posé sur la carte, de nuit, sous la

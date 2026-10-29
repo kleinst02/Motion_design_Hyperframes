@@ -19,8 +19,11 @@ const PLACES = {
   r6: [1.9, 39.0], r7: [4.6, 41.6], golfe: [3.9, 42.75], corse: [8.6, 42.6],
   // Route of direction D: out of New York by the Narrows and Sandy Hook, south of Santa Maria (Azores), through the
   // middle of the strait of Gibraltar, round the Balearics by the south and the east, into the roads from the south.
-  narrows: [-74.04, 40.6], sandyhook: [-73.86, 40.45], r3d: [-28.0, 36.6], strait: [-5.6, 35.96],
+  narrows: [-74.04, 40.6], sandyhook: [-73.86, 40.45], r3d: [-28.0, 36.25], strait: [-5.6, 35.96],
   bals: [2.0, 38.35], bale: [5.2, 39.6], toulonapp: [5.98, 42.98],
+  // decor of the Atlantic chart, north of the route so that neither crosses the subtitle band in sequence 10:
+  // the sea label between the two article cards, the compass rose off Newfoundland
+  oceanlabel: [-34.0, 47.0], rose: [-45.0, 52.0],
 };
 
 function chart({ name, data, object, bbox, width, height, step }) {
@@ -53,7 +56,8 @@ function chart({ name, data, object, bbox, width, height, step }) {
 
 const result = {
   med: chart({ name: "med", data: atlas("land-10m.json"), object: "land", bbox: [[-3.5, 34.4], [10.6, 45.2]], width: 4200, height: 3900, step: 1 }),
-  atlantic: chart({ name: "atlantic", data: atlas("land-50m.json"), object: "land", bbox: [[-80, 24], [16, 54]], width: 3600, height: 1900, step: 5 }),
+  // the film (sequence 10) frames Toulon and New York with the chart all around them: wider than the styleframe D7 chart
+  atlantic: chart({ name: "atlantic", data: atlas("land-50m.json"), object: "land", bbox: [[-88, 21], [40, 58]], width: 4800, height: 2100, step: 5 }),
 };
 writeFileSync(out, JSON.stringify(result));
 for (const c of Object.values(result)) console.log(c.name, c.width + "x" + c.height, "land path", c.land.length, "chars", JSON.stringify(c.places));

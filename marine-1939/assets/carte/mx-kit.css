@@ -1,0 +1,107 @@
+/* MARINE 1939 · styles du kit du monde (direction D « Le manuel et la carte »). Source UNIQUE, chargée par chaque séquence
+   (<link rel="stylesheet" href="assets/carte/mx-kit.css">) et par reference/carte.html. Les chemins sont relatifs à ce
+   fichier. */
+@font-face { font-family: "Instrument Sans"; src: url("../fonts/InstrumentSans-500.woff2") format("woff2"); font-weight: 500; }
+@font-face { font-family: "Instrument Sans"; src: url("../fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+@font-face { font-family: "Instrument Sans"; src: url("../fonts/InstrumentSans-700.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Space Mono"; src: url("../fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Space Mono"; src: url("../fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Archivo Black"; src: url("../fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+/* la scène : un cadre 1920 × 1080 en perspective ; le monde (la carte) est un calque à plat, incliné par la caméra */
+.mx-layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.mx-ground { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #0c0906; }
+.mx-ground.day { background: #8a7353; }
+.mx-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; perspective: 1600px; perspective-origin: 960px 400px; }
+.mx-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; transform-style: preserve-3d; }
+.mx-chart { position: absolute; left: 0; top: 0; display: block; }
+.mx-chart-tex { position: absolute; left: 0; top: 0; background-size: 360px 360px; opacity: .55; mix-blend-mode: multiply; }
+.mx-on { position: absolute; left: 0; top: 0; }                 /* un objet posé sur la carte : GSAP place x, y, rotation */
+.mx-model { position: absolute; left: 0; top: 0; line-height: 0; }
+.mx-model svg { display: block; filter: drop-shadow(9px 13px 7px rgba(26, 16, 8, .55)); }
+.mx-rip, .mx-pencil, .mx-loss { position: absolute; left: 0; top: 0; overflow: visible; }
+/* la carte de la Méditerranée posée sur celle de l'Atlantique (séquence 10) : une feuille, son bord et son ombre */
+.mx-sheet { position: absolute; left: 0; top: 0; width: 4200px; height: 3900px; transform-origin: 0 0;
+  box-shadow: 0 0 0 14px rgba(239, 227, 196, .9), 0 0 0 18px rgba(78, 66, 50, .35), 150px 210px 320px rgba(40, 25, 10, .45); }
+
+/* le manuel : couverture, tranche, deux pages, texture, gouttière */
+.mx-book { position: absolute; transform-origin: 50% 50%; }
+.mx-cover { position: absolute; left: -24px; top: -16px; right: -24px; bottom: -34px; background: #3b2a1c; border-radius: 10px;
+  box-shadow: 26px 44px 64px rgba(10, 6, 2, .7); }
+.mx-edge { position: absolute; height: 5px; border-radius: 0 0 4px 4px; }
+.mx-page { position: absolute; top: 0; display: block; }
+.mx-paper-tex { position: absolute; left: 0; top: 0; background-size: 360px 360px; opacity: .38; mix-blend-mode: multiply; pointer-events: none; }
+.mx-gutter { position: absolute; top: 0; width: 220px; pointer-events: none;
+  background: linear-gradient(90deg, rgba(60,40,15,0), rgba(60,40,15,.32) 40%, rgba(30,20,8,.62) 50%, rgba(60,40,15,.32) 60%, rgba(60,40,15,0)); }
+
+/* le « 4e » qui arrive de la caméra : le jaune du titre du blog, l'ombre portée dure du titre */
+.mx-4e { position: absolute; left: 0; top: 0; font-family: "Archivo Black", sans-serif; line-height: 1; color: #e6ec37;
+  text-shadow: .02em .02em 0 #1b1a17; white-space: nowrap; transform-origin: 50% 50%; }
+.mx-4e span { font-size: .41em; vertical-align: .95em; }
+
+/* objets du blog et de la collection */
+.mx-phone { position: absolute; left: 0; top: 0; background: #0c0c0e; box-shadow: 22px 34px 46px rgba(30, 20, 8, .45), inset 0 0 0 3px #3a3a40; }
+.mx-phone-screen { position: absolute; overflow: hidden; background: #070707; }
+.mx-phone-bar { background: #1d1d20; color: #cfcfd4; font-family: "Instrument Sans", sans-serif; font-weight: 500; text-align: center; }
+.mx-phone-screen img { width: 100%; display: block; }
+.mx-phone-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(125deg, rgba(255,255,255,.10), rgba(255,255,255,0) 35%); }
+.mx-photo { position: absolute; left: 0; top: 0; background: #f4efe3; padding: 14px 14px 0; box-shadow: 12px 18px 26px rgba(40, 25, 10, .35); }
+.mx-photo-img { background-size: cover; background-position: center; filter: grayscale(1) contrast(1.05); }
+.mx-photo-cap { font-family: "EB Garamond", serif; font-style: italic; font-size: 22px; line-height: 1.25; color: #3b352c; padding: 10px 2px 14px; }
+.mx-blogcard { position: absolute; left: 0; top: 0; background: #141414; border-radius: 4px; overflow: hidden; box-shadow: 16px 24px 34px rgba(40, 25, 10, .42); }
+.mx-blogcard-img { background-size: cover; background-position: center; filter: grayscale(1) contrast(1.06); }
+.mx-blogcard-body { padding: 20px 26px 26px; }
+.mx-blogcard-date { font: 500 22px/1 "Instrument Sans", sans-serif; color: #9a9a9a; }
+.mx-blogcard-title { font: 600 40px/1.1 "Instrument Sans", sans-serif; color: #ececec; margin-top: 12px; }
+.mx-blogcard-bar { height: 6px; width: 96px; background: #e6ec37; margin-top: 18px; transform-origin: 0 50%; }
+.mx-pin { position: absolute; left: 0; top: 0; border-radius: 50%; margin: -15px 0 0 -15px;
+  background: radial-gradient(circle at 35% 35%, #f7dc9c, #9a7432 60%, #4a3410); box-shadow: 4px 6px 8px rgba(30, 15, 5, .45); }
+.mx-dial, .mx-crew { position: absolute; left: 0; top: 0; display: block; }
+.mx-print { position: absolute; left: 0; top: 0; background: #f1e9d6; padding: 12px; box-sizing: border-box; box-shadow: 10px 16px 24px rgba(20, 12, 4, .45); }
+.mx-print-img { width: 100%; height: 100%; background-repeat: no-repeat; filter: grayscale(1) sepia(.45) contrast(1.08) brightness(.96); }
+
+/* lumières */
+.mx-lamp, .mx-day { mix-blend-mode: screen; }
+
+/* sous-titre : la phrase de la voix, en bas au centre (bande y 890 à 980 réservée), mot par mot */
+.mx-sub { position: absolute; left: 0; top: 890px; width: 1920px; height: 90px; text-align: center;
+  font: 600 62px/90px "Instrument Sans", sans-serif; letter-spacing: -.005em; white-space: nowrap; }
+.mx-sub.night { color: #f4eddd; text-shadow: 0 2px 14px rgba(0,0,0,.65), 0 0 2px rgba(0,0,0,.5); }
+.mx-sub.paper { color: #1b1a17; text-shadow: 0 0 16px rgba(241,232,214,.9), 0 0 3px rgba(241,232,214,.8); }
+.mx-sub.day { color: #1d1b18; text-shadow: 0 0 18px rgba(255,250,238,.95), 0 0 4px rgba(255,250,238,.9); }
+.mx-w { display: inline-block; position: relative; line-height: 1.1; }
+.mx-box { padding: 0; margin: 0 .08em; }
+.mx-box-bg { position: absolute; left: -.14em; top: .02em; bottom: -.06em; right: -.14em; background: #e6ec37; border-radius: 3px; transform-origin: 0 50%; }
+.mx-box-tx { position: relative; color: #111111; text-shadow: none; }
+.mx-kw { position: relative; }
+.mx-stroke { position: absolute; left: -.04em; right: -.04em; bottom: -.32em; height: 6px; border-radius: 3px; background: #e6ec37;
+  box-shadow: 0 1px 0 rgba(27, 26, 23, .45); transform-origin: 0 50%; }
+/* le moment typographique (le pivot) : la phrase est l'image, centrée, 84 px au plus, sur le noir */
+.mx-type { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: flex; align-items: center; justify-content: center; }
+.mx-type-line { font: 600 84px/1.12 "Instrument Sans", sans-serif; letter-spacing: -.025em; color: #f4eddd; white-space: nowrap; text-align: center; }
+.mx-type .mx-stroke { bottom: -.22em; height: 7px; }
+
+/* carte de fin, à l'image du blog */
+.mx-end-ground { background: repeating-linear-gradient(135deg, #070707 0 6px, #161616 6px 8px); }
+.mx-end-header { position: absolute; left: 420px; top: 150px; width: 1080px; height: 395px; background-size: cover; background-position: center;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, .6); }
+.mx-end-tag { position: absolute; left: 420px; top: 575px; width: 1080px; font: 500 30px/1.35 "Instrument Sans", sans-serif; color: #d8d8d8; text-align: center; }
+.mx-btn { position: absolute; left: 760px; top: 690px; width: 400px; height: 104px; border-radius: 8px; background: #e6ec37;
+  box-shadow: 8px 8px 0 #1b1a17; display: flex; align-items: center; justify-content: center; }
+.mx-btn span { font: 400 42px/1 "Archivo Black", sans-serif; color: #111111; }
+.mx-end-rings i { position: absolute; border: 3px solid rgba(230, 236, 55, .75); border-radius: 22px; opacity: 0; }
+.mx-end-rings i:nth-child(1) { left: 746px; top: 676px; width: 428px; height: 132px; }
+.mx-end-rings i:nth-child(2) { left: 726px; top: 656px; width: 468px; height: 172px; border-width: 2px; }
+.mx-end-rings i:nth-child(3) { left: 702px; top: 632px; width: 516px; height: 220px; border-width: 1.5px; }
+.mx-end-url { position: absolute; left: 0; top: 886px; width: 1920px; text-align: center; font: 500 34px/1 "Instrument Sans", sans-serif; color: #9a9a9a; letter-spacing: .02em; }
+.mx-cursor { position: absolute; left: 0; top: 0; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .5)); }
+
+/* grain d'image (fixe) */
+.mx-grain { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+  background-size: 240px 240px; }
+.mx-grain.day { opacity: .05; mix-blend-mode: multiply; }

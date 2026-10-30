@@ -19,14 +19,6 @@
       /* born in this frame: the real photo of the Dunkerque and its ripples (0.10), its pin (0.45) */
       #p09-photo, #p09-rip, #p09-pin { opacity: 0; }
 
-      /* depth of field inside the photo: a copy of the image over its upper part (the bridge and its tower) that goes soft
-         when the camera comes down to the crew along the rail (the crew, 70 to 78 % of the image height, stays sharp) */
-      #p09-photo .mx-photo-img { position: relative; }
-      #p09-dof { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0;
-        background-image: inherit; background-size: cover; background-position: center;
-        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0) 64%);
-        mask-image: linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0) 64%); }
-
       /* the voice line, word by word ; the « . » glued in the box follows the boxed group */
       #p09-subs .mx-w { opacity: 0; }
       #p09-subs .mx-w.mx-box, #p09-subs .mx-box-tx .mx-pt { opacity: 1; }
@@ -92,10 +84,6 @@
         on("p09-phone", MX.phoneHTML(null, W.PHONE[2], IMG + "blog-accueil-mobile.png"), W.PHONE[0], W.PHONE[1], W.PHONE[3]);
         on("p09-eperv", MX.photoCardHTML(null, IMG + "epervier-collection-langry.jpg", 456, 300, "L’Épervier. Collection Wilfried Langry."), W.CARD_EPERVIER[0], W.CARD_EPERVIER[1], W.CARD_EPERVIER[2]);
         on("p09-peperv", MX.pinHTML(null, 30), W.PIN_EPERVIER[0], W.PIN_EPERVIER[1]);
-        // the depth-of-field copy of the image, inside the photo (same box, same background, masked to the bridge)
-        var dof = document.createElement("div");
-        dof.id = "p09-dof";
-        photo.querySelector(".mx-photo-img").appendChild(dof);
         gsap.set(shake, { x: 0, y: 0 });
 
         // daylight
@@ -150,11 +138,6 @@
         ft(pin, { scale: 1.5 }, { scale: 1, duration: 0.08, ease: "power1.in" }, 0.37);
 
         // ---- scene 2 : from the bridge to the crew (the camera of the score), then the big pull-back
-        // depth of field : 1.37 « l'amiral », the bridge crosses the center sharp ; as the camera comes down to the crew
-        // (2.18) the bridge goes soft (1.2 u, about 2 px on screen) while the crew stays sharp ; the focus lets go during
-        // the pull-back, under the camera blur, and the photo is plain again from 2.62, well before the seam.
-        ft(dof, { opacity: 0, filter: "blur(0px)" }, { opacity: 1, filter: "blur(1.2px)", duration: 0.81, ease: "sine.inOut" }, 1.37);
-        ft(dof, { opacity: 1, filter: "blur(1.2px)" }, { opacity: 0, filter: "blur(0px)", duration: 0.29, ease: "power1.in" }, 2.33);
 
         // ---- the voice line
         var INK = "rgb(29, 27, 24)", GREY = "rgba(29, 27, 24, 0.35)";              // .day : #1d1b18

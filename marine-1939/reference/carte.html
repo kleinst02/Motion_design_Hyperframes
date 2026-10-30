@@ -302,8 +302,8 @@ function buildMed(world, T) {
 }
 /* la carte de l'Atlantique : la route, le croiseur, les deux articles, le cercle rouge de Toulon */
 function buildAtl(world, T) {
-  onChart(world, MX.routeSVG("refroute", W.ROUTE, MX.routeDoneAt(T)), 0, 0);
-  if (T >= EV.clRise && T < 42.36) { var q = MX.clAt(T), e = model(world, ["cl", q[0], q[1], 250, q[2]], "atlantic", T); riseState(e, T, EV.clRise); ripples(world, T, EV.clRise, q[0], q[1], 60, 30, 3); }
+  onChart(world, MX.routeSVG("refroute", W.ROUTE, MX.routeDoneAt(T)), 0, 0).style.opacity = clamp((T - 38.15) / .25);   // absente à la couture 37.90, elle paraît avant que le crayon n'entre dans le cadre
+  if (T >= EV.clRise && T < 42.36) { var q = MX.clAt(T), q0 = MX.clAt(EV.clRise), e = model(world, ["cl", q[0], q[1], 250, q[2]], "atlantic", T); riseState(e, T, EV.clRise); ripples(world, T, EV.clRise, q0[0], q0[1], 60, 30, 3); }   // les ronds restent où il a fait surface
   if (T >= EV.cardNY) { land(world, T, EV.cardNY, MX.blogCardHTML(null, "La 4ème DC à New York", "août 2013", IMG + "4e-dc-collection-langry.jpg"), W.CARD_NY[0], W.CARD_NY[1], W.CARD_NY[2]);
     if (T >= EV.cardNY + .1) onChart(world, MX.pinHTML(null, 34), W.PIN_NY[0], W.PIN_NY[1]); }
   if (T >= EV.cardToulon) { land(world, T, EV.cardToulon, MX.blogCardHTML(null, "Les épaves de Toulon", "jeudi 5 mai 2016", IMG + "epaves-toulon-collection-langry.jpg"), W.CARD_TOULON[0], W.CARD_TOULON[1], W.CARD_TOULON[2]);

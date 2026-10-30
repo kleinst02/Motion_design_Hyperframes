@@ -89,7 +89,8 @@
         put("p08-dialon", "", MX.dialSVG("p08-dial", D[2]), D[0], D[1], D[3]);
         var pieces = ["bezel", "face", "hands"].map(function (p) { return $("p08-dial-" + p); });
         var pieceRip = OFF.map(function (o, i) { return put("p08-pr" + i, "p08-rip", MX.ripplesSVG(2, 50, 24, "#2f6c80", .85), D[0] + o[0], D[1] + o[1]); });
-        pieces.forEach(function (g, i) { gsap.set(g, { x: OFF[i][0], y: OFF[i][1], rotation: i === 2 ? -40 : 0, svgOrigin: "0 0" }); });
+        // svgOrigin "0 0" is the dial's center ; smoothOrigin off, or GSAP offsets the piece to hide the origin change
+        pieces.forEach(function (g, i) { gsap.set(g, { x: OFF[i][0], y: OFF[i][1], rotation: i === 2 ? -40 : 0, svgOrigin: "0 0", smoothOrigin: false }); });
         // the article « Les cadrans optiques », a row of the blog's list, and its pin
         var card = put("p08-card", "", MX.blogRowHTML(null, "Les cadrans optiques", "dimanche 29 janvier 2012", IMG + "cadrans-optiques-mogador.jpg"), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]);
         var cardPin = put("p08-card-pin", "", MX.pinHTML(null, 30), W.PIN_DIAL[0], W.PIN_DIAL[1]);
@@ -178,7 +179,7 @@
         pieces.forEach(function (g, i) {
           jump(g, "opacity", 0, 1, function (u) { return .4 + .6 * u; }, PIECES[i], .2);
           ripple(pieceRip[i], PIECES[i]);
-          var from = { x: OFF[i][0], y: OFF[i][1], svgOrigin: "0 0" }, to = { x: 0, y: 0, svgOrigin: "0 0", duration: i === 2 ? 0.2 : 0.18, ease: "power2.out" };
+          var from = { x: OFF[i][0], y: OFF[i][1], svgOrigin: "0 0", smoothOrigin: false }, to = { x: 0, y: 0, svgOrigin: "0 0", smoothOrigin: false, duration: i === 2 ? 0.2 : 0.18, ease: "power2.out" };
           if (i === 2) { from.rotation = -40; to.rotation = 0; }      // the hand settles and turns to its position
           ft(g, from, to, ASM[i]);
         });

@@ -6,6 +6,25 @@
 import sys, time, os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+
+GSAP_URL = "https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"   # la version épinglée des séquences
+
+
+def gsap_cache():
+    """Le fichier GSAP épinglé, téléchargé une fois (curl, par le proxy) dans ~/.cache/marine-1939/."""
+    import subprocess
+    f = Path.home() / ".cache" / "marine-1939" / "gsap-3.14.2.min.js"
+    if not f.exists() or f.stat().st_size < 50000:
+        f.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["curl", "-sSfL", "--retry", "3", "-o", str(f), GSAP_URL], check=True)
+    return f
+
+
+def serve_gsap(page):
+    """Sert GSAP depuis le cache au lieu du réseau : la page se charge sans attendre le CDN."""
+    f = gsap_cache()
+    page.route("**/npm/gsap@3.14.2/dist/gsap.min.js",
+               lambda r: r.fulfill(path=str(f), content_type="application/javascript"))
 ref = Path(__file__).resolve().parent / "carte.html"
 out = Path(sys.argv[1]); out.mkdir(parents=True, exist_ok=True)
 times = [float(t) for t in sys.argv[2:]]
@@ -15,6 +34,7 @@ with sync_playwright() as p:
     errors = []
     pg.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
     pg.on("pageerror", lambda e: errors.append(str(e)))
+    serve_gsap(pg)
     pg.goto(ref.as_uri() + ("?guides=1&t=0" if os.environ.get("GUIDES", "1") == "1" else "?t=0"))
     pg.wait_for_load_state("networkidle", timeout=120000)
     pg.evaluate("document.fonts.ready.then(() => true)")

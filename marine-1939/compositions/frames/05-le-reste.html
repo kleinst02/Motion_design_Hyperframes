@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <!-- 2D lights over the stage : the night lamp, then the black when it goes out (5.33 to 5.53) -->
+    <!-- 2D lights over the stage : the night lamp, then the black when it goes out (5.30 to 5.50) -->
     <div id="p05-lights" class="clip mx-layer" data-start="0" data-duration="5.53" data-track-index="1">
       <div id="p05-black" class="mx-layer" data-layout-allow-occlusion></div>
     </div>
@@ -74,7 +74,7 @@
         // rings in the water, flat on the chart, hidden until their object sinks
         function ripples(id, x, y, r0, step, n) {
           var on = onChart(MX.ripplesSVG(n, r0, step, "#2f6c80", 0.85), x, y, 0, id, "p05-rip");
-          return { on: on, rings: Array.prototype.slice.call(on.querySelectorAll("ellipse")) };
+          return { on: on, svg: on.querySelector("svg") };
         }
 
         world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p05-med"));
@@ -165,14 +165,14 @@
           var d = Math.min(1.0, DUR - t - 0.2);
           ft(el, { opacity: 0.35, filter: "blur(3px)" }, { opacity: 0.35 * (1 - d), filter: "blur(" + (3 + 3 * d) + "px)", duration: d, ease: "none" }, t + 0.2);
         }
-        // rings (frame.md, ripples) : they open with the sinking ; each ellipse grows x1 to x1.35 and fades in 1.0 s
-        // linear, staggered by 0.1 s
+        // rings (ripples() of reference/carte.html) : they open with the sinking ; the whole set grows x1 to x1.35 and
+        // fades (0.85 to 0) in 1.0 s linear, all its ellipses together. The container is the gate (hidden before t),
+        // the svg inside carries the fade.
         function ring(R, t) {
+          var d = Math.min(1.0, DUR - t);
           tl.set(R.on, { opacity: 1 }, t);
-          R.rings.forEach(function (e, k) {
-            var op = +e.getAttribute("opacity"), s = t + 0.1 * k, d = Math.min(1.0, DUR - s);
-            ft(e, { scale: 1, svgOrigin: "0 0", attr: { opacity: op } }, { scale: 1 + 0.35 * d, svgOrigin: "0 0", attr: { opacity: op * (1 - d) }, duration: d, ease: "none" }, s);
-          });
+          ft(R.on, { scale: 1 }, { scale: 1 + 0.35 * d, duration: d, ease: "none" }, t);
+          ft(R.svg, { opacity: 1 }, { opacity: 1 - d, duration: d, ease: "none" }, t);
         }
 
         // ---- scene 1 : the camera brakes over the night sea ; book B reaches the right edge and blurs (depth)
@@ -185,11 +185,13 @@
         sink(dial, 3.64);
         ring(dialRip, 3.64);
 
-        // ---- scene 4 : the print sinks (22.92), then the lamp goes out (23.17 to 23.37, « power2.in »)
+        // ---- scene 4 : the print sinks (22.92), then the lamp goes out (0.2 s « power2.in »). It runs 5.30 to 5.50 so
+        // that the last image of the frame is the plain black of handoff_out on any frame grid (at the click, 5.33, the
+        // black is still under 3 %).
         sink(print, 5.08);
         ring(printRip, 5.08);
-        ft(lamp, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power1.in" }, 5.33);
-        ft(black, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.in" }, 5.33);
+        ft(lamp, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power1.in" }, 5.30);
+        ft(black, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.in" }, 5.30);
 
         // ---- the voice line
         var INK_P = "rgb(27, 26, 23)", GREY_P = "rgba(27, 26, 23, 0.35)";          // .paper : #1b1a17

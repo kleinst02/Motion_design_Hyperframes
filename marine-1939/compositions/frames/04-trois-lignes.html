@@ -31,7 +31,7 @@
 
       /* the dust raised by the book, in the lamp light (2D layer) */
       #p04-dust .p04-mote { position: absolute; display: block; border-radius: 50%; opacity: 0; mix-blend-mode: screen;
-        background: radial-gradient(circle, rgba(255, 246, 228, .95) 0, rgba(255, 230, 186, .55) 34%, rgba(255, 222, 168, 0) 70%); }
+        background: radial-gradient(circle, rgba(255, 248, 232, 1) 0, rgba(255, 234, 192, .62) 30%, rgba(255, 222, 168, 0) 70%); }
 
       /* the voice line, word by word */
       #p04-subs .mx-w { opacity: 0; }
@@ -134,17 +134,17 @@
         var MOTES = SPOTS.map(function (s, k) {
           var dx = s[0] * B.w / 2, dy = s[1] * B.w / 3;
           var p = MX.project(CL, BCX + dx * Math.cos(BA) - dy * Math.sin(BA), BCY + dx * Math.sin(BA) + dy * Math.cos(BA));
-          var d = 9 + Math.round(R() * 9), el = document.createElement("i");
+          var d = 12 + Math.round(R() * 12), el = document.createElement("i"), side = Math.abs(s[0]) > 1 ? (s[0] < 0 ? -1 : 1) : 0;
           el.id = "p04-mote" + k;
           el.className = "p04-mote";
           el.setAttribute("data-layout-allow-occlusion", "");
-          var x = p.x + (s[0] < 0 ? -1 : s[0] > 0 && Math.abs(s[0]) > 1 ? 1 : 0) * (6 + R() * 22) + (R() - .5) * 30;
+          var x = p.x + side * (6 + R() * 22) + (R() - .5) * 30;     // pushed off the side edges, spread along the near edge
           var y = p.y - 6 - R() * 34;
           el.style.left = (x - d / 2).toFixed(1) + "px";
           el.style.top = (y - d / 2).toFixed(1) + "px";
           el.style.width = el.style.height = d + "px";
           dust.appendChild(el);
-          return { el: el, born: 1.05 + R() * .08, peak: .55 + R() * .35, rise: 45 + R() * 55, drift: (R() - .5) * 30, out: 1.85 + R() * .35 };
+          return { el: el, born: 1.05 + R() * .08, peak: .7 + R() * .3, rise: 45 + R() * 55, drift: (R() - .5) * 30, out: 1.85 + R() * .35 };
         });
 
         // the voice line : two chunks, theme .night, then « toute son histoire… » turns .paper from 2.60 (the page arrives

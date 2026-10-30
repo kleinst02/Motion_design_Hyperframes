@@ -1,0 +1,222 @@
+<template>
+  <div id="root" data-composition-id="08-un-par-un" data-width="1920" data-height="1080" data-duration="4.66">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-500.woff2") format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world (no dated shake in this frame) */
+      #p08-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* handoff_in : the line of 1939 lies as wrecks under the paper, at its stations (frame.md, model.rise) */
+      #p08-world .p08-ln { opacity: .16; filter: blur(5px); }
+      /* not on the chart yet : the rings, the photo of L'Épervier, the article, their pins, the three pieces of the dial */
+      #p08-world .p08-rip ellipse { opacity: 0; }
+      #p08-ep, #p08-ep-pin, #p08-card, #p08-card-pin { opacity: 0; }
+      #p08-dial-bezel, #p08-dial-face, #p08-dial-hands { opacity: 0; }
+      #p08-dialon svg { transform: translate(-110px, -110px); }
+
+      /* the voice line, word by word */
+      #p08-subs .mx-w { opacity: 0; }
+      #p08-subs .mx-w.mx-box { opacity: 1; }
+      #p08-subs .mx-box .mx-pt { opacity: 1; }
+      #p08-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p08-subs .mx-box-bg { transform: scaleX(0); }
+    </style>
+
+    <!-- the table by day; inside it the perspective stage, the shake wrapper and the world (the chart and its objects) -->
+    <div id="p08-ground" class="clip mx-ground day" data-start="0" data-duration="4.66" data-track-index="0" data-layout-allow-overflow>
+      <div id="p08-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p08-shake" data-layout-allow-overflow>
+          <div id="p08-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D light over the stage : full day (frame.md, lights.day) -->
+    <div id="p08-lights" class="clip mx-layer" data-start="0" data-duration="4.66" data-track-index="1"></div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p08-subs" class="clip mx-layer" data-start="0" data-duration="4.66" data-track-index="2" data-layout-allow-caption-zone></div>
+
+    <!-- film grain by day, 5 % -->
+    <div id="p08-grain" class="clip mx-grain day" data-start="0" data-duration="4.66" data-track-index="3"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "08-un-par-un", DUR = 4.66, T0 = MX.FRAMES[7][1], W = MX.W, IMG = "assets/img/";
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        // exactly what reference/carte.html (buildMed) draws for T in [30.41, 35.07], in its order (same overlaps)
+        var stage = $("p08-stage"), world = $("p08-world"), grain = $("p08-grain");
+        function put(id, cls, html, x, y, rot) {                      // an object laid on the chart (.mx-on, placed once)
+          var on = document.createElement("div");
+          if (id) on.id = id;
+          on.className = "mx-on" + (cls ? " " + cls : "");
+          on.innerHTML = html;
+          world.appendChild(on);
+          gsap.set(on, { x: x, y: y, rotation: rot || 0 });
+          return on;
+        }
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p08-med"));
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p08-a", W.BOOK_A, MX.pageVersoSVG("p08-av"), MX.pageEngravingSVG("p08-ae", true)));
+        // the pencil dates and the red ring of Mers el-Kebir, written long ago
+        put(null, "", MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1]);
+        put(null, "", MX.lossRingSVG(null, W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1]).querySelector("ellipse").setAttribute("stroke-dashoffset", "0");
+        put(null, "", MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1]);
+        // the line of 1939 at its stations (MX.W.LINE), head first, each with its rings
+        var line = [], lineRip = [];
+        W.LINE.forEach(function (m, i) {
+          line.push(put("p08-ln" + i, "p08-ln", MX.modelHTML(m[0], m[3], "p08-ln" + i + "-m"), m[1], m[2], m[4]));
+          lineRip.push(put("p08-lr" + i, "p08-rip", MX.ripplesSVG(3, 70, 34, "#2f6c80", .85), m[1], m[2]));
+        });
+        // the Dunkerque and the Provence, still at Mers el-Kebir (out of frame)
+        W.MK.slice(0, 2).forEach(function (m, i) { put("p08-mk" + i, "", MX.modelHTML(m[0], m[3], "p08-mk" + i + "-m"), m[1], m[2], m[4]); });
+        // the optical dial : three pieces parked around its place (offsets of carte.html), each with its rings
+        var D = W.DIAL, OFF = [[-70, -40], [80, 50], [10, -110]];
+        put("p08-dialon", "", MX.dialSVG("p08-dial", D[2]), D[0], D[1], D[3]);
+        var pieces = ["bezel", "face", "hands"].map(function (p) { return $("p08-dial-" + p); });
+        var pieceRip = OFF.map(function (o, i) { return put("p08-pr" + i, "p08-rip", MX.ripplesSVG(2, 50, 24, "#2f6c80", .85), D[0] + o[0], D[1] + o[1]); });
+        pieces.forEach(function (g, i) { gsap.set(g, { x: OFF[i][0], y: OFF[i][1], rotation: i === 2 ? -40 : 0, svgOrigin: "0 0" }); });
+        // the article « Les cadrans optiques », a row of the blog's list, and its pin
+        var card = put("p08-card", "", MX.blogRowHTML(null, "Les cadrans optiques", "dimanche 29 janvier 2012", IMG + "cadrans-optiques-mogador.jpg"), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]);
+        var cardPin = put("p08-card-pin", "", MX.pinHTML(null, 30), W.PIN_DIAL[0], W.PIN_DIAL[1]);
+        // the phone, lit on the blog's home page (where book B was)
+        put("p08-phone", "", MX.phoneHTML(null, W.PHONE[2], IMG + "blog-accueil-mobile.png"), W.PHONE[0], W.PHONE[1], W.PHONE[3]);
+        // the real photo of L'Epervier and its pin
+        var ep = put("p08-ep", "", MX.photoCardHTML(null, IMG + "epervier-collection-langry.jpg", 456, 300, "L’Épervier. Collection Wilfried Langry."), W.CARD_EPERVIER[0], W.CARD_EPERVIER[1], W.CARD_EPERVIER[2]);
+        var epPin = put("p08-ep-pin", "", MX.pinHTML(null, 30), W.PIN_EPERVIER[0], W.PIN_EPERVIER[1]);
+
+        // full day
+        $("p08-lights").insertAdjacentHTML("beforeend", MX.dayHTML());
+
+        // the voice line : two chunks, theme .day ; « un par un » and « pièce par pièce » are boxed groups (the period in the box)
+        var subs = $("p08-subs");
+        var S1 = [["Ses", 0.29], ["navires,", 0.53], ["un par un", 1.30, "box"]];
+        var S2 = [["Ses", 2.30], ["matériels,", 2.59], ["pièce par pièce", 3.46, "box"]];
+        function chunk(list) { return list.map(function (w) { return [w[0], w[2] || ""]; }).concat([[".", ""]]); }
+        subs.innerHTML = MX.subHTML("p08-s1", chunk(S1), "day") + MX.subHTML("p08-s2", chunk(S2), "day");
+        var s1 = $("p08-s1"), s2 = $("p08-s2");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease, reference/carte.html) : powerN = u^N.
+        // GSAP's powerN is u^(N+1), so a storyboard « power3.out » is GSAP power2.out ; expo.out is the same.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+        var EPS = 0.001;                                                // a jump lands on its own image, never one late
+
+        // the camera : ONE proxy tween over the whole frame ; the film's score MX.camAt / MX.blurAt, T = T0 + local time.
+        // onUpdate renders it on every seek ; the modifier renders it too when events are suppressed (a seek that lands
+        // exactly on the frame's end, where the engine's second pass is a no-op).
+        var cam = { t: T0 };
+        function render(T) {
+          MX.applyCam(world, MX.camAt(T));
+          var b = MX.blurAt(T);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                   // grain : offset from the image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+        }
+        ft(cam, { t: T0 }, { t: T0 + DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // A gesture that starts with a jump (carte.html riseState, ripples ; frame.md model.rise) : before t the property
+        // holds a, from t it follows v(u), u = 0 → 1 over d. ONE fromTo from a (the state before it, so every seek order
+        // gives the same image) whose ease carries v : e(0) = 0, e(u) = (v(u) − a) / (z − a).
+        function jump(el, prop, a, z, v, t, d, fmt, extra) {
+          var f = fmt || function (x) { return x; }, from = {}, to = { duration: d, ease: function (u) { return u <= 0 ? 0 : (v(u) - a) / (z - a); } };
+          from[prop] = f(a); to[prop] = f(z);
+          if (extra) for (var k in extra) to[k] = extra[k];
+          return ft(el, from, to, t - EPS);
+        }
+        var BLUR = function (x) { return "blur(" + x + "px)"; };
+        var X2D = { force3D: false };                                   // world objects keep plain 2D transforms
+        var expo = function (u) { return u >= 1 ? 1 : 1 - Math.pow(2, -10 * u); };
+
+        // rings in the water : each ellipse grows ×1 → ×1.35 and fades in 1.0 s linear, one after the other (0.1 s)
+        function ripple(on, t) {
+          on.querySelectorAll("ellipse").forEach(function (e, k) {
+            var a = parseFloat(e.getAttribute("opacity")), s = t + 0.1 * k;
+            jump(e, "opacity", 0, a, function (u) { return a * (1 - u); }, s, 1.0);
+            ft(e, { scale: 1, svgOrigin: "0 0" }, { scale: 1.35, svgOrigin: "0 0", duration: 1.0, ease: "none" }, s - EPS);
+          });
+        }
+        // rise : from the wreck under the paper (0.16, blur 5) to 40 %, blur 6, ×1.04, then sharp, full and ×1 in 0.2 s expo.out
+        function rise(on, t) {
+          jump(on, "opacity", .16, 1, function (u) { return .4 + .6 * expo(u); }, t, .2);
+          jump(on, "filter", 5, 0, function (u) { return 6 * (1 - expo(u)); }, t, .2, BLUR);
+          jump(on, "scale", 1, 1.04, function (u) { return 1.04 - .04 * expo(u); }, t, .2, null, X2D);
+        }
+        // land : arrives from the camera (×1.2, blur 8) and lies down in 0.2 s (« power3.out » = GSAP power2.out)
+        function land(on, t) {
+          ft(on, { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "none" }, t);
+          ft(on, { scale: 1.2, filter: "blur(8px)" }, { scale: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", force3D: false }, t);
+        }
+        // the pin is pushed in : contact on its time
+        function pin(on, t) {
+          ft(on, { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none" }, t - 0.06);
+          ft(on, { scale: 1.4 }, { scale: 1, duration: 0.06, ease: "power1.in", force3D: false }, t - 0.06);
+        }
+
+        // ---- scene 1 : un par un. Each model of the line rises on its syllable, with its rings ; L'Epervier lands.
+        var RISE = [0.45, 1.25, 1.52, 1.74, 2.00];                      // EV.lineRise − T0
+        line.forEach(function (on, i) { rise(on, RISE[i]); ripple(lineRip[i], RISE[i]); });
+        land(ep, 1.95);                                                 // EV.epervier − T0
+        pin(epPin, 2.05);
+
+        // ---- scene 2 : pièce par pièce. The three pieces rise from the chart, the article lands, the dial assembles.
+        var PIECES = [2.35, 2.45, 2.55], ASM = [3.46, 3.85, 4.09];      // EV.pieces − T0, EV.assemble − T0
+        pieces.forEach(function (g, i) {
+          jump(g, "opacity", 0, 1, function (u) { return .4 + .6 * u; }, PIECES[i], .2);
+          ripple(pieceRip[i], PIECES[i]);
+          var from = { x: OFF[i][0], y: OFF[i][1], svgOrigin: "0 0" }, to = { x: 0, y: 0, svgOrigin: "0 0", duration: i === 2 ? 0.2 : 0.18, ease: "power2.out" };
+          if (i === 2) { from.rotation = -40; to.rotation = 0; }      // the hand settles and turns to its position
+          ft(g, from, to, ASM[i]);
+        });
+        land(card, 2.75);                                               // EV.cardDial − T0
+        pin(cardPin, 2.85);
+
+        // ---- the voice line
+        var INK = "rgb(29, 27, 24)", GREY = "rgba(29, 27, 24, 0.35)";              // .day : #1d1b18
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        function words(sub, list) {
+          var ws = sub.querySelectorAll(".mx-w");
+          list.forEach(function (w, i) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[i];
+            if (w[2] === "box") {                                       // the group enters as one block on its first word
+              var tx = el.querySelector(".mx-box-tx");
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+              ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              return;
+            }
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY, duration: 0.14, ease: "power2.out" }, t0);
+            ft(el, { color: GREY }, { color: INK, duration: 0.2, ease: "power1.out" }, t0 + 0.14);   // grey (35 %) to full ink in 0.2 s
+          });
+        }
+        words(s1, S1);
+        words(s2, S2);
+        ft(s1, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 2.10);
+        ft(s2, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 4.46);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

@@ -1,0 +1,230 @@
+<template>
+  <div id="root" data-composition-id="02-mers-el-kebir" data-width="1920" data-height="1080" data-duration="3.5">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world: a shake moves the picture inside the frame and never
+         uncovers its edge (the stage clips at 1920 x 1080) */
+      #p02-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* born during the frame, hidden at t = 0: the pencil letters, the red ring, the rings in the water, the Strasbourg
+         in its own stage */
+      #p02-world .p02-pc, #p02-ring, #p02-world .p02-rip, #p02-st2 { opacity: 0; }
+
+      /* the voice line, word by word ; the full stop glued in the box shows with its box */
+      #p02-subs .mx-w { opacity: 0; }
+      #p02-subs .mx-w.mx-box, #p02-subs .mx-w.mx-pt { opacity: 1; }
+      #p02-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p02-subs .mx-box-bg { transform: scaleX(0); }
+    </style>
+
+    <!-- the table at night; inside it the perspective stage, the shake wrapper and the world (the chart, book A, the line
+         of 1939, the squadron of Mers el-Kébir), then the Strasbourg's own stage (same camera, no blur) -->
+    <div id="p02-ground" class="clip mx-ground" data-start="0" data-duration="3.5" data-track-index="0" data-layout-allow-overflow>
+      <div id="p02-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p02-shake" data-layout-allow-overflow>
+          <div id="p02-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+      <div id="p02-stage2" class="mx-stage" data-layout-allow-overflow data-layout-allow-occlusion>
+        <div id="p02-world2" class="mx-world" data-layout-allow-overflow></div>
+      </div>
+    </div>
+
+    <!-- the night lamp, full (frame.md, lights.night) -->
+    <div id="p02-lights" class="clip mx-layer" data-start="0" data-duration="3.5" data-track-index="1"></div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p02-subs" class="clip mx-layer" data-start="0" data-duration="3.5" data-track-index="2" data-layout-allow-caption-zone></div>
+
+    <!-- film grain, 6 % -->
+    <div id="p02-grain" class="clip mx-grain" data-start="0" data-duration="3.5" data-track-index="3"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "02-mers-el-kebir", T0 = 5.82, DUR = 3.5, W = MX.W;      // film time T = T0 + local time
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        var stage = $("p02-stage"), shake = $("p02-shake"), world = $("p02-world"), world2 = $("p02-world2");
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p02-med"));
+        // book A, pages 214-215, as frame 1 leaves it (date typed, smokes and bow waves drawn, 4e stamped) : the kit's defaults
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p02-a", W.BOOK_A, MX.pageVersoSVG("p02-av"), MX.pageEngravingSVG("p02-ae", true)));
+        // an object laid on the chart : an .mx-on placed once (x, y, rotation in chart units), the kit's HTML inside
+        function on(id, html, x, y, rot, cls) {
+          var e = document.createElement("div");
+          e.id = id;
+          e.className = "mx-on" + (cls ? " " + cls : "");
+          e.innerHTML = html;
+          world.appendChild(e);
+          gsap.set(e, { x: x, y: y, rotation: rot || 0, force3D: false });
+          return e;
+        }
+
+        // « 3·7·40 » in pencil at MX.W.PENCIL_MK : the kit's text is replaced by one clone per letter, each showing its own
+        // letter only (the others at fill-opacity 0), so that each letter slides in exactly where the kit sets it
+        var pencil = on("p02-pencil", MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1]);
+        var ptext = pencil.querySelector("text"), pcs = ptext.querySelectorAll(".mx-pc"), pletters = [];
+        for (var i = 0; i < pcs.length; i++) {
+          var cl = ptext.cloneNode(true), ts = cl.querySelectorAll("tspan");
+          cl.setAttribute("id", "p02-pc" + i);
+          cl.setAttribute("class", "p02-pc");
+          for (var k = 0; k < ts.length; k++) { ts[k].removeAttribute("class"); if (k !== i) ts[k].setAttribute("fill-opacity", "0"); }
+          ptext.parentNode.appendChild(cl);
+          pletters.push(cl);
+        }
+        ptext.parentNode.removeChild(ptext);
+
+        // the red ring of the Bretagne (MX.W.LOSS_MK), drawn by strokeDashoffset from data-len to 0
+        var ring = on("p02-ring", MX.lossRingSVG("p02-ring-e", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1]);
+        var ringE = $("p02-ring-e"), RL = +ringE.getAttribute("data-len");
+
+        // the line of 1939 at its stations ; LINE[0] and LINE[1] are no longer built from film time 6.20
+        var line = W.LINE.map(function (m, i) { return on("p02-ln" + i, MX.modelHTML(m[0], m[3], "p02-ln" + i + "-m"), m[1], m[2], m[4]); });
+
+        // the squadron of Mers el-Kébir, stern to the jetty : the Dunkerque, the Provence, the Bretagne
+        var mk = [0, 1, 2].map(function (i) { var m = W.MK[i]; return on("p02-mk" + i, MX.modelHTML(m[0], m[3], "p02-mk" + i + "-m"), m[1], m[2], m[4]); });
+
+        // rings in the water, laid flat on the chart (built at their p = 0 state, the tweens fade and widen them)
+        function rip(id, x, y, r0, step, n) { return on(id, MX.ripplesSVG(n, r0, step, "#2f6c80", .85), x, y, 0, "p02-rip"); }
+        var ripB = rip("p02-rip-b", W.MK[2][1], W.MK[2][2], 70, 34, 4);                       // the Bretagne's rings
+        var SALVO = [[2.05, 1050, 3070], [2.30, 1140, 3040], [2.55, 980, 3010]];                // the salvo splashes (local time, x, y)
+        var ripS = SALVO.map(function (s, n) { return rip("p02-rip-s" + n, s[1], s[2], 14, 10, 3); });
+        var ripP = rip("p02-rip-p", W.MK[3][1], W.MK[3][2], 60, 30, 3);                        // the Strasbourg leaves its post
+
+        // the Strasbourg : moored in the common stage until 8.82, then MX.strasAt(T) in its own stage, sharp
+        var M3 = W.MK[3];
+        var strasA = on("p02-mk3", MX.modelHTML(M3[0], M3[3], "p02-mk3-m"), M3[1], M3[2], M3[4]);
+        var strasB = document.createElement("div");
+        strasB.id = "p02-st2";
+        strasB.className = "mx-on";
+        strasB.innerHTML = MX.modelHTML(M3[0], M3[3], "p02-st2-m");
+        world2.appendChild(strasB);
+        function placeStras(q) { strasB.style.transform = "translate(" + q[0] + "px," + q[1] + "px) rotate(" + q[2] + "deg)"; }
+        placeStras([M3[1], M3[2], M3[4]]);
+
+        gsap.set(shake, { x: 0, y: 0 });                                  // identity baseline
+
+        // the night lamp, full
+        var lights = $("p02-lights");
+        lights.insertAdjacentHTML("beforeend", MX.lampHTML(960, 480, 980, 580));
+        var lamp = [lights.querySelector(".mx-lamp"), lights.querySelector(".mx-lamp-dark")];
+
+        // the voice line : « Juillet 1940 : [Mers el-Kébir]. », theme .night ; the full stop is glued in the box by the kit
+        var subs = $("p02-subs");
+        var S = [["Juillet", 0.33], ["1940 :", 0.90], ["Mers el-Kébir", 2.25, "box"]];
+        subs.innerHTML = MX.subHTML("p02-s", S.map(function (w) { return [w[0], w[2] || ""]; }).concat([[".", ""]]), "night");
+        var sub = $("p02-s");
+
+        var grain = $("p02-grain");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (powerN = u^N) ; GSAP's powerN is u^(N+1), so a
+        // storyboard « power2.in » is GSAP power1.in, a « power3.out » is GSAP power2.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the camera : ONE proxy tween over the whole frame, in FILM time (MX.camAt / MX.blurAt). onUpdate renders it on
+        // every seek ; the modifier renders it too when events are suppressed (a seek that lands exactly on the end).
+        var cam = { t: T0 }, STRAS_T0 = MX.STRAS_MOVE.t0;
+        function render(T) {
+          var c = MX.camAt(T);
+          MX.applyCam(world, c);
+          MX.applyCam(world2, c);                                         // the Strasbourg's stage : same camera, no blur
+          var b = MX.blurAt(T);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                     // grain : offset from the image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+          if (T >= STRAS_T0 - 1e-6) {                                     // 8.82 : he leaves his post, in his own stage
+            placeStras(MX.strasAt(T));
+            strasB.style.opacity = "1";
+            strasA.style.opacity = "0";
+          } else {
+            placeStras([M3[1], M3[2], M3[4]]);
+            strasB.style.opacity = "";
+            strasA.style.opacity = "";
+          }
+        }
+        ft(cam, { t: T0 }, { t: T0 + DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // rings in the water : they appear at once, then widen (x1 -> x1.35) and fade in 1.0 s linear ; a ring still
+        // open at the seam stops at the frame's end at its seam state (sequence 3 carries it on)
+        function ripple(el, at) {
+          var d = Math.min(1.0, DUR - at), f = d / 1.0, s0 = at - 0.001;
+          ft(el, { opacity: 0 }, { opacity: 1, duration: d, ease: function (u) { return u > 0 ? 1 - f * u : 0; } }, s0);
+          ft(el, { scale: 1 }, { scale: 1 + 0.35 * f, duration: d, ease: "none", force3D: false }, s0);
+        }
+
+        // ---- scene 1 : the whip brakes on Mers el-Kébir, the squadron moored, « 3·7·40 »
+        tl.set(line.slice(0, 2), { opacity: 0 }, 6.20 - T0);              // the two battleships have left the frame
+        // 0.60 the pencil writes « 3·7·40 », one letter every 0.2 s : opacity 0 -> 0.88 and a 6 px slide in 0.08 s
+        // (1.18 px per chart unit at this place : 5.1 u)
+        pletters.forEach(function (el, n) {
+          ft(el, { opacity: 0, x: -5.1 }, { opacity: 0.88, x: 0, duration: 0.08, ease: "power2.out" }, 0.60 + 0.2 * n);
+        });
+        // 1.30 the lamp light flickers : its layers at 92 % then 100 % in 0.2 s
+        ft(lamp, { opacity: 1 }, { opacity: 0.92, duration: 0.06, ease: "power1.out" }, 1.30);
+        ft(lamp, { opacity: 0.92 }, { opacity: 1, duration: 0.14, ease: "power1.inOut" }, 1.36);
+
+        // ---- scene 2 : the salvo, the Bretagne sinks, the red ring
+        SALVO.forEach(function (s, n) {
+          ripple(ripS[n], s[0]);
+          ft(shake, { y: 0 }, { y: 3, duration: 0.02, ease: "power2.out" }, s[0]);          // the scene shakes 3 px
+          ft(shake, { y: 3 }, { y: 0, duration: 0.08, ease: "power2.inOut" }, s[0] + 0.02);
+        });
+        // 2.20 the Bretagne sinks where she lies (frame.md, model.sink) : 0.2 s « power2.in », then 1.0 s linear
+        var bret = mk[2];
+        ft(bret, { scale: 1, opacity: 1, filter: "blur(0px)" }, { scale: 0.9, opacity: 0.35, filter: "blur(3px)", duration: 0.2, ease: "power1.in", force3D: false }, 2.20);
+        ft(bret, { opacity: 0.35, filter: "blur(3px)" }, { opacity: 0, filter: "blur(6px)", duration: 1.0, ease: "none" }, 2.40);
+        ripple(ripB, 2.20);
+        // 2.70 to 3.10 the red pencil rings her (« power2.out »)
+        tl.set(ring, { opacity: 1 }, 2.70);
+        ft(ringE, { strokeDashoffset: RL }, { strokeDashoffset: 0, duration: 0.4, ease: "power1.out" }, 2.70);
+
+        // ---- scene 3 : the Strasbourg escapes (MX.strasAt in render), rings open at his post
+        ripple(ripP, 3.00);
+
+        // ---- the voice line
+        var INK_N = "rgb(244, 237, 221)", GREY_N = "rgba(244, 237, 221, 0.35)";    // .night : #f4eddd
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        function words(sb, list) {
+          var ws = sb.querySelectorAll(".mx-w:not(.mx-pt)");
+          list.forEach(function (w, n) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[n];
+            if (w[2] === "box") {
+              var tx = el.querySelector(".mx-box-tx");
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+              ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              return;
+            }
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_N }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_N, duration: 0.14, ease: "power2.out" }, t0);
+            ft(el, { color: GREY_N }, { color: INK_N, duration: 0.2, ease: "power1.out" }, t0 + 0.14);   // grey (35 %) to full ink
+          });
+        }
+        words(sub, S);
+        ft(sub, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 3.26);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

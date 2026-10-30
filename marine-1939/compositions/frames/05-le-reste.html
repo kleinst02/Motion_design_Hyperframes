@@ -1,0 +1,248 @@
+<template>
+  <div id="root" data-composition-id="05-le-reste" data-width="1920" data-height="1080" data-duration="5.53">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper between .mx-stage and .mx-world (no dated shake in this sequence) */
+      #p05-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* book B in a wrapper : its depth blur goes on the wrapper, never on the kit's #p05-b-book (rotated in CSS) */
+      #p05-bwrap { position: absolute; left: 0; top: 0; }
+
+      /* the rings wait under the water until their object sinks */
+      #p05-world .p05-rip { opacity: 0; }
+
+      /* the lamp goes out : the whole scene goes to the black of the table */
+      #p05-black { background: #0c0906; opacity: 0; }
+
+      /* the voice line, word by word */
+      #p05-subs .mx-w { opacity: 0; }
+      #p05-subs .mx-w.mx-box, #p05-subs .mx-w.mx-pt { opacity: 1; }
+      #p05-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p05-subs .mx-box-bg { transform: scaleX(0); }
+    </style>
+
+    <!-- the table at night; inside it the perspective stage, the shake wrapper and the world (the chart and its objects) -->
+    <div id="p05-ground" class="clip mx-ground" data-start="0" data-duration="5.53" data-track-index="0" data-layout-allow-overflow>
+      <div id="p05-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p05-shake" data-layout-allow-overflow>
+          <div id="p05-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D lights over the stage : the night lamp, then the black when it goes out (5.33 to 5.53) -->
+    <div id="p05-lights" class="clip mx-layer" data-start="0" data-duration="5.53" data-track-index="1">
+      <div id="p05-black" class="mx-layer" data-layout-allow-occlusion></div>
+    </div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p05-subs" class="clip mx-layer" data-start="0" data-duration="5.53" data-track-index="2" data-layout-allow-caption-zone></div>
+
+    <!-- film grain, 6 % -->
+    <div id="p05-grain" class="clip mx-grain" data-start="0" data-duration="5.53" data-track-index="3"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "05-le-reste", DUR = 5.53, T0 = MX.FRAMES[4][1], W = MX.W, IMG = "assets/img/";
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        // What exists is what reference/carte.html (demo, buildMed) draws for T in [17.84, 23.37], in the same order.
+        var stage = $("p05-stage"), shake = $("p05-shake"), world = $("p05-world");
+        function onChart(html, x, y, rot, id, cls) {          // an object laid on the chart : GSAP places x, y, rotation
+          var on = document.createElement("div");
+          on.id = id;
+          on.className = "mx-on" + (cls ? " " + cls : "");
+          on.innerHTML = html;
+          world.appendChild(on);
+          gsap.set(on, { x: x, y: y, rotation: rot || 0 });
+          return on;
+        }
+        // rings in the water, flat on the chart, hidden until their object sinks
+        function ripples(id, x, y, r0, step, n) {
+          var on = onChart(MX.ripplesSVG(n, r0, step, "#2f6c80", 0.85), x, y, 0, id, "p05-rip");
+          return { on: on, rings: Array.prototype.slice.call(on.querySelectorAll("ellipse")) };
+        }
+
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p05-med"));
+        // book A, pages 214-215 : the date typed, the engraving under way, the 4e stamped
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p05-a", W.BOOK_A, MX.pageVersoSVG("p05-av"), MX.pageEngravingSVG("p05-ae", true)));
+        // the pencil dates and the red ring, written in sequences 2 and 3 ; they stay
+        onChart(MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1], 0, "p05-pmk");
+        onChart(MX.lossRingSVG("p05-loss", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1], 0, "p05-lmk");
+        $("p05-loss").setAttribute("stroke-dashoffset", "0");
+        onChart(MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1], 0, "p05-ptl");
+        // the three models left of the line of 1939 (MX.W.LINE[2] to [4]), each with its rings
+        var LSINK = [1.40, 1.70, 2.00];                                 // EV.lineSink 19.24, 19.54, 19.84 in local time
+        var line = [2, 3, 4].map(function (i) {
+          var m = W.LINE[i];
+          return {
+            on: onChart(MX.modelHTML(m[0], m[3], "p05-ln" + i + "-m"), m[1], m[2], m[4], "p05-ln" + i),
+            rip: ripples("p05-ln" + i + "-rip", m[1], m[2], 70, 34, 4)
+          };
+        });
+        // Mers el-Kebir : the two models still moored there (off frame in this sequence, as in the reference)
+        [0, 1].forEach(function (i) {
+          var m = W.MK[i];
+          onChart(MX.modelHTML(m[0], m[3], "p05-mk" + i + "-m"), m[1], m[2], m[4], "p05-mk" + i);
+        });
+        // book B, open on pages 216-217, the three lines highlighted
+        var bwrap = document.createElement("div");
+        bwrap.id = "p05-bwrap";
+        bwrap.innerHTML = MX.bookHTML("p05-b", W.BOOK_B, MX.pageBlankSVG(216), MX.pageLinesSVG("p05-bl"));
+        world.appendChild(bwrap);
+        [0, 1, 2].forEach(function (i) { $("p05-bl-hl" + i).setAttribute("opacity", ".85"); });
+        // the optical dial of the bridge (MX.W.DIAL), laid on the chart off frame from the start
+        var D = W.DIAL;
+        var dial = onChart(MX.dialSVG("p05-dial", D[2]), D[0], D[1], D[3], "p05-dialon");
+        dial.querySelector("svg").style.transform = "translate(" + -D[2] + "px," + -D[2] + "px)";
+        var dialRip = ripples("p05-dial-rip", D[0], D[1], 120, 40, 4);
+        // the print of the book (MX.W.PRINT) : the deck of the Dunkerque and her sailors, sepia, no caption
+        var P = W.PRINT;
+        var print = onChart(MX.printHTML("p05-print", IMG + "dunkerque-a-quai-collection-langry.jpg", P[2], P[3], "50% 100%", "130% auto"), P[0], P[1], P[4], "p05-printon");
+        var printRip = ripples("p05-print-rip", P[0], P[1], 170, 50, 4);
+        gsap.set(shake, { x: 0, y: 0 });
+
+        // lights : the night lamp under the black
+        var lights = $("p05-lights"), black = $("p05-black");
+        black.insertAdjacentHTML("beforebegin", MX.lampHTML(960, 480, 980, 580));
+        var lamp = [lights.querySelector(".mx-lamp"), lights.querySelector(".mx-lamp-dark")];
+
+        // the voice line : chunk 7 (.paper, then .night when the page leaves the band), chunk 8 (.night, three boxes)
+        var subs = $("p05-subs");
+        var S7 = [["Le", 0.28], ["reste", 0.50], ["a", 1.00], ["sombré", 1.30, "box"]];
+        var S8 = [["Ses", 2.17], ["navires", 2.38, "box"], ["Ses", 3.30], ["matériels", 3.54, "box"], ["Ses", 4.64], ["hommes", 4.98, "box"]];
+        function kitWords(list) {                                       // a full stop after a boxed word goes in its box (the kit does it)
+          var out = [];
+          list.forEach(function (w) { out.push([w[0], w[2] || ""]); if (w[2] === "box") out.push([".", ""]); });
+          return out;
+        }
+        subs.innerHTML = MX.subHTML("p05-s7", kitWords(S7), "paper") + MX.subHTML("p05-s8", kitWords(S8), "night");
+        var s7 = $("p05-s7"), s8 = $("p05-s8");
+
+        var grain = $("p05-grain");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease) : powerN = u^N.
+        // GSAP's powerN is u^(N+1), so a storyboard « power2.in » is GSAP power1.in, a « power3.out » is GSAP power2.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the camera : ONE proxy tween over the whole frame, on the film's score (film time T = T0 + local time).
+        // onUpdate renders it on every seek ; the modifier renders it too when events are suppressed (a seek that lands
+        // exactly on the frame's end). MX.camAt is null from 23.37 (the black of the pivot) : the last camera is kept.
+        var cam = { t: T0 };
+        function render(T) {
+          var Tc = Math.min(T, T0 + DUR - 0.001);
+          MX.applyCam(world, MX.camAt(Tc));
+          var b = MX.blurAt(Tc);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                   // grain : offset from the image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+        }
+        ft(cam, { t: T0 }, { t: T0 + DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // sinking (frame.md, model.sink) : 0.2 s « power2.in » (scale 1 to 0.9, opacity 1 to 0.35, blur 0 to 3 px), then
+        // 1.0 s linear (opacity 0.35 to 0, blur 3 to 6 px) ; the object stays in its place
+        function sink(el, t) {
+          ft(el, { opacity: 1, scale: 1, filter: "blur(0px)" }, { opacity: 0.35, scale: 0.9, filter: "blur(3px)", duration: 0.2, ease: "power1.in" }, t);
+          ft(el, { opacity: 0.35, filter: "blur(3px)" }, { opacity: 0, filter: "blur(6px)", duration: 1.0, ease: "none" }, t + 0.2);
+        }
+        // rings (frame.md, ripples) : they open with the sinking ; each ellipse grows x1 to x1.35 and fades in 1.0 s
+        // linear, staggered by 0.1 s
+        function ring(R, t) {
+          tl.set(R.on, { opacity: 1 }, t);
+          R.rings.forEach(function (e, k) {
+            var op = +e.getAttribute("opacity");
+            ft(e, { scale: 1, svgOrigin: "0 0", attr: { opacity: op } }, { scale: 1.35, svgOrigin: "0 0", attr: { opacity: 0 }, duration: 1.0, ease: "none" }, t + 0.1 * k);
+          });
+        }
+
+        // ---- scene 1 : the camera brakes over the night sea ; book B reaches the right edge and blurs (depth)
+        ft(bwrap, { filter: "blur(0px)" }, { filter: "blur(4px)", duration: 0.2, ease: "none" }, 1.20);
+
+        // ---- scene 2 : the three models sink one after the other, each in its rings
+        line.forEach(function (L, k) { sink(L.on, LSINK[k]); ring(L.rip, LSINK[k]); });
+
+        // ---- scene 3 : the dial sinks (21.48)
+        sink(dial, 3.64);
+        ring(dialRip, 3.64);
+
+        // ---- scene 4 : the print sinks (22.92), then the lamp goes out (23.17 to 23.37, « power2.in »)
+        sink(print, 5.08);
+        ring(printRip, 5.08);
+        ft(lamp, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power1.in" }, 5.33);
+        ft(black, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.in" }, 5.33);
+
+        // ---- the voice line
+        var INK_P = "rgb(27, 26, 23)", GREY_P = "rgba(27, 26, 23, 0.35)";          // .paper : #1b1a17
+        var INK_N = "rgb(244, 237, 221)", GREY_N = "rgba(244, 237, 221, 0.35)";    // .night : #f4eddd
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        var SH_P = "0px 0px 16px rgba(241, 232, 214, 0.9), 0px 0px 3px rgba(241, 232, 214, 0.8)";   // .paper halo
+        var SH_N = "0px 2px 14px rgba(0, 0, 0, 0.65), 0px 0px 2px rgba(0, 0, 0, 0.5)";              // .night shadow
+        var SH_0 = "0px 2px 14px rgba(0, 0, 0, 0), 0px 0px 2px rgba(0, 0, 0, 0)";
+        var TH0 = 0.36, TH1 = 0.56;                                                 // chunk 7 : .paper → .night
+        function words(sub, list, paperFirst) {
+          var ws = sub.querySelectorAll(".mx-w:not(.mx-pt)"), boxes = [];
+          list.forEach(function (w, i) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[i];
+            if (w[2] === "box") {
+              var tx = el.querySelector(".mx-box-tx"), bg = el.querySelector(".mx-box-bg");
+              ft(bg, { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, transformOrigin: "0% 50%", duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+              ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              boxes.push({ bg: bg, tx: tx, cue: cue });
+              return;
+            }
+            var night = !paperFirst || t0 >= TH0, g = night ? GREY_N : GREY_P;
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: g }, { opacity: 1, y: 0, filter: "blur(0px)", color: g, duration: 0.14, ease: "power2.out" }, t0);
+            var c0 = t0 + 0.14, c1 = c0 + 0.2;                          // grey (35 %) to full ink in 0.2 s
+            if (night) { ft(el, { color: GREY_N }, { color: INK_N, duration: 0.2, ease: "power1.out" }, c0); return; }
+            if (c1 <= TH0) {
+              ft(el, { color: GREY_P }, { color: INK_P, duration: 0.2, ease: "power1.out" }, c0);
+              ft(el, { color: INK_P }, { color: INK_N, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+            } else if (c0 < TH0 - 0.001) {
+              ft(el, { color: GREY_P }, { color: INK_P, duration: TH0 - c0, ease: "power1.out" }, c0);
+              ft(el, { color: INK_P }, { color: INK_N, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+            } else {
+              ft(el, { color: GREY_P }, { color: INK_N, duration: Math.max(0.2, TH1 - c0), ease: "power1.inOut" }, c0);
+            }
+          });
+          // one box lit at a time : 0.1 s before the next boxed word, the previous box retracts to the right
+          // (scaleX 1 to 0 in 0.12 s, origin 100% 50%) and its word takes back the colour of the line
+          for (var k = 1; k < boxes.length; k++) {
+            var r = boxes[k].cue - 0.1, B = boxes[k - 1];
+            ft(B.bg, { scaleX: 1, transformOrigin: "100% 50%" }, { scaleX: 0, transformOrigin: "100% 50%", duration: 0.12, ease: "none" }, r);
+            ft(B.tx, { color: BOX, textShadow: SH_0 }, { color: INK_N, textShadow: SH_N, duration: 0.12, ease: "none" }, r);
+          }
+        }
+        words(s7, S7, true);
+        words(s8, S8, false);
+        ft(s7, { textShadow: SH_P }, { textShadow: SH_N, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+        ft(s7, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 1.95);
+        ft(s8, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 5.28);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

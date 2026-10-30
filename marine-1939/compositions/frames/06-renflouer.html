@@ -67,9 +67,14 @@
           list.forEach(function (w, i) {
             var cue = w[1], t0 = cue - 0.06, el = ws[i];
             if (w[2] === "boxstroke") {
-              var tx = el.querySelector(".mx-box-tx");
-              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.02);   // 1.09, « power3.out »
-              ft(tx, { opacity: 0, y: 40, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.2, ease: "expo.out" }, cue);
+              // the storyboard's 1.09 (box) and 1.11 (word) lead by one image, like every word here : no image falls
+              // between 1.11 and 1.13, so a rise starting on 1.11 would show the word late ; box 1.06, word 1.08
+              var tx = el.querySelector(".mx-box-tx"), rise = cue - 0.03;
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, rise - 0.02);   // « power3.out »
+              ft(tx, { opacity: 0, y: 40, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "expo.out" }, rise);
+              // its ink : two colour tweens that never overlap (the rise above carries no colour, so its end cannot put the
+              // grey back once the ink is full) : grey (35 %) while it surfaces, then full in 0.1 s from cue + 0.04
+              ft(tx, { color: GREY_B }, { color: GREY_B, duration: cue + 0.04 - rise, ease: "none" }, rise);
               ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
               ft(el.querySelector(".mx-stroke"), { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power1.out" }, cue + 0.04);   // 1.15 to 1.55, « power2.out »
               return;

@@ -1,0 +1,220 @@
+<template>
+  <div id="root" data-composition-id="10-new-york-toulon" data-width="1920" data-height="1080" data-duration="4.46">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-500.woff2") format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world (no shake in this sequence, the skeleton stays the same) */
+      #p10-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* under the stage : the black of the article body, which takes over the ground during the dive (the blurred edge of
+         the stage must show #141414, not the table, on the last image) */
+      #p10-black { background: #141414; opacity: 0; }
+
+      /* born during the sequence : hidden at the first image (handoff_in, the last image of sequence 9) */
+      #p10-route-on, #p10-cl-rise, #p10-rip ellipse, .p10-card, .p10-pin, #p10-loss-on { opacity: 0; }
+
+      /* the voice line, word by word */
+      #p10-subs .mx-w { opacity: 0; }
+      #p10-subs .mx-w.mx-box { opacity: 1; }
+      #p10-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p10-subs .mx-box .mx-pt { opacity: 1; }
+      #p10-subs .mx-box-bg, #p10-subs .mx-stroke { transform: scaleX(0); }
+    </style>
+
+    <!-- the table by day; inside it the black of the article body, the perspective stage, the shake wrapper and the world
+         (the Atlantic chart, the Mediterranean sheet with its objects, the route, the cruiser, the two articles) -->
+    <div id="p10-ground" class="clip mx-ground day" data-start="0" data-duration="4.46" data-track-index="0" data-layout-allow-overflow>
+      <div id="p10-black" class="mx-layer" data-layout-allow-occlusion></div>
+      <div id="p10-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p10-shake" data-layout-allow-overflow>
+          <div id="p10-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D light over the stage : the day (frame.md, lights.day) ; it leaves when the camera enters the article -->
+    <div id="p10-lights" class="clip mx-layer" data-start="0" data-duration="4.46" data-track-index="1"></div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p10-subs" class="clip mx-layer" data-start="0" data-duration="4.46" data-track-index="2" data-layout-allow-caption-zone></div>
+
+    <!-- film grain, 5 % (day) -->
+    <div id="p10-grain" class="clip mx-grain day" data-start="0" data-duration="4.46" data-track-index="3"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "10-new-york-toulon", DUR = 4.46, T0 = MX.FRAMES[9][1], T1 = T0 + DUR, W = MX.W, IMG = "assets/img/";
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        var stage = $("p10-stage"), shake = $("p10-shake"), world = $("p10-world"), grain = $("p10-grain");
+        gsap.set(shake, { x: 0, y: 0 });
+        // an object laid on a chart : an .mx-on placed once (GSAP x, y, rotation in chart units)
+        function on(parent, id, html, x, y, rot, cls) {
+          var e = document.createElement("div");
+          e.id = id;
+          e.className = "mx-on" + (cls ? " " + cls : "");
+          e.innerHTML = html;
+          parent.appendChild(e);
+          gsap.set(e, { x: x, y: y, rotation: rot || 0 });
+          return e;
+        }
+
+        // the Atlantic chart, and on it the Mediterranean chart as a sheet (MX.MED_ON_ATL) holding every object of
+        // sequence 9 at its MX.W place, in Mediterranean coordinates : the first image is the last one of sequence 9
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("atlantic", "p10-atl"));
+        world.insertAdjacentHTML("beforeend", MX.medSheetHTML("p10-sheet", '<div id="p10-sobj"></div>'));
+        var sobj = $("p10-sobj");
+        sobj.insertAdjacentHTML("beforeend", MX.bookHTML("p10-a", W.BOOK_A, MX.pageVersoSVG("p10-av"), MX.pageEngravingSVG("p10-ae", true)));
+        on(sobj, "p10-pmk", MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1]);
+        on(sobj, "p10-lmk-on", MX.lossRingSVG("p10-lmk", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1]);
+        $("p10-lmk").setAttribute("stroke-dashoffset", "0");                       // the ring of the Bretagne, drawn since 8.92
+        on(sobj, "p10-ptl", MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1]);
+        W.LINE.forEach(function (m, i) { on(sobj, "p10-ln" + i, MX.modelHTML(m[0], m[3], "p10-ln" + i + "-m"), m[1], m[2], m[4]); });
+        W.MK.slice(0, 2).forEach(function (m, i) { on(sobj, "p10-mk" + i, MX.modelHTML(m[0], m[3], "p10-mk" + i + "-m"), m[1], m[2], m[4]); });
+        var D = W.DIAL, dial = on(sobj, "p10-dial-on", MX.dialSVG("p10-dial", D[2]), D[0], D[1], D[3]);
+        dial.querySelector("svg").style.transform = "translate(" + -D[2] + "px," + -D[2] + "px)";
+        on(sobj, "p10-crow-on", MX.blogRowHTML("p10-crow", "Les cadrans optiques", "dimanche 29 janvier 2012", IMG + "cadrans-optiques-mogador.jpg"), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]);
+        on(sobj, "p10-cpin", MX.pinHTML(null, 30), W.PIN_DIAL[0], W.PIN_DIAL[1]);
+        on(sobj, "p10-photo-on", MX.photoCardHTML("p10-photo", IMG + "dunkerque-a-quai-collection-langry.jpg", W.PHOTO[2], W.PHOTO[3], "Le Dunkerque. Collection Wilfried Langry."), W.PHOTO[0], W.PHOTO[1], W.PHOTO[4]);
+        on(sobj, "p10-ppin", MX.pinHTML(null, 30), W.PIN_PHOTO[0], W.PIN_PHOTO[1]);
+        on(sobj, "p10-phone-on", MX.phoneHTML("p10-phone", W.PHONE[2], IMG + "blog-accueil-mobile.png"), W.PHONE[0], W.PHONE[1], W.PHONE[3]);
+        on(sobj, "p10-eperv-on", MX.photoCardHTML("p10-eperv", IMG + "epervier-collection-langry.jpg", 456, 300, "L’Épervier. Collection Wilfried Langry."), W.CARD_EPERVIER[0], W.CARD_EPERVIER[1], W.CARD_EPERVIER[2]);
+        on(sobj, "p10-epin", MX.pinHTML(null, 30), W.PIN_EPERVIER[0], W.PIN_EPERVIER[1]);
+
+        // on the Atlantic : the route of the 4e DC (dotted #p10-route-todo ; the done part #p10-route-done follows
+        // MX.routeDoneAt(T) in render), the ripples where the cruiser surfaces, the cruiser (render places the outer
+        // element at MX.clAt(T), the rise animates the inner one), the two articles and their pins, the red ring of Toulon
+        var routeOn = on(world, "p10-route-on", MX.routeSVG("p10-route", W.ROUTE, 0), 0, 0);
+        var done = $("p10-route-done"), LEN = parseFloat(done.getAttribute("data-len"));
+        var RISE = MX.clAt(MX.CL_MOVE.rise);                                         // its place off New York at 38.40
+        var rip = on(world, "p10-rip", MX.ripplesSVG(3, 60, 30, "#2f6c80", .85), RISE[0], RISE[1]);
+        var cl = on(world, "p10-cl", '<div id="p10-cl-rise">' + MX.modelHTML("cl", 250, "p10-cl-m") + "</div>", RISE[0], RISE[1], RISE[2]);
+        var clRise = $("p10-cl-rise");
+        var cardNY = on(world, "p10-card-ny", MX.blogCardHTML(null, "La 4ème DC à New York", "août 2013", IMG + "4e-dc-collection-langry.jpg"), W.CARD_NY[0], W.CARD_NY[1], W.CARD_NY[2], "p10-card");
+        var pinNY = on(world, "p10-pin-ny", MX.pinHTML(null, 34), W.PIN_NY[0], W.PIN_NY[1], 0, "p10-pin");
+        var cardTL = on(world, "p10-card-tl", MX.blogCardHTML(null, "Les épaves de Toulon", "jeudi 5 mai 2016", IMG + "epaves-toulon-collection-langry.jpg"), W.CARD_TOULON[0], W.CARD_TOULON[1], W.CARD_TOULON[2], "p10-card");
+        var pinTL = on(world, "p10-pin-tl", MX.pinHTML(null, 34), W.PIN_TOULON[0], W.PIN_TOULON[1], 0, "p10-pin");
+        var LT = W.LOSS_TOULON, lossOn = on(world, "p10-loss-on", MX.lossRingSVG("p10-loss", LT[2], LT[3], LT[4]), LT[0], LT[1]);
+        var loss = $("p10-loss"), LOSS_LEN = parseFloat(loss.getAttribute("data-len"));
+
+        // lights : the day
+        var lights = $("p10-lights");
+        lights.insertAdjacentHTML("beforeend", MX.dayHTML());
+        var dayLayers = lights.querySelectorAll(".mx-day, .mx-day-edge");
+
+        // the voice line : two chunks, theme .day ; « drames » boxed, with its peak stroke
+        var subs = $("p10-subs");
+        var S1 = [["De", 0.19], ["New", 0.42], ["York", 0.64], ["à", 0.88], ["Toulon,", 1.02]];
+        var S2 = [["ses", 1.61], ["heures", 1.90], ["de", 2.12], ["gloire…", 2.38], ["et", 3.25], ["ses", 3.50], ["drames", 3.66, "boxstroke"]];
+        subs.innerHTML = MX.subHTML("p10-s1", S1.map(function (w) { return [w[0], ""]; }), "day") +
+          MX.subHTML("p10-s2", S2.map(function (w) { return [w[0], w[2] || ""]; }).concat([[".", ""]]), "day");
+        var s1 = $("p10-s1"), s2 = $("p10-s2");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease) : powerN = u^N.
+        // GSAP's powerN is u^(N+1), so a storyboard « power2.out » is GSAP power1.out, a « power3.out » is GSAP power2.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the camera : ONE proxy tween over the whole frame, in film time (T0 to T1) ; the film's score MX.camAt / MX.blurAt,
+        // in Atlantic coordinates from 37.90. MX.camAt(42.36) is the end card (null) : the last instant keeps the score's
+        // last segment. onUpdate renders every seek ; the modifier renders too when events are suppressed.
+        var cam = { t: T0 };
+        function render(T) {
+          MX.applyCam(world, MX.camAt(Math.min(T, T1 - 1e-4)));
+          var b = MX.blurAt(Math.min(T, T1 - 0.02));
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                   // grain : offset from the image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+          done.setAttribute("stroke-dashoffset", (LEN * (1 - MX.routeDoneAt(T))).toFixed(1));   // the pencil on the route
+          var q = MX.clAt(T);                                           // the cruiser on its path (always at sea)
+          cl.style.transform = "translate(" + q[0].toFixed(2) + "px," + q[1].toFixed(2) + "px) rotate(" + q[2].toFixed(2) + "deg)";
+        }
+        ft(cam, { t: T0 }, { t: T1, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // ---- scene 1 : the pull-back reveals the sheet on the Atlantic ; the route ; the cruiser surfaces ; New York
+        // the dotted route comes onto the chart once the seam is passed (sequence 9 has none), as the sheet's edge shows
+        ft(routeOn, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.inOut" }, 0.25);
+        // 0.45 the objects of the sheet, now tiny, fade (the sheet stays)
+        ft(sobj, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "none" }, 0.45);
+        // 0.50 the light cruiser surfaces off New York (frame.md model.rise : 0.2 s expo.out) and its rings open
+        ft(clRise, { opacity: 0.4, scale: 1.04, filter: "blur(6px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.2, ease: "expo.out" }, 0.50);
+        tl.set(clRise, { filter: "none" }, 0.70);
+        rip.querySelectorAll("ellipse").forEach(function (e, i) {      // each ring grows x1 to x1.35 and fades, 1.0 s linear, 0.1 s apart
+          var o = parseFloat(e.getAttribute("opacity"));
+          ft(e, { opacity: o, scale: 1, svgOrigin: "0 0" }, { opacity: 0, scale: 1.35, svgOrigin: "0 0", duration: 1.0, ease: "none" }, 0.50 + 0.1 * i);
+        });
+        // an article lands from the camera (x1.2, blur 8, 0.2 s, kit curve u^3 out), then its pin is pressed in
+        function land(el, t) {
+          ft(el, { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "none" }, t);
+          ft(el, { scale: 1.2, filter: "blur(8px)" }, { scale: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, t);
+          tl.set(el, { filter: "none" }, t + 0.2);
+        }
+        function pin(el, t) {
+          ft(el, { opacity: 0 }, { opacity: 1, duration: 0.04, ease: "none" }, t);
+          ft(el, { scale: 1.3 }, { scale: 1, duration: 0.12, ease: "power2.out" }, t);
+        }
+        land(cardNY, 0.60);                                             // « La 4ème DC à New York », above New York
+        pin(pinNY, 0.70);
+
+        // ---- scene 2 : the cruiser follows the route (render), the article of Toulon lands
+        land(cardTL, 0.85);                                             // « Les épaves de Toulon », north-west of Toulon
+        pin(pinTL, 0.95);
+
+        // ---- scene 3 : on « drames », Toulon is circled in red pencil (0.4 s, storyboard power2.out)
+        tl.set(lossOn, { opacity: 1 }, 3.55);
+        ft(loss, { strokeDashoffset: LOSS_LEN }, { strokeDashoffset: 0, duration: 0.4, ease: "power1.out" }, 3.55);
+
+        // ---- scene 4 : the dive into the article of Toulon ; the frame becomes the plain #141414 of its body
+        ft(dayLayers, { opacity: 1 }, { opacity: 0, duration: 0.14, ease: "power1.in" }, 4.26);
+        ft($("p10-black"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.in" }, 4.00);
+
+        // ---- the voice line
+        var INK = "rgb(29, 27, 24)", GREY = "rgba(29, 27, 24, 0.35)";              // .day : #1d1b18
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        function words(sub, list) {
+          var ws = sub.querySelectorAll(".mx-w");
+          list.forEach(function (w, i) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[i];
+            if (w[2]) {
+              var tx = el.querySelector(".mx-box-tx"), st = el.querySelector(".mx-stroke");
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+              ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              if (st) ft(st, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power1.out" }, cue);                            // the peak stroke, « power2.out »
+              return;
+            }
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY, duration: 0.14, ease: "power2.out" }, t0);
+            ft(el, { color: GREY }, { color: INK, duration: 0.2, ease: "power1.out" }, t0 + 0.14);   // grey (35 %) to full ink in 0.2 s
+          });
+        }
+        words(s1, S1);
+        words(s2, S2);
+        ft(s1, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 1.40);
+        ft(s2, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 3.98);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

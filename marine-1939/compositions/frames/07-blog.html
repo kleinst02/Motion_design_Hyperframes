@@ -1,0 +1,203 @@
+<template>
+  <div id="root" data-composition-id="07-blog" data-width="1920" data-height="1080" data-duration="4.01">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-500.woff2") format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world (no shake in this frame, kept for the shared skeleton) */
+      #p07-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* the phone lies in the dark where book B was, its screen off */
+      #p07-phone .mx-phone-screen { filter: brightness(0); }
+      /* the line of 1939 : wrecks under the paper, not there yet */
+      #p07-world .p07-ln { opacity: 0; filter: blur(5px); }
+
+      /* lights : the shadow pierced by the halo (set by render), the day (MX.dayHTML), the black of the pivot */
+      #p07-day { opacity: 0; }
+      #p07-black { background: #0c0906; }
+
+      /* grain : the night look (6 %, overlay), then the day look (5 %, multiply) once the day is full */
+      #p07-grain-day { opacity: 0; }
+
+      /* the voice line, word by word */
+      #p07-subs .mx-w { opacity: 0; }
+      #p07-subs .mx-w.mx-box { opacity: 1; }
+      #p07-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p07-subs .mx-box-bg { transform: scaleX(0); }
+    </style>
+
+    <!-- the table ; inside it the perspective stage, the shake wrapper and the world (the chart by day, book A, the phone) -->
+    <div id="p07-ground" class="clip mx-ground" data-start="0" data-duration="4.01" data-track-index="0" data-layout-allow-overflow>
+      <div id="p07-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p07-shake" data-layout-allow-overflow>
+          <div id="p07-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D lights over the stage : the shadow pierced by the phone's halo, the day, the black that lifts when the screen turns on -->
+    <div id="p07-lights" class="clip mx-layer" data-start="0" data-duration="4.01" data-track-index="1">
+      <div id="p07-halo" class="mx-layer" data-layout-allow-occlusion></div>
+      <div id="p07-day" class="mx-layer" data-layout-allow-occlusion></div>
+      <div id="p07-black" class="mx-layer" data-layout-allow-occlusion></div>
+    </div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p07-subs" class="clip mx-layer" data-start="0" data-duration="4.01" data-track-index="2" data-layout-allow-caption-zone></div>
+
+    <!-- film grain : night 6 %, then day 5 % -->
+    <div id="p07-grain" class="clip mx-grain" data-start="0" data-duration="4.01" data-track-index="3"></div>
+    <div id="p07-grain-day" class="clip mx-grain day" data-start="0" data-duration="4.01" data-track-index="4"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "07-blog", DUR = 4.01, T0 = MX.FRAMES[6][1], W = MX.W;        // film time T = 26.40 + local time
+        var $ = function (id) { return document.getElementById(id); };
+        var clamp = function (v) { return Math.max(0, Math.min(1, v)); };
+        // film times of the storyboard (reference/carte.html, EV) : the screen turns on, the day rises, the wrecks appear
+        var PHONE_ON = 26.62, DAY = [28.70, 29.90], GHOST = [29.40, 29.40, 29.60, 29.80, 30.00];
+
+        /* ============================== the DOM, built once ============================== */
+        var stage = $("p07-stage"), shake = $("p07-shake"), world = $("p07-world");
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p07-med"));
+        // book A, page 215 as the film left it : the date typed, the engraving under way, the 4e stamped
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p07-a", W.BOOK_A, MX.pageVersoSVG("p07-av"), MX.pageEngravingSVG("p07-ae", true)));
+        function onChart(id, cls, html, x, y, rot) {                    // an object laid on the chart, placed once
+          var on = document.createElement("div");
+          on.id = id;
+          on.className = "mx-on" + (cls ? " " + cls : "");
+          on.innerHTML = html;
+          world.appendChild(on);
+          gsap.set(on, { x: x, y: y, rotation: rot || 0 });
+          return on;
+        }
+        // the pencil dates and the red ring, written earlier in the film, stay on the chart
+        onChart("p07-pmk", "", MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1]);
+        var ring = onChart("p07-lmk", "", MX.lossRingSVG("p07-lmk-e", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1]);
+        ring.querySelector("ellipse").setAttribute("stroke-dashoffset", "0");
+        onChart("p07-pt", "", MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1]);
+        // the line of 1939 at its stations (MX.W.LINE) : wrecks under the paper (opacity 0.16, blur 5 px) as the day reaches them
+        var line = W.LINE.map(function (m, i) {
+          return onChart("p07-ln" + i, "p07-ln", MX.modelHTML(m[0], m[3], "p07-ln" + i + "-m"), m[1], m[2], m[4]);
+        });
+        // Mers el-Kébir : the Dunkerque and the Provence still moored
+        [0, 1].forEach(function (i) {
+          var m = W.MK[i];
+          onChart("p07-mk" + i, "", MX.modelHTML(m[0], m[3], "p07-mk" + i + "-m"), m[1], m[2], m[4]);
+        });
+        // the phone, where book B was (MX.W.PHONE) : the real home page of the blog
+        var phone = onChart("p07-ph", "", MX.phoneHTML("p07-phone", W.PHONE[2], "assets/img/blog-accueil-mobile.png"), W.PHONE[0], W.PHONE[1], W.PHONE[3]);
+        var screen = phone.querySelector(".mx-phone-screen");
+        gsap.set(shake, { x: 0, y: 0 });
+
+        // lights
+        var halo = $("p07-halo"), day = $("p07-day"), black = $("p07-black");
+        day.innerHTML = MX.dayHTML();
+
+        // the voice line : chunk 9, theme .night, then .day from 3.00 (29.40)
+        var subs = $("p07-subs");
+        var S9 = [["MARINE", 0.76], ["1939", 1.20], ["fait", 2.32], ["revivre", 2.74, "box"], ["cette", 3.38], ["flotte.", 3.58]];
+        subs.innerHTML = MX.subHTML("p07-s9", S9.map(function (w) { return [w[0], w[2] || ""]; }), "night");
+        var s9 = $("p07-s9");
+
+        var ground = $("p07-ground"), grains = [$("p07-grain"), $("p07-grain-day")];
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (powerN = u^N) ; GSAP's powerN is u^(N+1).
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the dawn (reference/carte.html, block « l'aube ») : a shadow layer pierced by a soft circle centered on the
+        // camera anchor ; its core opens 0 → 260 px (26.62 to 27.62), then 260 → 380 px (27.62 to 28.70), then the day
+        // pushes it past the corners while the shadow thins out (28.70 to 29.90)
+        function haloBg(T) {
+          if (T >= DAY[1]) return "none";
+          var dayK = clamp((T - DAY[0]) / (DAY[1] - DAY[0])), glow = clamp((T - PHONE_ON) / 1.0);
+          var r1 = 260 + 120 * clamp((T - 27.62) / 1.08) + 900 * dayK;
+          return "radial-gradient(circle " + Math.round(r1 + 600) + "px at 960px 470px, rgba(8, 6, 3, 0) " + Math.round(r1 * glow) +
+            "px, rgba(8, 6, 3, " + (.97 * (1 - dayK)).toFixed(2) + ") " + Math.round(r1 + 560) + "px)";
+        }
+
+        // the camera : ONE proxy tween over the whole frame ; the film's score MX.camAt / MX.blurAt (film time T).
+        // onUpdate renders it on every seek ; the modifier renders it too when events are suppressed (a seek that lands
+        // exactly on the frame's end, where the engine's second pass is a no-op).
+        var cam = { t: T0 };
+        function render(T) {
+          T = Math.max(T0, Math.min(T0 + DUR, T));
+          MX.applyCam(world, MX.camAt(T));
+          var b = MX.blurAt(T);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          halo.style.background = haloBg(T);
+          var n = Math.round(T * 30), bp = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";   // grain : offset from the image number
+          grains[0].style.backgroundPosition = bp;
+          grains[1].style.backgroundPosition = bp;
+        }
+        ft(cam, { t: T0 }, { t: T0 + DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // ---- scene 1 : the blog lights up in the dark
+        // 0.22 the screen turns on (brightness 0 → 1 in 0.2 s) ; it is the only light : the black of the pivot lifts with it
+        // and the halo opens on the chart around the phone (render)
+        ft(screen, { filter: "brightness(0)" }, { filter: "brightness(1)", duration: 0.2, ease: "none" }, PHONE_ON - T0);
+        tl.set(screen, { filter: "none" }, PHONE_ON - T0 + 0.2);
+        ft(black, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "none" }, PHONE_ON - T0);
+
+        // ---- scene 2 : the day rises from the phone to the edges ; the fleet appears under the paper
+        var D0 = DAY[0] - T0, DD = DAY[1] - DAY[0];                     // 2.30, 1.20
+        ft(day, { opacity: 0 }, { opacity: 1, duration: DD, ease: "none" }, D0);
+        ft(ground, { backgroundColor: "#0c0906" }, { backgroundColor: "#8a7353", duration: DD, ease: "none" }, D0);
+        ft(grains[0], { opacity: 0.06 }, { opacity: 0, duration: DD, ease: "none" }, D0);
+        ft(grains[1], { opacity: 0 }, { opacity: 0.05, duration: DD, ease: "none" }, D0);
+        // 3.00 the two battleships, 3.20 the heavy cruiser, 3.40 and 3.60 the destroyers : opacity 0 → 0.16 in 0.2 s
+        GHOST.forEach(function (t, i) { ft(line[i], { opacity: 0 }, { opacity: 0.16, duration: 0.2, ease: "none" }, t - T0); });
+
+        // ---- the voice line
+        var INK_N = "rgb(244, 237, 221)", GREY_N = "rgba(244, 237, 221, 0.35)";    // .night : #f4eddd
+        var INK_D = "rgb(29, 27, 24)", GREY_D = "rgba(29, 27, 24, 0.35)";          // .day : #1d1b18
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        var SH_N = "0px 2px 14px rgba(0, 0, 0, 0.65), 0px 0px 2px rgba(0, 0, 0, 0.5)";          // .night text-shadow
+        var SH_D = "0px 0px 18px rgba(255, 250, 238, 0.95), 0px 0px 4px rgba(255, 250, 238, 0.9)"; // .day text-shadow
+        var TH0 = 3.00, TH1 = 3.20;                                                // .night → .day (29.40, 0.2 s)
+        var ws = s9.querySelectorAll(".mx-w");
+        S9.forEach(function (w, i) {
+          var cue = w[1], t0 = cue - 0.06, el = ws[i];
+          if (w[2] === "box") {                                         // the yellow box is drawn 2 images before its word
+            var tx = el.querySelector(".mx-box-tx");
+            ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+            ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+            ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+            return;
+          }
+          // a word said before the theme change is in full night ink by then (MARINE 1.04, 1939 1.48, fait 2.60 < 3.00) ;
+          // a word said after it enters in the day theme (cette, flotte.)
+          var isDay = t0 >= TH1, g = isDay ? GREY_D : GREY_N;
+          ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: g }, { opacity: 1, y: 0, filter: "blur(0px)", color: g, duration: 0.14, ease: "power2.out" }, t0);
+          ft(el, { color: g }, { color: isDay ? INK_D : INK_N, duration: 0.2, ease: "power1.out" }, t0 + 0.14);
+          if (!isDay) ft(el, { color: INK_N }, { color: INK_D, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+        });
+        ft(s9, { textShadow: SH_N }, { textShadow: SH_D, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+        // exit before the seam : 3.80 to 3.94 (no subtitle at handoff_out)
+        ft(s9, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 3.80);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

@@ -62,7 +62,7 @@ components:
     rise: "remonter : depuis flou 6 px, 40 % d'opacité et échelle 1,04, jusqu'à net, plein et 1 en 0,2 s expo.out ; ses ronds s'ouvrent au même moment. Avant de remonter, une maquette du jour est une épave sous le papier : opacité 0,16, flou 5 px."
     rule: "BLOQUANT. Toute maquette, à chaque image, a son empreinte (coque + 18 u) sur la mer : MX.footprintClear(carte, type, x, y, longueur, angle) doit renvoyer null. Les positions (MX.W) et les deux seuls chemins (MX.strasAt(T) pour le Strasbourg, MX.clAt(T) pour le croiseur de la 4e DC) sont vérifiés à chaque image ; ne pas en inventer d'autres."
   ripples:
-    look: "ronds dans l'eau : MX.ripplesSVG(n, r0, pas, '#2f6c80', opacité) posés à plat sur la carte, chaque ellipse grandit (×1 → ×1,35) et s'efface en 1,0 s linéaire, décalées de 0,1 s."
+    look: "ronds dans l'eau : MX.ripplesSVG(n, r0, pas, '#2f6c80', opacité) posés à plat sur la carte, l'ensemble grandit (×1 → ×1,35) et s'efface (opacité 0,85 → 0) en 1,0 s linéaire, toutes ses ellipses ensemble, comme ripples() de reference/carte.html."
   pencil-date:
     look: "MX.pencilSVG(texte, 44) : Space Mono graphite #3a3530 à 88 %, écrit lettre à lettre (chaque lettre paraît en 0,08 s, au rythme donné par le storyboard), posé sur la carte."
   loss-ring:
@@ -178,7 +178,7 @@ liste les images clés du storyboard ; une maquette posée à terre y est barré
 | `MK` l'escadre de Mers el-Kébir, arrière à la jetée | le Dunkerque (934, 3210, -108,5°) ; la Provence (1012, 3155, -111°) ; la Bretagne (1099, 3123, -107°) ; le Strasbourg (1194, 3115, -112°) | dès la séquence 2 ; la Bretagne sombre à 8.22 ; le Strasbourg part à 8.82 (`MX.strasAt`) | 2, 3, 5, 9, 10 |
 | `PENCIL_MK`, `LOSS_MK` | « 3·7·40 » à (1290, 2990) ; cercle rouge (1099, 3123), 129 × 44, -107° | écrits à 6.42 et 8.52, puis restent | 2, 3, 5, 9, 10 |
 | `STRAS` le chemin du Strasbourg | (1194, 3115) → (1204, 2945) → (1700, 2700) → (2380, 2290) → (2560, 1700) → (2608, 1250) → (2608, 965) | `MX.strasAt(T)`, 8.82 à 10.33 : il recule, vire, file à l'est des Baléares, s'amarre à Toulon | 2, 3 |
-| `TOULON` la flotte amarrée, avant vers le quai | contre-torpilleur (2888, 995, 88°) ; croiseur lourd (2818, 980, 91,5°) ; cuirassé type Bretagne (2748, 990, 89°) ; croiseur léger (2678, 980, 92°) ; le Strasbourg (2608, 965, 88,5°) | dès la séquence 3 ; sabordés à 11.52, 11.72, 11.92, 12.12, 12.32 | 3 |
+| `TOULON` la flotte amarrée, avant vers le quai | contre-torpilleur (2888, 995, 88°) ; croiseur lourd (2818, 980, 91,5°) ; cuirassé type Bretagne (2748, 990, 89°) ; croiseur léger (2678, 980, 92°) ; le Strasbourg (2608, 965, 88,5°) | dès la séquence 3 ; sabordés à 11.42, 11.57, 11.72, 11.87, 12.02 | 3 |
 | `PENCIL_TOULON` | « 27·11·42 » à (2950, 870) | écrit à 9.92, puis reste | 3 à 10 |
 | `BOOK_B` le manuel B, pages 216-217 | coin (2440, 987), largeur 1300, 4° (centre (3090, 1420)) ; les trois lignes autour du point de page (820, 640) | tombe à 14.40, retiré dans le noir du pivot | 4, 5 |
 | `DIAL` le cadran optique de passerelle | centre (1850, 1720), rayon 110, 8° | posé dès la séquence 5, sombre à 21.48 ; ses pièces remontent à 32.76, il se remonte à 33.87, 34.26, 34.50 | 5, 8, 9, 10 |

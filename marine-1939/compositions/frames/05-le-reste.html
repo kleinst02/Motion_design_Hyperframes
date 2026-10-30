@@ -157,18 +157,21 @@
           modifiers: { t: function (v) { render(+v); return v; } } }, 0);
 
         // sinking (frame.md, model.sink) : 0.2 s « power2.in » (scale 1 to 0.9, opacity 1 to 0.35, blur 0 to 3 px), then
-        // 1.0 s linear (opacity 0.35 to 0, blur 3 to 6 px) ; the object stays in its place
+        // 1.0 s linear (opacity 0.35 to 0, blur 3 to 6 px) ; the object stays in its place. A linear tween that would run
+        // past the frame's end (the print, under the black of the lamp) is cut at DUR with its exact value there, so the
+        // timeline lasts exactly DUR.
         function sink(el, t) {
           ft(el, { opacity: 1, scale: 1, filter: "blur(0px)" }, { opacity: 0.35, scale: 0.9, filter: "blur(3px)", duration: 0.2, ease: "power1.in" }, t);
-          ft(el, { opacity: 0.35, filter: "blur(3px)" }, { opacity: 0, filter: "blur(6px)", duration: 1.0, ease: "none" }, t + 0.2);
+          var d = Math.min(1.0, DUR - t - 0.2);
+          ft(el, { opacity: 0.35, filter: "blur(3px)" }, { opacity: 0.35 * (1 - d), filter: "blur(" + (3 + 3 * d) + "px)", duration: d, ease: "none" }, t + 0.2);
         }
         // rings (frame.md, ripples) : they open with the sinking ; each ellipse grows x1 to x1.35 and fades in 1.0 s
         // linear, staggered by 0.1 s
         function ring(R, t) {
           tl.set(R.on, { opacity: 1 }, t);
           R.rings.forEach(function (e, k) {
-            var op = +e.getAttribute("opacity");
-            ft(e, { scale: 1, svgOrigin: "0 0", attr: { opacity: op } }, { scale: 1.35, svgOrigin: "0 0", attr: { opacity: 0 }, duration: 1.0, ease: "none" }, t + 0.1 * k);
+            var op = +e.getAttribute("opacity"), s = t + 0.1 * k, d = Math.min(1.0, DUR - s);
+            ft(e, { scale: 1, svgOrigin: "0 0", attr: { opacity: op } }, { scale: 1 + 0.35 * d, svgOrigin: "0 0", attr: { opacity: op * (1 - d) }, duration: d, ease: "none" }, s);
           });
         }
 

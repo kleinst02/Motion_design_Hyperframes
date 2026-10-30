@@ -19,7 +19,7 @@
       /* handoff_in : the line of 1939 lies as wrecks under the paper, at its stations (frame.md, model.rise) */
       #p08-world .p08-ln { opacity: .16; filter: blur(5px); }
       /* not on the chart yet : the rings, the photo of L'Épervier, the article, their pins, the three pieces of the dial */
-      #p08-world .p08-rip ellipse { opacity: 0; }
+      #p08-world .p08-rip { opacity: 0; }
       #p08-ep, #p08-ep-pin, #p08-card, #p08-card-pin { opacity: 0; }
       #p08-dial-bezel, #p08-dial-face, #p08-dial-hands { opacity: 0; }
       #p08-dialon svg { transform: translate(-110px, -110px); }
@@ -144,13 +144,11 @@
         var X2D = { force3D: false };                                   // world objects keep plain 2D transforms
         var expo = function (u) { return u >= 1 ? 1 : 1 - Math.pow(2, -10 * u); };
 
-        // rings in the water : each ellipse grows ×1 → ×1.35 and fades in 1.0 s linear, one after the other (0.1 s)
+        // rings in the water (carte.html « ripples ») : the whole set grows ×1 → ×1.35 and fades (0.85 → 0, the kit's
+        // ellipses carry the 0.85) in 1.0 s linear, all ellipses together
         function ripple(on, t) {
-          on.querySelectorAll("ellipse").forEach(function (e, k) {
-            var a = parseFloat(e.getAttribute("opacity")), s = t + 0.1 * k;
-            jump(e, "opacity", 0, a, function (u) { return a * (1 - u); }, s, 1.0);
-            ft(e, { scale: 1, svgOrigin: "0 0" }, { scale: 1.35, svgOrigin: "0 0", duration: 1.0, ease: "none" }, s - EPS);
-          });
+          jump(on, "opacity", 0, 1, function (u) { return 1 - u; }, t, 1.0);
+          ft(on, { scale: 1 }, { scale: 1.35, duration: 1.0, ease: "none", force3D: false }, t - EPS);
         }
         // rise : from the wreck under the paper (0.16, blur 5) to 40 %, blur 6, ×1.04, then sharp, full and ×1 in 0.2 s expo.out
         function rise(on, t) {

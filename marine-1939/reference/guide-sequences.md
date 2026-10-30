@@ -78,8 +78,8 @@ Tous les chemins partent de `/home/user/Motion_design_Hyperframes/marine-1939/`.
 - **Les gestes du monde**, avec le bloc de `carte.html` qui les montre :
   - sombrer : `sinkState` (frame.md, `model.sink`) ;
   - remonter : `riseState` (`model.rise`) ;
-  - les ronds dans l'eau : `ripples`. Chaque ellipse grandit de ×1 à ×1,35 et s'efface en 1,0 s linéaire, décalées
-    de 0,1 s ;
+  - les ronds dans l'eau : `ripples`. L'ensemble grandit de ×1 à ×1,35 et s'efface (opacité 0,85 → 0) en 1,0 s
+    linéaire, toutes ses ellipses ensemble ;
   - se poser en arrivant de la caméra : `land`, ×1,2, flou 8, 0,2 s ;
   - la date au crayon : `MX.pencilSVG`, les lettres `.mx-pc` ;
   - le cercle rouge : `MX.lossRingSVG`, `strokeDashoffset` depuis `data-len`.

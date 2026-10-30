@@ -153,6 +153,7 @@ function demo(T) {
     var glow = clamp((T - EV.phoneOn) / 1.0), r1 = 260 + 120 * clamp((T - 27.62) / 1.08) + 900 * dayK;
     F.appendChild(el('<div class="mx-layer" style="background:radial-gradient(circle ' + Math.round(r1 + 600) + 'px at 960px 470px,rgba(8,6,3,0) ' +
       Math.round(r1 * glow) + 'px,rgba(8,6,3,' + (.97 * (1 - dayK)).toFixed(2) + ') ' + Math.round(r1 + 560) + 'px)"></div>'));
+    if (T < EV.phoneOn + .2) { var nk = el('<div class="mx-layer" style="background:#0c0906"></div>'); nk.style.opacity = 1 - clamp((T - EV.phoneOn) / .2); F.appendChild(nk); }   // tout est noir jusqu'à ce que l'écran s'allume (handoff_in de la séquence 7)
   }
   if (day && cam) { var dl = el("<div>" + MX.dayHTML() + "</div>"); dl.style.opacity = dayK; F.appendChild(dl); }
   // le « 4e » en vol

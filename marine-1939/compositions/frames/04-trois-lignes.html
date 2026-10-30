@@ -184,10 +184,11 @@
         ft(shadow, { opacity: 0.2, scale: 1.4 }, { opacity: 0.7, scale: 1, duration: 0.26, ease: "power1.in" }, 0.79);
         ft(shadowIn, { filter: "blur(20px)" }, { filter: "blur(7.5px)", duration: 0.26, ease: "power1.in" }, 0.79);
         tl.set(shadow, { opacity: 0 }, 1.05);                          // at contact the book's own shadow takes over
-        // 0.79 book B falls from the camera : translateZ 700 → 0 in the world, « power2.in » (u²) in 0.26 s, rotation
-        // 10° → 4° (the book carries 4°), blur 10 → 0
+        // 0.79 book B falls from the camera : the world is flattened (translateZ has no depth there), so the fall is a
+        // scale x1.5 → x1 about the book's centre, « power2.in » (u²) in 0.26 s, rotation 10° → 4° (the book carries 4°),
+        // blur 10 → 0
         tl.set(fall, { opacity: 1 }, 0.79);
-        ft(fall, { z: 700, rotation: 6, scale: 1, filter: "blur(10px)" }, { z: 0, rotation: 0, scale: 1, filter: "blur(0px)", duration: 0.26, ease: "power1.in" }, 0.79);
+        ft(fall, { rotation: 6, scale: 1.5, filter: "blur(10px)" }, { rotation: 0, scale: 1, filter: "blur(0px)", duration: 0.26, ease: "power1.in" }, 0.79);
         tl.set(fall, { filter: "none" }, 1.05);
         // 1.05 contact : the book crushes (0.985 → 1 in 0.08 s), the scene shakes 6 px (0.12 s), three large rings open
         ft(fall, { scale: 0.985 }, { scale: 1, duration: 0.08, ease: "power2.out" }, 1.05);

@@ -359,7 +359,7 @@ Scene 1 (0.00 à 3.03 s) : P16, la phrase sur le noir
 Word cues: MARINE@0.76 1939@1.20 fait@2.32 revivre@2.74 cette@3.38 flotte@3.58
 
 Scene 1 (0.00 à 2.30 s) : P17, le blog s'allume
-  TEXTE ÉCRAN : sous-titre .night « MARINE 1939 fait [boîte : revivre] cette flotte. » : MARINE 0.76, 1939 1.20 (suite à la scène 2) ; écart : l'écran s'allume 0,54 s avant « MARINE ».
+  TEXTE ÉCRAN : sous-titre .day « MARINE 1939 fait [boîte : revivre] cette flotte. » : MARINE 0.76, 1939 1.20 (suite à la scène 2) ; écart : l'écran s'allume 0,54 s avant « MARINE ». Thème .day dès le premier mot : le halo éclaire la bande des sous-titres (fond gris moyen dès 0.80, clair dès 2.50), l’encre de nuit y tomberait sous 2:1.
   IMAGE DE DÉPART : handoff_in. Dans le noir, invisibles : la carte de jour (couverte par l'ombre), le téléphone posé en MX.W.PHONE, écran éteint (filtre brightness 0 sur .mx-phone-screen), la caméra en MX.camAt(26.40) = cam(3110, 1280, 1.06, 25, 0). Le manuel B n'est plus là.
   ÉTAPES : 0.22 l'écran s'allume (brightness 0 → 1, 0,2 s) : la vraie page d'accueil du blog, son bandeau MARINE 1939 en haut ; 0.22 à 1.22 un halo froid s'ouvre sur la carte autour du téléphone (calque d'ombre percé d'un cercle de 0 à 260 px, bord doux, linéaire) : la mer, la côte de Corse à droite ; 0.76 « MARINE » ; 1.20 « 1939 » ; 1.22 à 2.30 le halo s'élargit encore (rayon 260 → 380 px, linéaire) ; 1.75 il atteint Toulon : « 27·11·42 » sort de l'ombre en haut, puis le golfe du Lion.
   PISTE CAMÉRA : dérive linéaire de PH1 (3110, 1280, 1.06, 25, 0) vers PH2 (3060, 1290, 1.00, 28, 0) de 0.00 à 3.00 : 17 u/s vers l'ouest, recul de 2 %/s, inclinaison +1°/s.
@@ -369,7 +369,7 @@ Scene 1 (0.00 à 2.30 s) : P17, le blog s'allume
   IMAGE CLÉ : 1.40 : dans la nuit, le téléphone allumé sur la page d'accueil de MARINE 1939, sa lumière sur la carte (la Corse, Toulon) ; « MARINE 1939 » en bas.
 
 Scene 2 (2.30 à 4.01 s) : P18, le jour se lève, la flotte sous le papier
-  TEXTE ÉCRAN : fait 2.32, boîte tracée 2.72, revivre 2.74, cette 3.38, flotte. 3.58 ; le sous-titre passe au thème .day à 3.00 (0,2 s) ; sortie 3.80 à 3.94.
+  TEXTE ÉCRAN : fait 2.32, boîte tracée 2.72, revivre 2.74, cette 3.38, flotte. 3.58 ; sortie 3.80 à 3.94.
   ÉTAPES : 2.30 à 3.50 le jour se lève : depuis le téléphone, la lumière gagne toute la carte (le cercle de l'ombre s'élargit jusqu'aux bords, le sol passe de #0c0906 à #8a7353, MX.dayHTML monte de 0 à 1) ; 2.74 « revivre » ; 3.00 la caméra part vers l'ouest ; 3.00 à 3.60 à mesure que la lumière les atteint, les cinq maquettes de la ligne de 1939 apparaissent en épaves sous le papier à leurs places (opacité 0 → 0,16 en 0,2 s, flou 5 px) : 3.00 les deux cuirassés, 3.20 le croiseur lourd, 3.40 et 3.60 les contre-torpilleurs ; 3.58 « flotte. ».
   PISTE CAMÉRA : 3.00 à 4.01 glissé vers l'ouest (segment 29.40 à 30.95, courbe whip(0.6516), de PH2 vers L1 (2480, 1250, 1.15, 42, 0)) : la couture tombe au sommet de la vitesse ; flou 0 → 2,5 px.
   COUCHES ET PROFONDEUR : sujet : les épaves sous le papier ; milieu : le téléphone qui glisse vers la droite ; fond : la carte au jour.

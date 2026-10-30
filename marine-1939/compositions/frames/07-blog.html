@@ -106,7 +106,8 @@
         var halo = $("p07-halo"), day = $("p07-day"), black = $("p07-black");
         day.innerHTML = MX.dayHTML();
 
-        // the voice line : chunk 9, theme .night, then .day from 3.00 (29.40)
+        // the voice line : chunk 9, in the .day theme from its first word : the phone's halo lights the band (its ground is
+        // already mid grey at 0.80 and light from 2.50), so night ink would read at under 2:1 there
         var subs = $("p07-subs");
         var S9 = [["MARINE", 0.76], ["1939", 1.20], ["fait", 2.32], ["revivre", 2.74, "box"], ["cette", 3.38], ["flotte.", 3.58]];
         subs.innerHTML = MX.subHTML("p07-s9", S9.map(function (w) { return [w[0], w[2] || ""]; }), "night");
@@ -170,7 +171,7 @@
         var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
         var SH_N = "0px 2px 14px rgba(0, 0, 0, 0.65), 0px 0px 2px rgba(0, 0, 0, 0.5)";          // .night text-shadow
         var SH_D = "0px 0px 18px rgba(255, 250, 238, 0.95), 0px 0px 4px rgba(255, 250, 238, 0.9)"; // .day text-shadow
-        var TH0 = 3.00, TH1 = 3.20;                                                // .night → .day (29.40, 0.2 s)
+        var TH0 = 0.40, TH1 = 0.60;                                                // .night → .day before « MARINE » (0.70)
         var ws = s9.querySelectorAll(".mx-w");
         S9.forEach(function (w, i) {
           var cue = w[1], t0 = cue - 0.06, el = ws[i];
@@ -181,8 +182,7 @@
             ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
             return;
           }
-          // a word said before the theme change is in full night ink by then (MARINE 1.04, 1939 1.48, fait 2.60 < 3.00) ;
-          // a word said after it enters in the day theme (cette, flotte.)
+          // every word enters after the theme change (MARINE at 0.70), so in the day theme
           var isDay = t0 >= TH1, g = isDay ? GREY_D : GREY_N;
           ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: g }, { opacity: 1, y: 0, filter: "blur(0px)", color: g, duration: 0.14, ease: "power2.out" }, t0);
           ft(el, { color: g }, { color: isDay ? INK_D : INK_N, duration: 0.2, ease: "power1.out" }, t0 + 0.14);

@@ -179,7 +179,8 @@
         pieces.forEach(function (g, i) {
           jump(g, "opacity", 0, 1, function (u) { return .4 + .6 * u; }, PIECES[i], .2);
           ripple(pieceRip[i], PIECES[i]);
-          var from = { x: OFF[i][0], y: OFF[i][1], svgOrigin: "0 0", smoothOrigin: false }, to = { x: 0, y: 0, svgOrigin: "0 0", smoothOrigin: false, duration: i === 2 ? 0.2 : 0.18, ease: "power2.out" };
+          // the origin stays the one set at build (re-parsing svgOrigin mid-tween moves the pivot)
+          var from = { x: OFF[i][0], y: OFF[i][1] }, to = { x: 0, y: 0, duration: i === 2 ? 0.2 : 0.18, ease: "power2.out" };
           if (i === 2) { from.rotation = -40; to.rotation = 0; }      // the hand settles and turns to its position
           ft(g, from, to, ASM[i]);
         });

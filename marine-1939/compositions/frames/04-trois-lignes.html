@@ -1,0 +1,261 @@
+<template>
+  <div id="root" data-composition-id="04-trois-lignes" data-width="1920" data-height="1080" data-duration="4.49">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world: a shake moves the picture inside the frame and never
+         uncovers its edge (the stage clips at 1920 x 1080) */
+      #p04-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* book B's shadow on the sea (13.80 to 14.40) : the reference block, drawn at half size and scaled x2 so that no
+         blurred element is wider than 700 px (blur 20 local = 40 on the chart) ; the box keeps the reference origin */
+      #p04-bshadow { opacity: 0; width: 700px; height: 465px; }
+      #p04-bshadow-in { position: absolute; left: -700px; top: -465px; width: 700px; height: 465px; border-radius: 20px;
+        background: rgba(10, 6, 2, .5); transform: scale(2); transform-origin: 0 0; filter: blur(20px); }
+
+      /* book B falls from the camera onto the roads (14.14 to 14.40) : the fall rides this wrapper, never #p04-b-book,
+         which carries its own rotate(4deg) ; origin = the book's center (3090, 1420.33) */
+      #p04-fall { opacity: 0; transform-style: preserve-3d; transform-origin: 3090px 1420.333px; }
+
+      /* the three large rings around the book (14.40, 1.0 s) */
+      #p04-rip { opacity: 0; }
+
+      /* the dust raised by the book, in the lamp light (2D layer) */
+      #p04-dust .p04-mote { position: absolute; display: block; border-radius: 50%; opacity: 0; mix-blend-mode: screen;
+        background: radial-gradient(circle, rgba(255, 246, 228, .95) 0, rgba(255, 230, 186, .55) 34%, rgba(255, 222, 168, 0) 70%); }
+
+      /* the voice line, word by word */
+      #p04-subs .mx-w { opacity: 0; }
+      #p04-subs .mx-w.mx-box, #p04-subs .mx-box-tx .mx-w { opacity: 1; }
+      #p04-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p04-subs .mx-box-bg { transform: scaleX(0); }
+      #p04-subs .mx-stroke { transform: scaleX(0); }
+    </style>
+
+    <!-- the table at night; inside it the perspective stage, the shake wrapper and the world (the chart, book A, the
+         line of 1939, the date, book B and its shadow and rings) -->
+    <div id="p04-ground" class="clip mx-ground" data-start="0" data-duration="4.49" data-track-index="0" data-layout-allow-overflow>
+      <div id="p04-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p04-shake" data-layout-allow-overflow>
+          <div id="p04-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2D light over the stage: the night lamp (frame.md, lights.night) -->
+    <div id="p04-lights" class="clip mx-layer" data-start="0" data-duration="4.49" data-track-index="1"></div>
+
+    <!-- the dust in the lamp light, raised by the book (1.05 to 2.50) -->
+    <div id="p04-dust" class="clip mx-layer" data-start="0" data-duration="4.49" data-track-index="2" data-layout-allow-occlusion></div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p04-subs" class="clip mx-layer" data-start="0" data-duration="4.49" data-track-index="3" data-layout-allow-caption-zone></div>
+
+    <!-- film grain, 6 % -->
+    <div id="p04-grain" class="clip mx-grain" data-start="0" data-duration="4.49" data-track-index="4"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "04-trois-lignes", DUR = 4.49, T0 = MX.FRAMES[3][1], W = MX.W;   // T0 = 13.35 : film time = T0 + local time
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        var stage = $("p04-stage"), shake = $("p04-shake"), world = $("p04-world");
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p04-med"));
+        // book A (pages 214-215, everything typed, drawn and stamped since sequence 1)
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p04-a", W.BOOK_A, MX.pageVersoSVG("p04-av"), MX.pageEngravingSVG("p04-ae", true)));
+        // « 27·11·42 », written at Toulon in sequence 3
+        var pencil = document.createElement("div");
+        pencil.id = "p04-pencil";
+        pencil.className = "mx-on";
+        pencil.innerHTML = MX.pencilSVG("27·11·42", 44);
+        world.appendChild(pencil);
+        gsap.set(pencil, { x: W.PENCIL_TOULON[0], y: W.PENCIL_TOULON[1] });
+        // the line of 1939 still afloat in the lamp's shadow : the heavy cruiser and the two destroyers (MX.W.LINE[2..4])
+        [2, 3, 4].forEach(function (i) {
+          var m = W.LINE[i], on = document.createElement("div");
+          on.id = "p04-ln" + i;
+          on.className = "mx-on";
+          on.innerHTML = MX.modelHTML(m[0], m[3], "p04-ln" + i + "-m");
+          world.appendChild(on);
+          gsap.set(on, { x: m[1], y: m[2], rotation: m[4] });
+        });
+        // the shadow of the book that is about to fall (reference block « le manuel B », same transform as onChart)
+        var shadow = document.createElement("div");
+        shadow.id = "p04-bshadow";
+        shadow.className = "mx-on";
+        shadow.innerHTML = '<div id="p04-bshadow-in"></div>';
+        world.appendChild(shadow);
+        var shadowIn = $("p04-bshadow-in");
+        gsap.set(shadow, { x: 3090, y: 1440, rotation: 4, scale: 1.4 });
+        // book B, pages 216-217, in its fall wrapper
+        var fall = document.createElement("div");
+        fall.id = "p04-fall";
+        fall.className = "mx-on";
+        fall.innerHTML = MX.bookHTML("p04-b", W.BOOK_B, MX.pageBlankSVG(216), MX.pageLinesSVG("p04-bl"));
+        world.appendChild(fall);
+        // the three highlighters of page 217 : yellow at 85 %, drawn by scaleX from their left edge (x 200)
+        var HL = [0, 1, 2].map(function (i) {
+          var r = $("p04-bl-hl" + i), o = "200 " + (543 + 96 * i);
+          r.setAttribute("opacity", ".85");
+          gsap.set(r, { scaleX: 0, svgOrigin: o });
+          return [r, o];
+        });
+        // the three large rings around the landed book (reference block « ripples » : the whole set grows and fades)
+        var rip = document.createElement("div");
+        rip.id = "p04-rip";
+        rip.className = "mx-on";
+        rip.innerHTML = MX.ripplesSVG(3, 760, 150, "#2f6c80", .85);
+        world.appendChild(rip);
+        var ripSvg = rip.querySelector("svg");
+        gsap.set(rip, { x: 3090, y: 1420, scale: 1 });
+        gsap.set(shake, { x: 0, y: 0 });
+
+        // lights : the night lamp, on since sequence 1
+        $("p04-lights").insertAdjacentHTML("beforeend", MX.lampHTML(960, 480, 980, 580));
+
+        // the dust : about ten motes raised at contact along the book's edges, where the lamp lights them ; spots in
+        // book units (u across, v down, -1..1), projected once with the landing camera, jittered with MX.rng
+        var dust = $("p04-dust"), R = MX.rng(417), B = W.BOOK_B, BCX = B.x + B.w / 2, BCY = B.y + B.w / 3, BA = B.rot * Math.PI / 180;
+        var CL = MX.camAt(T0 + 1.05);
+        var SPOTS = [[-1.04, .05], [-1.04, .45], [-1.04, .8], [-.6, 1.05], [-.25, 1.05], [.1, 1.05], [.45, 1.05], [1.04, .75], [1.04, .35], [1.04, -.05]];
+        var MOTES = SPOTS.map(function (s, k) {
+          var dx = s[0] * B.w / 2, dy = s[1] * B.w / 3;
+          var p = MX.project(CL, BCX + dx * Math.cos(BA) - dy * Math.sin(BA), BCY + dx * Math.sin(BA) + dy * Math.cos(BA));
+          var d = 9 + Math.round(R() * 9), el = document.createElement("i");
+          el.id = "p04-mote" + k;
+          el.className = "p04-mote";
+          el.setAttribute("data-layout-allow-occlusion", "");
+          var x = p.x + (s[0] < 0 ? -1 : s[0] > 0 && Math.abs(s[0]) > 1 ? 1 : 0) * (6 + R() * 22) + (R() - .5) * 30;
+          var y = p.y - 6 - R() * 34;
+          el.style.left = (x - d / 2).toFixed(1) + "px";
+          el.style.top = (y - d / 2).toFixed(1) + "px";
+          el.style.width = el.style.height = d + "px";
+          dust.appendChild(el);
+          return { el: el, born: 1.05 + R() * .08, peak: .55 + R() * .35, rise: 45 + R() * 55, drift: (R() - .5) * 30, out: 1.85 + R() * .35 };
+        });
+
+        // the voice line : two chunks, theme .night, then « toute son histoire… » turns .paper from 2.60 (the page arrives
+        // under the band)
+        var subs = $("p04-subs");
+        var S5 = [["Dans", 1.25], ["les", 1.43], ["manuels,", 1.67]];
+        var S6 = [["toute", 2.31], ["son", 2.57], ["histoire", 2.77], ["tient", 3.21], ["en", 3.49], ["trois lignes", 3.75, "box"]];
+        subs.innerHTML = MX.subHTML("p04-s5", S5.map(function (w) { return [w[0], ""]; }), "night") +
+          MX.subHTML("p04-s6", S6.map(function (w) { return [w[0], w[2] ? "boxstroke" : ""]; }).concat([[".", ""]]), "night");
+        var s5 = $("p04-s5"), s6 = $("p04-s6"), stroke = s6.querySelector(".mx-stroke");
+
+        var grain = $("p04-grain");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease) : powerN = u^N. GSAP's powerN is
+        // u^(N+1), so a storyboard « power2.in » is GSAP power1.in, a « power2.out » is GSAP power1.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the camera : ONE proxy tween over the whole frame on the film's score MX.camAt / MX.blurAt (film time T0 + t).
+        // onUpdate renders it on every seek ; the modifier renders it too when events are suppressed (a seek that lands
+        // exactly on the frame's end, where the engine's second pass is a no-op).
+        var cam = { t: T0 };
+        function render(T) {
+          MX.applyCam(world, MX.camAt(T));
+          var b = MX.blurAt(T);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                   // grain : offset from the film's image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+        }
+        ft(cam, { t: T0 }, { t: T0 + DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // ---- scene 1 : the book falls on the empty roads
+        // 0.45 its shadow appears on the sea (opacity 0 → 0.2 in 0.2 s), then tightens and darkens with the fall
+        ft(shadow, { opacity: 0 }, { opacity: 0.2, duration: 0.2, ease: "none" }, 0.45);
+        ft(shadow, { opacity: 0.2, scale: 1.4 }, { opacity: 0.7, scale: 1, duration: 0.26, ease: "power1.in" }, 0.79);
+        ft(shadowIn, { filter: "blur(20px)" }, { filter: "blur(7.5px)", duration: 0.26, ease: "power1.in" }, 0.79);
+        tl.set(shadow, { opacity: 0 }, 1.05);                          // at contact the book's own shadow takes over
+        // 0.79 book B falls from the camera : translateZ 700 → 0 in the world, « power2.in » (u²) in 0.26 s, rotation
+        // 10° → 4° (the book carries 4°), blur 10 → 0
+        tl.set(fall, { opacity: 1 }, 0.79);
+        ft(fall, { z: 700, rotation: 6, scale: 1, filter: "blur(10px)" }, { z: 0, rotation: 0, scale: 1, filter: "blur(0px)", duration: 0.26, ease: "power1.in" }, 0.79);
+        tl.set(fall, { filter: "none" }, 1.05);
+        // 1.05 contact : the book crushes (0.985 → 1 in 0.08 s), the scene shakes 6 px (0.12 s), three large rings open
+        ft(fall, { scale: 0.985 }, { scale: 1, duration: 0.08, ease: "power2.out" }, 1.05);
+        ft(shake, { y: 0 }, { y: 6, duration: 0.02, ease: "power2.out" }, 1.05);
+        ft(shake, { y: 6 }, { y: 0, duration: 0.10, ease: "power2.inOut" }, 1.07);
+        tl.set(rip, { opacity: 1 }, 1.05);
+        ft(rip, { scale: 1 }, { scale: 1.35, duration: 1.0, ease: "none" }, 1.05);
+        ft(ripSvg, { opacity: 1 }, { opacity: 0, duration: 1.0, ease: "none" }, 1.05);
+        // the dust rises slowly in the lamp light from 1.05 and is gone by 2.50
+        MOTES.forEach(function (m) {
+          ft(m.el, { opacity: 0 }, { opacity: m.peak, duration: 0.12, ease: "power1.out" }, m.born);
+          ft(m.el, { x: 0, y: 0 }, { x: m.drift, y: -m.rise, duration: 2.50 - m.born, ease: "power1.out" }, m.born);
+          ft(m.el, { opacity: m.peak }, { opacity: 0, duration: 2.50 - m.out, ease: "power1.in" }, m.out);
+        });
+
+        // ---- scene 3 : the three lines are highlighted (3.10, 3.38, 3.66), « power2.out » in 0.2 s
+        [3.10, 3.38, 3.66].forEach(function (t, i) {
+          ft(HL[i][0], { scaleX: 0, svgOrigin: HL[i][1] }, { scaleX: 1, svgOrigin: HL[i][1], duration: 0.2, ease: "power1.out" }, t);
+        });
+
+        // ---- the voice line
+        var INK_P = "rgb(27, 26, 23)", GREY_P = "rgba(27, 26, 23, 0.35)";          // .paper : #1b1a17
+        var INK_N = "rgb(244, 237, 221)", GREY_N = "rgba(244, 237, 221, 0.35)";    // .night : #f4eddd
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        var SH_N = "0px 2px 14px rgba(0, 0, 0, 0.65), 0px 0px 2px rgba(0, 0, 0, 0.5)";
+        var SH_P = "0px 0px 16px rgba(241, 232, 214, 0.9), 0px 0px 3px rgba(241, 232, 214, 0.8)";
+        var TH0 = 2.60, TH1 = 2.80;                                                // .night → .paper
+        function words(sub, list) {
+          var ws = sub.querySelectorAll(".mx-w");
+          list.forEach(function (w, i) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[i];
+            if (w[2] === "box") {
+              var tx = el.querySelector(".mx-box-tx");
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+              ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              return;
+            }
+            var paper = sub === s6 && t0 >= TH0, g = paper ? GREY_P : GREY_N, c0 = t0 + 0.14, c1 = c0 + 0.2;
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: g }, { opacity: 1, y: 0, filter: "blur(0px)", color: g, duration: 0.14, ease: "power2.out" }, t0);
+            if (paper) { ft(el, { color: GREY_P }, { color: INK_P, duration: 0.2, ease: "power1.out" }, c0); return; }
+            if (sub !== s6 || c1 <= TH0) {
+              ft(el, { color: GREY_N }, { color: INK_N, duration: 0.2, ease: "power1.out" }, c0);
+              if (sub === s6) ft(el, { color: INK_N }, { color: INK_P, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+            } else if (c0 < TH0) {
+              ft(el, { color: GREY_N }, { color: INK_N, duration: TH0 - c0, ease: "power1.out" }, c0);
+              ft(el, { color: INK_N }, { color: INK_P, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+            } else {
+              ft(el, { color: GREY_N }, { color: INK_P, duration: Math.max(0.2, TH1 - c0), ease: "power1.inOut" }, c0);
+            }
+          });
+        }
+        words(s5, S5);
+        words(s6, S6);
+        ft(s6, { textShadow: SH_N }, { textShadow: SH_P, duration: TH1 - TH0, ease: "power1.inOut" }, TH0);
+        // [trait : trois lignes] : drawn under the boxed words from 3.75 to 4.15 (« power2.out »)
+        ft(stroke, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power1.out" }, 3.75);
+        // exits : « Dans les manuels, » 2.12 to 2.26 ; « toute son histoire tient en trois lignes. » 4.30 to 4.44
+        ft(s5, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 2.12);
+        ft(s6, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 4.30);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

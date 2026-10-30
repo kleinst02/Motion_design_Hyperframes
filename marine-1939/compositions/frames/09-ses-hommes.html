@@ -1,0 +1,186 @@
+<template>
+  <div id="root" data-composition-id="09-ses-hommes" data-width="1920" data-height="1080" data-duration="2.83">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-500.woff2") format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight: 700; font-style: normal; }
+      @font-face { font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url("assets/fonts/SpaceMono-700.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Archivo Black"; src: url("assets/fonts/ArchivoBlack-400.woff2") format("woff2"); font-weight: 400; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the shake wrapper sits between .mx-stage and .mx-world (no dated shake in this frame: it stays at rest) */
+      #p09-shake { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-style: preserve-3d; }
+
+      /* born in this frame: the real photo of the Dunkerque and its ripples (0.10), its pin (0.45) */
+      #p09-photo, #p09-rip, #p09-pin { opacity: 0; }
+
+      /* depth of field inside the photo: a copy of the image over its upper part (the bridge and its tower) that goes soft
+         when the camera comes down to the crew along the rail (the crew, 70 to 78 % of the image height, stays sharp) */
+      #p09-photo .mx-photo-img { position: relative; }
+      #p09-dof { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0;
+        background-image: inherit; background-size: cover; background-position: center;
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0) 64%);
+        mask-image: linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0) 64%); }
+
+      /* the voice line, word by word ; the « . » glued in the box follows the boxed group */
+      #p09-subs .mx-w { opacity: 0; }
+      #p09-subs .mx-w.mx-box, #p09-subs .mx-box-tx .mx-pt { opacity: 1; }
+      #p09-subs .mx-box-tx { display: inline-block; opacity: 0; }
+      #p09-subs .mx-box-bg { transform: scaleX(0); }
+    </style>
+
+    <!-- the table by day; inside it the perspective stage, the shake wrapper and the world (the chart and its objects) -->
+    <div id="p09-ground" class="clip mx-ground day" data-start="0" data-duration="2.83" data-track-index="0" data-layout-allow-overflow>
+      <div id="p09-stage" class="mx-stage" data-layout-allow-overflow>
+        <div id="p09-shake" data-layout-allow-overflow>
+          <div id="p09-world" class="mx-world" data-layout-allow-overflow></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- the daylight over the stage (frame.md, lights.day) -->
+    <div id="p09-lights" class="clip mx-layer" data-start="0" data-duration="2.83" data-track-index="1"></div>
+
+    <!-- the voice line, bottom center (band y 890 to 980) -->
+    <div id="p09-subs" class="clip mx-layer" data-start="0" data-duration="2.83" data-track-index="2" data-layout-allow-caption-zone></div>
+
+    <!-- film grain by day, 5 % -->
+    <div id="p09-grain" class="clip mx-grain day" data-start="0" data-duration="2.83" data-track-index="3"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "09-ses-hommes", DUR = 2.83, T0 = MX.FRAMES[8][1], W = MX.W, IMG = "assets/img/";   // T0 = 35.07
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        var stage = $("p09-stage"), shake = $("p09-shake"), world = $("p09-world");
+        // an object laid on the chart at its MX.W place : a .mx-on placed once by GSAP, its kit HTML inside
+        function on(id, html, x, y, rot) {
+          var e = document.createElement("div");
+          if (id) e.id = id;
+          e.className = "mx-on";
+          e.innerHTML = html;
+          world.appendChild(e);
+          gsap.set(e, { x: x, y: y, rotation: rot || 0 });
+          return e;
+        }
+        // the world by day, in the order of buildMed (reference/carte.html) : what demo(T) draws for T in [35.07, 37.90]
+        world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p09-med"));
+        world.insertAdjacentHTML("beforeend", MX.bookHTML("p09-a", W.BOOK_A, MX.pageVersoSVG("p09-av"), MX.pageEngravingSVG("p09-ae", true)));
+        on("p09-pmk", MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1]);
+        on("p09-lmk", MX.lossRingSVG("p09-loss", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1]);
+        $("p09-loss").setAttribute("stroke-dashoffset", "0");          // the red ring of the Bretagne, drawn since 8.92
+        on("p09-ptl", MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1]);
+        W.LINE.forEach(function (m, i) { on("p09-ln" + i, MX.modelHTML(m[0], m[3]), m[1], m[2], m[4]); });     // the line of 1939, risen
+        [W.MK[0], W.MK[1]].forEach(function (m, i) { on("p09-mk" + i, MX.modelHTML(m[0], m[3]), m[1], m[2], m[4]); });   // the Dunkerque and the Provence
+        var D = W.DIAL, dial = on("p09-dial", MX.dialSVG("p09-dl", D[2]), D[0], D[1], D[3]);              // the dial, assembled
+        dial.querySelector("svg").style.transform = "translate(" + -D[2] + "px," + -D[2] + "px)";
+        on("p09-cdial", MX.blogRowHTML(null, "Les cadrans optiques", "dimanche 29 janvier 2012", IMG + "cadrans-optiques-mogador.jpg"), W.CARD_DIAL[0], W.CARD_DIAL[1], W.CARD_DIAL[2]);
+        on("p09-pdial", MX.pinHTML(null, 30), W.PIN_DIAL[0], W.PIN_DIAL[1]);
+        // the real photo of the Dunkerque at the place of the print, then its ripples (around MX.W.PRINT) and its pin
+        var photo = on("p09-photo", MX.photoCardHTML(null, IMG + "dunkerque-a-quai-collection-langry.jpg", W.PHOTO[2], W.PHOTO[3], "Le Dunkerque. Collection Wilfried Langry."), W.PHOTO[0], W.PHOTO[1], W.PHOTO[4]);
+        var rip = on("p09-rip", MX.ripplesSVG(2, 260, 60, "#2f6c80", 0.85), W.PRINT[0], W.PRINT[1]);
+        var pin = on("p09-pin", MX.pinHTML(null, 30), W.PIN_PHOTO[0], W.PIN_PHOTO[1]);
+        on("p09-phone", MX.phoneHTML(null, W.PHONE[2], IMG + "blog-accueil-mobile.png"), W.PHONE[0], W.PHONE[1], W.PHONE[3]);
+        on("p09-eperv", MX.photoCardHTML(null, IMG + "epervier-collection-langry.jpg", 456, 300, "L’Épervier. Collection Wilfried Langry."), W.CARD_EPERVIER[0], W.CARD_EPERVIER[1], W.CARD_EPERVIER[2]);
+        on("p09-peperv", MX.pinHTML(null, 30), W.PIN_EPERVIER[0], W.PIN_EPERVIER[1]);
+        // the depth-of-field copy of the image, inside the photo (same box, same background, masked to the bridge)
+        var dof = document.createElement("div");
+        dof.id = "p09-dof";
+        photo.querySelector(".mx-photo-img").appendChild(dof);
+        gsap.set(shake, { x: 0, y: 0 });
+
+        // daylight
+        $("p09-lights").innerHTML = MX.dayHTML();
+
+        // the voice line : chunk 12, theme .day ; the boxed group enters as one block on « de », its « . » glued inside
+        var S = [["Ses", 0.22], ["hommes,", 0.57], ["de l’amiral au matelot", 1.15, "box"], [".", 1.15]];
+        $("p09-subs").innerHTML = MX.subHTML("p09-s", S.map(function (w) { return [w[0], w[2] || ""]; }), "day");
+        var sub = $("p09-s");
+
+        var grain = $("p09-grain");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease) : powerN = u^N.
+        // GSAP's powerN is u^(N+1), so a storyboard « power3.out » is GSAP power2.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // the camera : ONE proxy tween over the whole frame on the film's score MX.camAt / MX.blurAt (T = 35.07 + local
+        // time). onUpdate renders it on every seek ; the modifier renders it too when events are suppressed (a seek that
+        // lands exactly on the frame's end). At 37.90 (the seam) MX.camAt speaks in the Atlantic frame : same view, brought
+        // back to the Mediterranean chart of this frame.
+        var cam = { t: 0 };
+        function render(t) {
+          var T = T0 + t, c = MX.camAt(T);
+          if (c && c.chart === "atlantic") c = MX.camToMed(c);
+          MX.applyCam(world, c);
+          var b = MX.blurAt(T);
+          stage.style.filter = b > 0.3 ? "blur(" + b + "px)" : "none";
+          var n = Math.round(T * 30);                                   // grain : offset from the film's image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+        }
+        ft(cam, { t: 0 }, { t: DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // ---- scene 1 : the real photo rises where the print sank (35.17), its pin goes in (35.52)
+        // « remonter » (frame.md, model.rise) : from 40 % opacity, blur 6 and scale 1.04 to sharp, full and 1 in 0.2 s
+        // expo.out, its ripples opening at the same moment. The step sits 1 ms before 0.10 so that the image at 0.10 is
+        // its first state, as demo(35.17). The opacity curve jumps to 40 % on its first instant and is 0 before it, so a
+        // backward seek before 0.10 hides the photo again.
+        var RISE = 0.10 - 0.001;
+        var riseOp = function (u) { return u <= 0 ? 0 : u >= 1 ? 1 : 0.4 + 0.6 * (1 - Math.pow(2, -10 * u)); };
+        ft(photo, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: riseOp }, RISE);
+        ft(photo, { scale: 1.04, filter: "blur(6px)" }, { scale: 1, filter: "blur(0px)", duration: 0.2, ease: "expo.out" }, RISE);
+        tl.set(photo, { filter: "none" }, RISE + 0.21);
+        // the ripples (ripples() of carte.html) : the whole set grows x1 -> x1.35 and fades 0.85 -> 0 in 1.0 s linear
+        var fade = function (u) { return u > 0 && u < 1 ? 1 - u : 0; };
+        ft(rip, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: fade }, RISE);
+        ft(rip, { scale: 1 }, { scale: 1.35, duration: 1.0, ease: "none" }, RISE);
+        // 0.45 the pin goes in : it comes down from the camera (x1.5) and meets the chart on 0.45, accelerating
+        ft(pin, { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none" }, 0.37);
+        ft(pin, { scale: 1.5 }, { scale: 1, duration: 0.08, ease: "power1.in" }, 0.37);
+
+        // ---- scene 2 : from the bridge to the crew (the camera of the score), then the big pull-back
+        // depth of field : 1.37 « l'amiral », the bridge crosses the center sharp ; as the camera comes down to the crew
+        // (2.18) the bridge goes soft (1.2 u, about 2 px on screen) while the crew stays sharp ; the focus lets go during
+        // the pull-back, under the camera blur, and the photo is plain again from 2.62, well before the seam.
+        ft(dof, { opacity: 0, filter: "blur(0px)" }, { opacity: 1, filter: "blur(1.2px)", duration: 0.81, ease: "sine.inOut" }, 1.37);
+        ft(dof, { opacity: 1, filter: "blur(1.2px)" }, { opacity: 0, filter: "blur(0px)", duration: 0.29, ease: "power1.in" }, 2.33);
+
+        // ---- the voice line
+        var INK = "rgb(29, 27, 24)", GREY = "rgba(29, 27, 24, 0.35)";              // .day : #1d1b18
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        var ws = sub.querySelectorAll(".mx-w");                                    // Ses, hommes, the boxed group (then its « . »)
+        S.slice(0, 3).forEach(function (w, i) {
+          var cue = w[1], t0 = cue - 0.06, el = ws[i];
+          if (w[2] === "box") {
+            var tx = el.querySelector(".mx-box-tx");
+            ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.066);   // frame.md « power3.out »
+            ft(tx, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.14, ease: "power2.out" }, t0);
+            ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+            return;
+          }
+          ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY, duration: 0.14, ease: "power2.out" }, t0);
+          ft(el, { color: GREY }, { color: INK, duration: 0.2, ease: "power1.out" }, t0 + 0.14);    // grey (35 %) to full ink in 0.2 s
+        });
+        ft(sub, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 2.62);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(0);                                                      // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

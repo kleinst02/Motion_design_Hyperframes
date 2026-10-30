@@ -1,0 +1,97 @@
+<template>
+  <div id="root" data-composition-id="06-renflouer" data-width="1920" data-height="1080" data-duration="3.03">
+    <link rel="stylesheet" href="assets/carte/mx-kit.css">
+    <style>
+      @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/InstrumentSans-600.woff2") format("woff2"); font-weight: 600; }
+
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+      /* the pivot sentence (MX.typeHTML, .mx-type-line : 84 px, #f4eddd, centred) : every word waits for its cue ;
+         « renflouer » : its box waits at scaleX 0, its word below the box, its peak stroke at scaleX 0 */
+      #p06-type .mx-w { opacity: 0; }
+      #p06-type .mx-w.mx-box { opacity: 1; }
+      #p06-type .mx-box-bg { transform: scaleX(0); }
+      #p06-type .mx-box-tx { display: inline-block; opacity: 0; }
+      #p06-type .mx-stroke { transform: scaleX(0); }
+    </style>
+
+    <!-- the black of the pivot : no world and no camera (MX.camAt is null from 23.37 to 26.40), plain #0c0906 -->
+    <div id="p06-ground" class="clip mx-ground" data-start="0" data-duration="3.03" data-track-index="0"></div>
+
+    <!-- the typographic moment : « Il est temps de [renflouer] leur histoire. », centred, word by word -->
+    <div id="p06-type" class="clip mx-layer" data-start="0" data-duration="3.03" data-track-index="1"></div>
+
+    <!-- film grain, 6 % : its offset follows the image number -->
+    <div id="p06-grain" class="clip mx-grain" data-start="0" data-duration="3.03" data-track-index="2"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/carte/mx-data.js"></script>
+    <script src="assets/carte/mx-kit.js"></script>
+    <script>
+      (function () {
+        var FID = "06-renflouer", DUR = 3.03, T0 = MX.FRAMES[5][1];   // film time T = 23.37 + local time
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ============================== the DOM, built once ============================== */
+        // the sentence and its local cues (TYPE of reference/carte.html minus 23.37) ; [word, cue, kind]
+        var TW = [["Il", 0.30], ["est", 0.49], ["temps", 0.75], ["de", 0.87], ["renflouer", 1.11, "boxstroke"], ["leur", 1.63], ["histoire.", 1.79]];
+        var layer = $("p06-type");
+        layer.innerHTML = MX.typeHTML("p06-tx", TW.map(function (w) { return [w[0], w[2] || ""]; }));
+        var line = $("p06-tx").querySelector(".mx-type-line");
+        var grain = $("p06-grain");
+
+        /* ============================== the timeline ============================== */
+        // Ease names : the storyboard and frame.md name curves like the kit (MX.ease) : powerN = u^N.
+        // GSAP's powerN is u^(N+1), so a storyboard « power3.out » is GSAP power2.out, a « power2.out » is GSAP power1.out.
+        var tl = gsap.timeline({ paused: true });
+        var ft = function (t, a, b, at) { b.immediateRender = false; return tl.fromTo(t, a, b, at); };
+
+        // ONE proxy tween over the whole frame, in film time. There is no camera in the pivot (no world : MX.camAt(T)
+        // is null from 23.37 to 26.40) ; render(T) moves the grain on every image. onUpdate renders it on every seek ;
+        // the modifier renders it too when events are suppressed (a seek that lands exactly on the frame's end).
+        var cam = { t: T0 };
+        function render(T) {
+          var n = Math.round(T * 30);                                   // grain : offset from the film's image number
+          grain.style.backgroundPosition = ((n * 97) % 240) + "px " + ((n * 151) % 240) + "px";
+        }
+        ft(cam, { t: T0 }, { t: T0 + DUR, duration: DUR, ease: "none", onUpdate: function () { render(cam.t); },
+          modifiers: { t: function (v) { render(+v); return v; } } }, 0);
+
+        // ---- the words : each one enters like a subtitle word (0.06 s before its cue : opacity, y +8, blur 6, sharp in
+        // 0.14 s, then from grey 35 % to full in 0.2 s) ; « renflouer » : its yellow box is traced 0.02 s before the word,
+        // the word resurfaces from below into it (y +40, blur 6, 0.2 s expo.out), then its peak stroke draws beneath
+        var INK = "rgb(244, 237, 221)", GREY = "rgba(244, 237, 221, 0.35)";        // .mx-type-line : #f4eddd
+        var BOX = "rgb(17, 17, 17)", GREY_B = "rgba(17, 17, 17, 0.35)";            // in the box : #111111
+        function words(ln, list) {
+          var ws = ln.querySelectorAll(".mx-w");
+          list.forEach(function (w, i) {
+            var cue = w[1], t0 = cue - 0.06, el = ws[i];
+            if (w[2] === "boxstroke") {
+              var tx = el.querySelector(".mx-box-tx");
+              ft(el.querySelector(".mx-box-bg"), { scaleX: 0 }, { scaleX: 1, duration: 0.16, ease: "power2.out" }, cue - 0.02);   // 1.09, « power3.out »
+              ft(tx, { opacity: 0, y: 40, filter: "blur(6px)", color: GREY_B }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY_B, duration: 0.2, ease: "expo.out" }, cue);
+              ft(tx, { color: GREY_B }, { color: BOX, duration: 0.1, ease: "none" }, cue + 0.04);
+              ft(el.querySelector(".mx-stroke"), { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power1.out" }, cue + 0.04);   // 1.15 to 1.55, « power2.out »
+              return;
+            }
+            ft(el, { opacity: 0, y: 8, filter: "blur(6px)", color: GREY }, { opacity: 1, y: 0, filter: "blur(0px)", color: GREY, duration: 0.14, ease: "power2.out" }, t0);
+            ft(el, { color: GREY }, { color: INK, duration: 0.2, ease: "power1.out" }, t0 + 0.14);
+          });
+        }
+        words(line, TW);
+
+        // ---- the sentence pushes slowly towards us from the first word to its exit (0.30 to 2.80, scale 1 to 1.05, linear),
+        // then leaves (2.80 to 2.94 : opacity 1 to 0, blur 0 to 6) ; 2.94 to 3.03 the black and its grain
+        ft(line, { scale: 1 }, { scale: 1.05, duration: 2.5, ease: "none" }, 0.30);
+        ft(line, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(6px)", duration: 0.14, ease: "power2.in" }, 2.80);
+
+        tl.set({}, {}, DUR);                                            // exact frame length
+
+        render(T0);                                                     // first image = handoff_in, before any seek
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FID] = tl;
+      })();
+    </script>
+  </div>
+</template>

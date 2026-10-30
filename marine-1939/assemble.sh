@@ -178,6 +178,13 @@ if iris_at is not None:
         tl.to("#fxiris-ring", {{ opacity: 0, duration: 0.15 }}, {t(0.70)});
 '''
 anchor = re.search(r"(?m)^[ \t]*tl\.to\(\{\}, \{ duration: [0-9.]+ \}, 0\);", s)
+master = 'window.__timelines["main"] = gsap.timeline({ paused: true });'
+if not anchor and master in s:
+    # a film made only of cuts: transitions.mjs leaves index.html unchanged and stamps no full-span anchor, so add it
+    s = s.replace(master, master + '\n      (function () { var tl = window.__timelines["main"];\n'
+                  f'        tl.to({{}}, {{ duration: {env["TOTAL"]} }}, 0); // full-span anchor (all cuts, no transition block)\n'
+                  '      })();', 1)
+    anchor = re.search(r"(?m)^[ \t]*tl\.to\(\{\}, \{ duration: [0-9.]+ \}, 0\);", s)
 if not anchor:
     raise SystemExit("assemble: full-span anchor tl.to({}, { duration: N }, 0); not found in index.html")
 s = s[:anchor.start()] + tl + s[anchor.start():]

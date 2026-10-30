@@ -103,7 +103,7 @@ Scene 3 (4.70 à 5.82 s) : P3, la bascule : le manuel est posé sur la carte, la
 - scene: Le whip freine sur Mers el-Kébir : quatre maquettes amarrées côte à côte, l'avant vers la terre ; « 3·7·40 » s'écrit au crayon ; trois gerbes, la Bretagne sombre dans la carte et se fait cercler de rouge ; le Strasbourg recule, vire et s'échappe, la caméra le prend
 - duration: 3.50s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/02-mers-el-kebir.html
 - voiceover: "Juillet 1940. Mers el-Kébir."
 - type: pain_point
@@ -151,7 +151,7 @@ Scene 3 (3.00 à 3.50 s) : P6, le Strasbourg s'échappe
 - scene: La caméra suit le Strasbourg à travers la carte jusqu'à Toulon, où il s'amarre près de quatre autres maquettes ; « 27·11·42 » s'écrit ; les cinq maquettes se sabordent une à une, de l'est à l'ouest ; la rade est vide, la caméra se relève
 - duration: 4.03s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/03-toulon.html
 - voiceover: "Novembre 1942. Toulon."
 - type: pain_point
@@ -207,7 +207,7 @@ Scene 4 (3.40 à 4.03 s) : P9, la rade vide, la caméra se relève
 - scene: Dans le recul, un manuel tombe de la caméra sur la mer de la rade, ouvert pages 216-217 ; la caméra s'approche de la page 217 : le titre du chapitre, trois lignes, puis rien ; les trois lignes se surlignent en jaune ; la caméra repart vers l'ouest
 - duration: 4.49s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/04-trois-lignes.html
 - voiceover: "Dans les manuels, toute son histoire tient en trois lignes."
 - type: pain_point
@@ -262,7 +262,7 @@ Scene 4 (3.95 à 4.49 s) : P12, le recul vers l'ouest
 - scene: La caméra recule sur la mer de nuit : les trois maquettes restées de la ligne de 1939 sombrent l'une après l'autre ; un cran vers un cadran optique de passerelle qui sombre ; un cran vers un tirage d'équipage qui sombre ; la lampe s'éteint
 - duration: 5.53s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/05-le-reste.html
 - voiceover: "Le reste a sombré. Ses navires. Ses matériels. Ses hommes."
 - type: pain_point
@@ -317,7 +317,7 @@ Scene 4 (4.16 à 5.53 s) : P15, « Ses hommes » : le tirage, la lampe s'éteint
 - scene: Sur le noir, la phrase du pivot, seule, centrée, mot par mot ; « renflouer » remonte d'en bas dans sa boîte jaune et se souligne ; la phrase avance doucement vers nous, puis s'efface ; le noir reste
 - duration: 3.03s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/06-renflouer.html
 - voiceover: "Il est temps de renflouer leur histoire."
 - type: pivot
@@ -345,7 +345,7 @@ Scene 1 (0.00 à 3.03 s) : P16, la phrase sur le noir
 - scene: Dans le noir, un écran s'allume : la page d'accueil de MARINE 1939 sur un téléphone posé sur la carte, là où était tombé le manuel ; sa lumière éclaire la carte autour de lui ; sur « fait revivre », le jour se lève sur toute la carte et les épaves de la ligne de 1939 apparaissent sous le papier ; la caméra glisse vers elles
 - duration: 4.01s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/07-blog.html
 - voiceover: "MARINE 1939 fait revivre cette flotte."
 - type: demo
@@ -382,7 +382,7 @@ Scene 2 (2.30 à 4.01 s) : P18, le jour se lève, la flotte sous le papier
 - scene: Les cinq maquettes de la ligne de 1939 remontent une à une à leurs places, et la vraie photo de L'Épervier se pose à côté ; un cran vers le cadran : ses trois pièces remontent de la carte et se remontent l'une après l'autre, avec l'article « Les cadrans optiques » ; la caméra repart vers le sud
 - duration: 4.66s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/08-un-par-un.html
 - voiceover: "Ses navires, un par un. Ses matériels, pièce par pièce."
 - type: demo
@@ -419,7 +419,7 @@ Scene 2 (2.09 à 4.66 s) : P20, pièce par pièce
 - scene: La caméra arrive là où le tirage avait sombré : la vraie photo du Dunkerque à quai, son équipage le long du bastingage, remonte et s'épingle ; la caméra s'approche et descend de la passerelle aux marins ; le grand recul commence
 - duration: 2.83s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/09-ses-hommes.html
 - voiceover: "Ses hommes, de l’amiral au matelot."
 - type: demo
@@ -456,7 +456,7 @@ Scene 2 (1.13 à 2.83 s) : P22, de la passerelle à l'équipage, puis le grand r
 - scene: Le grand recul montre que la carte de la Méditerranée est une feuille posée sur une carte de l'Atlantique ; la route de la 4e DC va de New York à Toulon ; une maquette de croiseur léger remonte au large de New York et traverse l'océan, l'article « La 4ème DC à New York » à un bout, « Les épaves de Toulon » à l'autre ; sur « drames », Toulon se fait cercler de rouge ; la caméra plonge dans l'article de Toulon
 - duration: 4.46s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/10-new-york-toulon.html
 - voiceover: "De New York à Toulon, ses heures de gloire… et ses drames."
 - type: payoff
@@ -511,7 +511,7 @@ Scene 4 (4.00 à 4.46 s) : P25, la plongée dans l'article
 - scene: Le noir de l'article devient le blog : son fond rayé, son bandeau MARINE 1939, sa phrase ; le bouton « Montez à bord » se pose comme le « 4e » du début ; un curseur arrive d'un seul mouvement et clique directement ; tenue vivante, puis l'iris se ferme sur le bouton
 - duration: 7.74s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/11-montez-a-bord.html
 - voiceover: "MARINE 1939. Montez à bord."
 - type: cta

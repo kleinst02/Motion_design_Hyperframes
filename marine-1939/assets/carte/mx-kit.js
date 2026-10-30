@@ -463,9 +463,10 @@ var MX = (function () {
       "px;background-image:url(" + src + ')"></div><div class="mx-photo-cap">' + esc(caption) + "</div></div>";
   };
   MX.blogCardHTML = function (id, title, date, src, w, th) {     // src null : carte sans image (en attendant la capture)
+    // date et titre marqués allow-overlap : la carte est tournée, leurs boîtes englobantes se croisent sans que le texte se touche
     w = w || 560; th = th || 300;
     return '<div class="mx-blogcard"' + (id ? ' id="' + id + '"' : "") + ' style="width:' + w + 'px">' + (src ? '<div class="mx-blogcard-img" style="height:' + th +
-      "px;background-image:url(" + src + ')"></div>' : "") + '<div class="mx-blogcard-body"><div class="mx-blogcard-date">' + esc(date) + '</div><div class="mx-blogcard-title">' + esc(title) +
+      "px;background-image:url(" + src + ')"></div>' : "") + '<div class="mx-blogcard-body"><div class="mx-blogcard-date" data-layout-allow-overlap>' + esc(date) + '</div><div class="mx-blogcard-title" data-layout-allow-overlap>' + esc(title) +
       '</div><div class="mx-blogcard-bar"></div></div></div>';
   };
   MX.pinHTML = function (id, d) {

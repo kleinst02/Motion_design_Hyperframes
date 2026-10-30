@@ -21,7 +21,7 @@
       #p10-black { background: #141414; opacity: 0; }
 
       /* born during the sequence : hidden at the first image (handoff_in, the last image of sequence 9) */
-      #p10-route-on, #p10-cl-rise, #p10-rip ellipse, .p10-card, .p10-pin, #p10-loss-on { opacity: 0; }
+      #p10-route-on, #p10-cl-rise, #p10-rip, .p10-card, .p10-pin, #p10-loss-on { opacity: 0; }
 
       /* the voice line, word by word */
       #p10-subs .mx-w { opacity: 0; }
@@ -155,10 +155,8 @@
         // 0.50 the light cruiser surfaces off New York (frame.md model.rise : 0.2 s expo.out) and its rings open
         ft(clRise, { opacity: 0.4, scale: 1.04, filter: "blur(6px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.2, ease: "expo.out" }, 0.50);
         tl.set(clRise, { filter: "none" }, 0.70);
-        rip.querySelectorAll("ellipse").forEach(function (e, i) {      // each ring grows x1 to x1.35 and fades, 1.0 s linear, 0.1 s apart
-          var o = parseFloat(e.getAttribute("opacity"));
-          ft(e, { opacity: o, scale: 1, svgOrigin: "0 0" }, { opacity: 0, scale: 1.35, svgOrigin: "0 0", duration: 1.0, ease: "none" }, 0.50 + 0.1 * i);
-        });
+        // its rings (reference ripples()) : the whole set grows x1 to x1.35 and fades 0.85 to 0, 1.0 s linear, where it surfaced
+        ft(rip, { opacity: 1, scale: 1 }, { opacity: 0, scale: 1.35, duration: 1.0, ease: "none" }, 0.50);
         // an article lands from the camera (x1.2, blur 8, 0.2 s, kit curve u^3 out), then its pin is pressed in
         function land(el, t) {
           ft(el, { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "none" }, t);

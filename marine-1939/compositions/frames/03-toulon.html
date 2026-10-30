@@ -88,7 +88,7 @@
         world.insertAdjacentHTML("beforeend", MX.chartSVG("med", "p03-med"));
         world.insertAdjacentHTML("beforeend", MX.bookHTML("p03-a", W.BOOK_A, MX.pageVersoSVG("p03-av"), MX.pageEngravingSVG("p03-ae", true)));
         onChart(world, "p03-pmk", "", MX.pencilSVG("3·7·40", 44), W.PENCIL_MK[0], W.PENCIL_MK[1], 0);          // written in sequence 2
-        var lossMK = onChart(world, "p03-lmk", "", MX.lossRingSVG("p03-lmk-e", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1], 0);
+        onChart(world, "p03-lmk", "", MX.lossRingSVG("p03-lmk-e", W.LOSS_MK[2], W.LOSS_MK[3], W.LOSS_MK[4]), W.LOSS_MK[0], W.LOSS_MK[1], 0);
         $("p03-lmk-e").setAttribute("stroke-dashoffset", "0");                                                     // the red ring of the Bretagne, drawn
         var pencilT = onChart(world, "p03-pt", "", MX.pencilSVG("27·11·42", 44), W.PENCIL_TOULON[0], W.PENCIL_TOULON[1], 0);
         var pcs = pencilT.querySelectorAll(".mx-pc");
@@ -112,7 +112,7 @@
         var st2 = model(world2, "p03-s2", ["bb", TB[1], TB[2], 230, TB[4]]);
 
         // lights : the night lamp under its flicker veil
-        var lights = $("p03-lights"), flicker = $("p03-flicker");
+        var flicker = $("p03-flicker");
         flicker.insertAdjacentHTML("beforebegin", MX.lampHTML(960, 480, 980, 580));
 
         // the voice line : one chunk, theme .night

@@ -26,34 +26,50 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ---- settings -------------------------------------------------------------------------------------------------------
-DUR = 45.0          # film duration (s) = TOTAL in assemble.sh
-PIVOT = 14.02       # the pivot word or silence where the music stops (e.g. « Stop. »)
-LIGHT = 14.30       # the light flash where the music comes back, drop on it (LEAK_AT + 0.05 in assemble.sh)
+DUR = 50.10         # film duration (s) = TOTAL in assemble.sh
+PIVOT = 23.17       # la lampe s'éteint (son déclic est dans sfx-events.json) : la musique s'arrête net sur un impact grave
+LIGHT = 27.16       # « MARINE » : la musique d'élan attaque, l'écran du téléphone s'est allumé à 26.62 (la notification)
 VOICE = "assets/audio/voix-montage.wav"        # voice montage from build-audio.sh
 SFX_EVENTS = "assets/audio/sfx-events.json"    # [["name", seconds, gain], ...] of the film (build-audio.sh format)
 OUT = "assets/audio/mix-{id}.wav"
 MUSIC_DIR = os.environ.get("MUSIC_DIR", os.path.join(HERE, "assets", "music"))
 SFX_DIR = os.environ.get("SFX_DIR", os.path.join(HERE, "..", ".claude", "skills", "media-use", "audio", "assets", "sfx"))
+FADE_END = DUR - 46.86   # l'élan s'éteint en fondu de 46.86 à 50.10, sous la fermeture de l'iris
+# « Ses hommes. » (22.40 à 23.34) doit passer au-dessus de la tension : dans la dernière seconde et demie, la même piste
+# continue un peu plus bas (fondu croisé de 0,15 s, même position dans la piste), puis la coupe nette et l'impact.
+DIP, XF = PIVOT - 1.65, 0.15
 
 # Music segments: (file in MUSIC_DIR, track_start, film_start, film_end, gain, fade_in, fade_out).
-# Pattern 1: two tracks, tension until PIVOT, then elan from LIGHT (track_start = its drop time, so the drop hits LIGHT).
-# Pattern 2: one track with a drop: same file twice, the second segment starts at (first track_start + LIGHT).
+# Musiques CC0 1.0 de la Free Music Archive (licence vérifiée sur chaque page, voir assets/CREDITS.md) ; grave avant le
+# pivot (mineur), patriotique après (majeur) ; chaque élan démarre sur un début de phrase de sa piste, posé sur « MARINE ».
 OPTIONS = {
-    "M1": {"name": "tension then elan", "riser": 0.18, "segments": [
-        ("tension-waiting-tttt.mp3", 0.0, 0.0, PIVOT, 0.42, 0.4, 0.02),
-        ("elan-dear-mr-super-computer.mp3", 5.59, LIGHT, DUR, 0.30, 0.0, 2.4),
+    "M1": {"name": "« Ukraine » seule : piano et cordes, mi mineur puis sol majeur", "riser": 0.0, "segments": [
+        ("holiznacc0--ukraine.mp3", 17.48, 0.0, DIP + XF, 0.20, 0.6, XF),
+        ("holiznacc0--ukraine.mp3", 17.48 + DIP, DIP, PIVOT, 0.20 * 0.67, XF, 0.02),
+        ("holiznacc0--ukraine.mp3", 91.11, LIGHT, DUR, 0.145, 0.0, FADE_END),
     ]},
-    "M2": {"name": "one track, drop on the light", "riser": 0.0, "segments": [
-        ("complet-retro-synths.mp3", 1.62, 0.0, PIVOT, 0.34, 0.6, 0.02),
-        ("complet-retro-synths.mp3", 1.62 + LIGHT, LIGHT, DUR, 0.30, 0.0, 2.4),
+    "M2": {"name": "« The Ultimate Threat » puis « Every myths are true stories »", "riser": 0.05, "segments": [
+        ("komiku--the-ultimate-threat.mp3", 111.61, 0.0, DIP + XF, 0.233, 0.6, XF),
+        ("komiku--the-ultimate-threat.mp3", 111.61 + DIP, DIP, PIVOT, 0.233 * 0.60, XF, 0.02),
+        ("komiku--every-myths-are-true-stories.mp3", 9.9, LIGHT, DUR, 0.40, 0.0, FADE_END),
+    ]},
+    "M3": {"name": "« Action Epic » puis « Wake up, heroic figure »", "riser": 0.05, "segments": [
+        ("komiku--action-epic.mp3", 0.0, 0.0, DIP + XF, 0.287, 0.4, XF),
+        ("komiku--action-epic.mp3", 0.0 + DIP, DIP, PIVOT, 0.287 * 0.50, XF, 0.02),
+        ("komiku--wake-up-heroic-figure.mp3", 21.0, LIGHT, DUR, 0.565, 0.0, FADE_END),
+    ]},
+    "M4": {"name": "« Action Time Attack Research » puis « I need a heroïc figure »", "riser": 0.05, "segments": [
+        ("komiku--action-time-attack-research.mp3", 0.0, 0.0, PIVOT, 0.386, 0.4, 0.02),
+        ("komiku--i-need-a-heroic-figure-main-character-theme.mp3", 60.47, LIGHT, DUR, 0.41, 0.0, FADE_END),
     ]},
 }
 
-# Sound effects of the pivot, on top of SFX_EVENTS: (name in SFX_DIR, time, gain).
-PIVOT_SFX = [("impact-bass-1", PIVOT, 0.34), ("sparkle", LIGHT - 0.04, 0.18), ("whoosh", LIGHT - 0.04, 0.22)]
+# Sound effects of the pivot, on top of SFX_EVENTS: (name in SFX_DIR, time, gain). Pas d'étincelle ni de souffle sur
+# « MARINE » : la notification de l'écran (26.62, dans sfx-events.json) est la signature de ce moment.
+PIVOT_SFX = [("impact-bass-1", PIVOT, 0.30)]
 RISER = "riser"            # media-use riser: a 10 s build that crests at its very end
 RISER_LEN = 3.2            # seconds of riser kept before the pivot
-DUCK = "threshold=0.035:ratio=5:attack=25:release=420:makeup=1"   # music under the voice
+DUCK = "threshold=0.02:ratio=6:attack=20:release=380:makeup=1"    # music under the voice (voix à -20 LUFS : plus bas que 0.035)
 LOUDNESS = "I=-16:TP=-1.5:LRA=11"                                   # web delivery
 LIMIT = 0.79                 # final limiter ceiling (linear, -2 dBFS) so the true peak stays under -1.5 dBTP
 # ---------------------------------------------------------------------------------------------------------------------

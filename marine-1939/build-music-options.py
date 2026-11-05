@@ -71,7 +71,8 @@ RISER = "riser"            # media-use riser: a 10 s build that crests at its ve
 RISER_LEN = 3.2            # seconds of riser kept before the pivot
 DUCK = "threshold=0.02:ratio=6:attack=20:release=380:makeup=1"    # music under the voice (voix à -20 LUFS : plus bas que 0.035)
 LOUDNESS = "I=-16:TP=-1.5:LRA=11"                                   # web delivery
-LIMIT = 0.79                 # final limiter ceiling (linear, -2 dBFS) so the true peak stays under -1.5 dBTP
+LIMIT = 0.75                 # final limiter ceiling (linear, -2,5 dBFS) : l'AAC remonte les crêtes de 0,6 dB, la crête vraie reste sous -1,5 dBTP
+TRIM_DB = 0.7               # loudnorm en un passage rend -16,6 LUFS (-16,7 après l'AAC) : +0,7 dB avant le limiteur
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -133,7 +134,7 @@ def build(oid):
         labels.append(f"[e{j}]")
         idx += 1
     fc.append("".join(labels) + f"amix=inputs={len(labels)}:normalize=0:duration=first,atrim=0:{DUR},"
-              f"loudnorm={LOUDNESS},alimiter=limit={LIMIT}:level=disabled[out]")
+              f"loudnorm={LOUDNESS},volume={TRIM_DB}dB,alimiter=limit={LIMIT}:level=disabled[out]")
     out = path(OUT.format(id=oid))
     music_only = out.replace(".wav", ".music-only.wav")   # music after ducking (pivot check)
     music_raw = out.replace(".wav", ".music-raw.wav")     # music before ducking (tension against elan)
